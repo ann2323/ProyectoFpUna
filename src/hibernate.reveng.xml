@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="proyecto" match-schema="public"/>
+  <table-filter match-name="stock"/>
+  <table-filter match-name="rol_ventanas"/>
+  <table-filter match-name="ventanas"/>
+  <table-filter match-name="nota_remision"/>
+  <table-filter match-name="transferencia"/>
+  <table-filter match-name="responsables_proyecto"/>
+  <table-filter match-name="transferencia_detalle"/>
+  <table-filter match-name="entrada"/>
+  <table-filter match-name="componentes"/>
+  <table-filter match-name="detalle_venta"/>
+  <table-filter match-name="tipo_pago"/>
+  <table-filter match-name="pago_factura"/>
+  <table-filter match-name="deposito"/>
+  <table-filter match-name="compra"/>
+  <table-filter match-name="entrada_detalle"/>
+  <table-filter match-name="cuentas"/>
+  <table-filter match-name="temporal"/>
+  <table-filter match-name="detalle_compra"/>
+  <table-filter match-name="detalle_cuenta"/>
+  <table-filter match-name="moneda"/>
+  <table-filter match-name="salida"/>
+  <table-filter match-name="cuenta_cabecera"/>
+  <table-filter match-name="cliente"/>
+  <table-filter match-name="prefijo_factura"/>
+  <table-filter match-name="rol"/>
+  <table-filter match-name="proveedor"/>
+  <table-filter match-name="usuario"/>
+  <table-filter match-name="salida_detalle"/>
+  <table-filter match-name="detalle_remision"/>
+  <table-filter match-name="venta"/>
+  <table-filter match-name="proyectos"/>
+</hibernate-reverse-engineering>

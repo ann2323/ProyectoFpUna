@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.DetalleVenta" table="detalle_venta" schema="public">
+        <id name="detalleFacturaId" type="int">
+            <column name="detalle_factura_id" />
+            <generator class="identity" />
+        </id>
+        <property name="cantidad" type="int">
+            <column name="cantidad" not-null="true" />
+        </property>
+        <property name="subTotal" type="int">
+            <column name="sub_total" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="20" />
+        </property>
+        <property name="ventaId" type="int">
+            <column name="venta_id" not-null="true" />
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" />
+        </property>
+        <property name="precioUnitario" type="java.lang.Integer">
+            <column name="precio_unitario" />
+        </property>
+        <property name="exentas" type="java.lang.Integer">
+            <column name="exentas" />
+        </property>
+    </class>
+</hibernate-mapping>

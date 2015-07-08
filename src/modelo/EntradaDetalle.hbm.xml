@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.EntradaDetalle" table="entrada_detalle" schema="public">
+        <id name="line" type="int">
+            <column name="line" />
+            <generator class="assigned" />
+        </id>
+        <property name="codigoInterno" type="int">
+            <column name="codigo_interno" not-null="true" />
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" />
+        </property>
+        <property name="cantidad" type="java.lang.Integer">
+            <column name="cantidad" />
+        </property>
+        <property name="precio" type="java.lang.Integer">
+            <column name="precio" />
+        </property>
+    </class>
+</hibernate-mapping>

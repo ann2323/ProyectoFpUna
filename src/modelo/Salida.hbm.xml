@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.Salida" table="salida" schema="public">
+        <id name="codigoInterno" type="int">
+            <column name="codigo_interno" />
+            <generator class="assigned" />
+        </id>
+        <property name="numero" type="java.lang.Integer">
+            <column name="numero" />
+        </property>
+        <property name="fechaIngreso" type="date">
+            <column name="fecha_ingreso" length="13" />
+        </property>
+        <property name="comentarios" type="string">
+            <column name="comentarios" />
+        </property>
+        <property name="ajuste" type="java.lang.Integer">
+            <column name="ajuste" />
+        </property>
+        <property name="deposito" type="string">
+            <column name="deposito" />
+        </property>
+        <property name="proyecto" type="string">
+            <column name="proyecto" />
+        </property>
+    </class>
+</hibernate-mapping>

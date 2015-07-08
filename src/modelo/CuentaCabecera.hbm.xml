@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.CuentaCabecera" table="cuenta_cabecera" schema="public">
+        <id name="cuentaId" type="int">
+            <column name="cuenta_id" />
+            <generator class="identity" />
+        </id>
+        <property name="estado" type="string">
+            <column name="estado" length="10" not-null="true" />
+        </property>
+        <property name="proveedorId" type="java.lang.Integer">
+            <column name="proveedor_id" />
+        </property>
+        <property name="clienteId" type="java.lang.Integer">
+            <column name="cliente_id" />
+        </property>
+        <property name="monedaId" type="java.lang.Integer">
+            <column name="moneda_id" />
+        </property>
+        <property name="fecha" type="date">
+            <column name="fecha" length="13" />
+        </property>
+        <property name="totalSaldo" type="java.lang.Integer">
+            <column name="total_saldo" />
+        </property>
+        <property name="nroFactura" type="java.lang.Integer">
+            <column name="nro_factura" />
+        </property>
+        <property name="nroPago" type="java.lang.Integer">
+            <column name="nro_pago" />
+        </property>
+        <property name="proyectoId" type="java.lang.Integer">
+            <column name="proyecto_id" />
+        </property>
+    </class>
+</hibernate-mapping>

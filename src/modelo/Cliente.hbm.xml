@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.Cliente" table="cliente" schema="public">
+        <id name="clienteId" type="int">
+            <column name="cliente_id" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="15" not-null="true" />
+        </property>
+        <property name="apellido" type="string">
+            <column name="apellido" length="15" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="20" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="15" />
+        </property>
+        <property name="cedula" type="string">
+            <column name="cedula" length="8" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="10" not-null="true" />
+        </property>
+        <property name="dv" type="string">
+            <column name="dv" length="1" />
+        </property>
+        <property name="codigocliente" type="string">
+            <column name="codigocliente" length="8" unique="true" />
+        </property>
+        <property name="limitecredito" type="java.lang.Integer">
+            <column name="limitecredito" />
+        </property>
+        <property name="tipocliente" type="string">
+            <column name="tipocliente" />
+        </property>
+    </class>
+</hibernate-mapping>

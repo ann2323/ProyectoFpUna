@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.NotaRemision" table="nota_remision" schema="public">
+        <id name="remisionId" type="int">
+            <column name="remision_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nroRemito" type="int">
+            <column name="nro_remito" not-null="true" />
+        </property>
+        <property name="nroPrefijo" type="int">
+            <column name="nro_prefijo" not-null="true" />
+        </property>
+        <property name="codProyecto" type="string">
+            <column name="cod_proyecto" length="10" not-null="true" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="10" not-null="true" />
+        </property>
+        <property name="razonSocial" type="string">
+            <column name="razon_social" length="20" not-null="true" />
+        </property>
+        <property name="rucCi" type="string">
+            <column name="ruc_ci" length="15" not-null="true" />
+        </property>
+        <property name="puntoPartida" type="string">
+            <column name="punto_partida" length="30" not-null="true" />
+        </property>
+        <property name="puntoLlegada" type="string">
+            <column name="punto_llegada" length="30" not-null="true" />
+        </property>
+        <property name="fechaInicio" type="timestamp">
+            <column name="fecha_inicio" length="29" not-null="true" />
+        </property>
+        <property name="fechaFin" type="timestamp">
+            <column name="fecha_fin" length="29" not-null="true" />
+        </property>
+        <property name="proveedorId" type="int">
+            <column name="proveedor_id" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

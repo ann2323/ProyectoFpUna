@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.TipoPago" table="tipo_pago" schema="public">
+        <id name="tipoPagoId" type="int">
+            <column name="tipo_pago_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombrePago" type="string">
+            <column name="nombre_pago" length="10" not-null="true" />
+        </property>
+        <property name="pagoDocumentoId" type="int">
+            <column name="pago_documento_id" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.DetalleCuenta" table="detalle_cuenta" schema="public">
+        <id name="idDetalleCuenta" type="int">
+            <column name="id_detalle_cuenta" />
+            <generator class="identity" />
+        </id>
+        <property name="nroFactura" type="java.lang.Integer">
+            <column name="nro_factura" />
+        </property>
+        <property name="fechaPago" type="timestamp">
+            <column name="fecha_pago" length="35" />
+        </property>
+        <property name="cuotas" type="java.lang.Integer">
+            <column name="cuotas" />
+        </property>
+        <property name="montoAbonado" type="java.lang.Integer">
+            <column name="monto_abonado" />
+        </property>
+        <property name="cuentaId" type="java.lang.Integer">
+            <column name="cuenta_id" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="15" />
+        </property>
+    </class>
+</hibernate-mapping>

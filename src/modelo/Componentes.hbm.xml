@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.Componentes" table="componentes" schema="public">
+        <id name="codigoInterno" type="int">
+            <column name="codigo_interno" />
+            <generator class="identity" />
+        </id>
+        <property name="descripcion" type="string">
+            <column name="descripcion" />
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" not-null="true" unique="true" />
+        </property>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
+        <property name="idProveedor" type="java.lang.Integer">
+            <column name="id_proveedor" />
+        </property>
+        <property name="unidad" type="java.lang.Integer">
+            <column name="unidad" />
+        </property>
+        <property name="precio" type="java.lang.Integer">
+            <column name="precio" />
+        </property>
+        <property name="costo" type="java.lang.Integer">
+            <column name="costo" />
+        </property>
+        <property name="tipoIva" type="java.lang.Integer">
+            <column name="tipo_iva" />
+        </property>
+    </class>
+</hibernate-mapping>

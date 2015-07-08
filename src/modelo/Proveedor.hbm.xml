@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.Proveedor" table="proveedor" schema="public">
+        <id name="proveedorId" type="int">
+            <column name="proveedor_id" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="15" />
+        </property>
+        <property name="apellido" type="string">
+            <column name="apellido" length="15" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="20" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="15" />
+        </property>
+        <property name="codProveedor" type="string">
+            <column name="cod_proveedor" length="10" unique="true" />
+        </property>
+        <property name="dv" type="string">
+            <column name="dv" length="1" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="10" />
+        </property>
+        <property name="ci" type="string">
+            <column name="ci" length="8" />
+        </property>
+    </class>
+</hibernate-mapping>

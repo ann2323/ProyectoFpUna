@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5433/proyecto</property>
+    <property name="hibernate.connection.username">postgres</property>
+    <property name="hibernate.connection.password">1234</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.connection.autocommit">false</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <mapping resource="modelo/PagoFactura.hbm.xml"/>
+    <mapping resource="modelo/Componentes.hbm.xml"/>
+    <mapping resource="modelo/NotaRemision.hbm.xml"/>
+    <mapping resource="modelo/Stock.hbm.xml"/>
+    <mapping resource="modelo/EntradaDetalle.hbm.xml"/>
+    <mapping resource="modelo/Deposito.hbm.xml"/>
+    <mapping resource="modelo/Transferencia.hbm.xml"/>
+    <mapping resource="modelo/TransferenciaDetalle.hbm.xml"/>
+    <mapping resource="modelo/Moneda.hbm.xml"/>
+    <mapping resource="modelo/Rol.hbm.xml"/>
+    <mapping resource="modelo/Compra.hbm.xml"/>
+    <mapping resource="modelo/Entrada.hbm.xml"/>
+    <mapping resource="modelo/ResponsablesProyecto.hbm.xml"/>
+    <mapping resource="modelo/Temporal.hbm.xml"/>
+    <mapping resource="modelo/DetalleRemision.hbm.xml"/>
+    <mapping resource="modelo/Proyectos.hbm.xml"/>
+    <mapping resource="modelo/Usuario.hbm.xml"/>
+    <mapping resource="modelo/DetalleCuenta.hbm.xml"/>
+    <mapping resource="modelo/PrefijoFactura.hbm.xml"/>
+    <mapping resource="modelo/RolVentanas.hbm.xml"/>
+    <mapping resource="modelo/SalidaDetalle.hbm.xml"/>
+    <mapping resource="modelo/CuentaCabecera.hbm.xml"/>
+    <mapping resource="modelo/Ventanas.hbm.xml"/>
+    <mapping resource="modelo/DetalleVenta.hbm.xml"/>
+    <mapping resource="modelo/TipoPago.hbm.xml"/>
+    <mapping resource="modelo/Cuentas.hbm.xml"/>
+    <mapping resource="modelo/Proveedor.hbm.xml"/>
+    <mapping resource="modelo/Venta.hbm.xml"/>
+    <mapping resource="modelo/Salida.hbm.xml"/>
+    <mapping resource="modelo/DetalleCompra.hbm.xml"/>
+    <mapping resource="modelo/Cliente.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>
