@@ -16,7 +16,7 @@ import util.HibernateUtil;
  * @author Patricia Espinola
  */
 public class ClienteControlador {
-//hola ann
+//esta es una modificacion
     public void insert(Cliente cmp)    {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
