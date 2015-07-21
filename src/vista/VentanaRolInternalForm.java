@@ -32,6 +32,7 @@ public class VentanaRolInternalForm extends javax.swing.JInternalFrame {
      
     public VentanaRolInternalForm() {
         initComponents();
+        this.moveToFront();
         getRolCombo();
         getVentanasCombo();
         getRolVentana();
@@ -89,23 +90,37 @@ public class VentanaRolInternalForm extends javax.swing.JInternalFrame {
      
      
         private void guardar() throws Exception{
-            int rolInt=rolBD.devuelveId((String) jComboRol.getSelectedItem());
-            rolVent.setRolId(rolInt);
-            int ventInt=ventBD.devuelveId((String) jComboVentana.getSelectedItem());
-            rolVent.setIdVentana(ventInt);
-            rolVentBD.insert(rolVent);
-            getRolVentana();
-            bGuardar.setSelected(false);
+            
+               int rolInt=rolBD.devuelveId((String) jComboRol.getSelectedItem());
+                rolVent.setRolId(rolInt);
+                int ventInt=ventBD.devuelveId((String) jComboVentana.getSelectedItem());
+                rolVent.setIdVentana(ventInt);
+                if(rolVentBD.existeRegistro(ventInt, rolInt) > 0){
+                    showMessageDialog(this, "El rol "+ jComboRol.getSelectedItem()+ " ya tiene acceso a la ventana " +jComboVentana.getSelectedItem(), "Atención", JOptionPane.WARNING_MESSAGE);
+                }else{
+                    rolVentBD.insert(rolVent);
+                    getRolVentana();
+                    bGuardar.setSelected(false);
+                }
+         
+               
+            
         }
         
         private void borrar() throws Exception{
-            int rolInt=rolBD.devuelveId(TBrolVentanas.getValueAt(TBrolVentanas.getSelectedRow(), 0).toString());
-            rolVent.setRolId(rolInt);
-            int ventInt=ventBD.devuelveId(TBrolVentanas.getValueAt(TBrolVentanas.getSelectedRow(), 1).toString());
-            rolVent.setIdVentana(ventInt);
-            rolVentBD.delete(rolInt, ventInt);
-            getRolVentana();
-            bBorrar.setSelected(false);
+           if(TBrolVentanas.getSelectedRow() == -1){
+                showMessageDialog(this, "Por favor seleccione una fila", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+           }
+                int rolInt=rolBD.devuelveId(TBrolVentanas.getValueAt(TBrolVentanas.getSelectedRow(), 0).toString());
+                rolVent.setRolId(rolInt);
+                int ventInt=ventBD.devuelveId(TBrolVentanas.getValueAt(TBrolVentanas.getSelectedRow(), 1).toString());
+                rolVent.setIdVentana(ventInt);
+                System.out.println("ROL INT "+rolInt + "VENTA INT "+ ventInt);
+                rolVentBD.delete(rolInt, ventInt);
+                getRolVentana();
+                bBorrar.setSelected(false);
+            
         }
         
         private void getRolVentana() {
@@ -165,7 +180,11 @@ public class VentanaRolInternalForm extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TBrolVentanas = new javax.swing.JTable();
+        TBrolVentanas = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
 
         setClosable(true);
         setIconifiable(true);
