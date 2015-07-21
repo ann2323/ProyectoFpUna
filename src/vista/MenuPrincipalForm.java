@@ -285,7 +285,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mAdministracion.setText("Administración");
 
         mRol.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/rol.png"))); // NOI18N
-        mRol.setText("Rol");
+        mRol.setText("Roles");
         mRol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mRolActionPerformed(evt);
@@ -294,7 +294,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mAdministracion.add(mRol);
 
         mVentana.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ventana.png"))); // NOI18N
-        mVentana.setText("Permisos-ventanas");
+        mVentana.setText("Ventanas");
         mVentana.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mVentanaActionPerformed(evt);
@@ -303,7 +303,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mAdministracion.add(mVentana);
 
         mPermiso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/permisos.png"))); // NOI18N
-        mPermiso.setText("Permisos");
+        mPermiso.setText("Roles y Ventanas");
         mPermiso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mPermisoActionPerformed(evt);
@@ -613,7 +613,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mUsuarioActionPerformed
 
     private void mRolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mRolActionPerformed
-       RolInternalForm rol = new RolInternalForm();
+       RolForm rol = new RolForm();
        this.jDesktopPane1.add(rol);
        rol.show();
     }//GEN-LAST:event_mRolActionPerformed

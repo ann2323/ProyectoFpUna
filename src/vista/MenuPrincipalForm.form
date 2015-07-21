@@ -208,7 +208,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/rol.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Rol"/>
+                <Property name="text" type="java.lang.String" value="Roles"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mRolActionPerformed"/>
@@ -219,7 +219,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/ventana.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Permisos-ventanas"/>
+                <Property name="text" type="java.lang.String" value="Ventanas"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mVentanaActionPerformed"/>
@@ -230,7 +230,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/permisos.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Permisos"/>
+                <Property name="text" type="java.lang.String" value="Roles y Ventanas"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mPermisoActionPerformed"/>
