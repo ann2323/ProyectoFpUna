@@ -22,9 +22,7 @@ import util.HibernateUtil;
 public class VentanaControlador {
     public Integer nuevoCodigo() {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        
-            return (Integer) baseDatos.createQuery("select coalesce (max(id_ventana), 0) + 1 from Ventanas").uniqueResult();
-   
+        return (Integer) baseDatos.createQuery("select coalesce (max(id_ventana), 0) + 1 from Ventanas").uniqueResult();
     }
     
      public void insert(Ventanas ventana) throws Exception {
@@ -37,7 +35,7 @@ public class VentanaControlador {
             baseDatos.beginTransaction().commit();
         }  catch (org.hibernate.exception.ConstraintViolationException cve) {
     
-            JOptionPane.showMessageDialog(null, "El codigo de ventana existe. Error al insertar", 
+            JOptionPane.showMessageDialog(null, "El nombre de la ventana ya existe. Error al insertar", 
                      "Error: ", JOptionPane.ERROR_MESSAGE);
         }catch(HibernateException e){
             e.getMessage();
@@ -51,7 +49,7 @@ public class VentanaControlador {
         try {
            return (Integer) baseDatos.createQuery("Select idVentana from Ventanas where nombre = '" +nombre+ "'").uniqueResult();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al devolver id ventana: \n" + e.getMessage());
         }
     }
      
@@ -90,7 +88,7 @@ public class VentanaControlador {
                    +" nombre = '" + vent.getNombre() + "' where id_ventana = " +i+ "").executeUpdate();
             baseDatos.beginTransaction().commit();
          } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al modificar ventana: \n" + e.getMessage());
          }
         
         }
