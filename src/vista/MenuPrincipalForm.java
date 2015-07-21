@@ -480,7 +480,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mFacturacionActionPerformed
 
     private void mClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mClienteActionPerformed
-       ClienteInternalForm prueba = new ClienteInternalForm();
+       ClienteForm prueba = new ClienteForm();
        /*try {
             if (p.tiene(prueba.getTitle(),this.codRol) == 0){
                 showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
@@ -607,7 +607,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mFacturaCompraActionPerformed
 
     private void mUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUsuarioActionPerformed
-       UsuarioInternalForm usuario = new UsuarioInternalForm();
+       UsuarioForm usuario = new UsuarioForm();
        this.jDesktopPane1.add(usuario);
        usuario.show();
     }//GEN-LAST:event_mUsuarioActionPerformed
