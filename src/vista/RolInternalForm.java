@@ -38,6 +38,7 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
      
     public RolInternalForm() {
         initComponents();
+        this.moveToFront();
         establecerBotones("Vacio");
         
     }
@@ -45,7 +46,7 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
     Rol rolModel = new Rol();
     RolControlador rolBD = new RolControlador();
     DefaultTableModel modelo = new DefaultTableModel();
-    int k;
+    int k = 0;
 
     
     /**
@@ -75,7 +76,11 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TbRol = new javax.swing.JTable();
+        TbRol = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
 
         setClosable(true);
         setIconifiable(true);
@@ -208,12 +213,21 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtnombreRolKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtnombreRolKeyTyped(evt);
+            }
         });
         jPanel3.add(txtnombreRol, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, 220, -1));
 
         labelDescripcion.setFont(new java.awt.Font("Berlin Sans FB Demi", 0, 11)); // NOI18N
         labelDescripcion.setText("Descripcion:");
         jPanel3.add(labelDescripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 20));
+
+        txtDescripcionRol.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescripcionRolKeyTyped(evt);
+            }
+        });
         jPanel3.add(txtDescripcionRol, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 220, -1));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -269,7 +283,7 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -299,7 +313,7 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         pack();
@@ -334,22 +348,18 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
      * Se valida que no haya campos vacíos
      */
     private void guardar(){
+        
+       if (txtnombreRol.getText().trim().isEmpty() == true) {
+            showMessageDialog(this, "Campo rol vacío, por favor ingrese el nombre del rol", "", JOptionPane.WARNING_MESSAGE);
+            return;
+        } 
        
        if (showConfirmDialog(null, "Está seguro de guardar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
-                 
-             if (txtnombreRol.getText().trim().isEmpty() == true) {
-                showMessageDialog(this, "Campo rol vacío, por favor ingrese el nombre del rol", "", JOptionPane.WARNING_MESSAGE);
-                return;
-             }
-            
-        rolModel.setNombre(txtnombreRol.getText());
-        rolModel.setDescripcion(txtDescripcionRol.getText());  
+            rolModel.setNombre(txtnombreRol.getText());
+            rolModel.setDescripcion(txtDescripcionRol.getText());  
       
-          
-           
          if (JBnuevo.isEnabled() == false) {//is Enable true - habilita boton 
                 try {
-                    
                     rolBD.insert(rolModel);
                     nuevo();
                     getRoles();
@@ -460,24 +470,24 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
         if(showConfirmDialog (null, "Está seguro de cancelar la operación?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
             getRoles();
             limpiar();
-
             establecerBotones("Edicion");
-           if (modelo.getRowCount() == 0) {
+         }  
+          /*if (modelo.getRowCount() == 0) {
                 limpiar(); 
                 establecerBotones("Vacio"); 
                 modoBusqueda(false); 
                 return;
-            }
-            if (k >= 0){
+            }*/
+           /*if (k >= 0){
                     limpiar(); 
                     datosActuales(); 
                     establecerBotones("Edicion");
                     modoBusqueda(false);
                     return;
-            }
+            }*/
          
             
-        }
+       
     }
     
     private void buscar(){
@@ -563,9 +573,25 @@ public class RolInternalForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtnombreRolKeyPressed
 
     private void TbRolMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TbRolMouseClicked
-        txtnombreRol.setText(TbRol.getValueAt(TbRol.getSelectedRow(), 0).toString());
-        txtDescripcionRol.setText(TbRol.getValueAt(TbRol.getSelectedRow(), 1).toString());
+        if(txtnombreRol.isEnabled() == false){
+            evt.consume();
+        }else{
+           txtnombreRol.setText(TbRol.getValueAt(TbRol.getSelectedRow(), 0).toString());
+           txtDescripcionRol.setText(TbRol.getValueAt(TbRol.getSelectedRow(), 1).toString()); 
+        }
     }//GEN-LAST:event_TbRolMouseClicked
+
+    private void txtnombreRolKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreRolKeyTyped
+         if (txtnombreRol.getText().length() > 14) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtnombreRolKeyTyped
+
+    private void txtDescripcionRolKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionRolKeyTyped
+         if (txtDescripcionRol.getText().length() > 29) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtDescripcionRolKeyTyped
 
    private void modoBusqueda(boolean v){
         if (v == true) {

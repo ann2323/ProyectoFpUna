@@ -64,7 +64,7 @@
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" pref="109" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="218" max="32767" attributes="0"/>
+              <EmptySpace pref="115" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -291,6 +291,7 @@
         <Component class="javax.swing.JTextField" name="txtnombreRol">
           <Events>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtnombreRolKeyPressed"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtnombreRolKeyTyped"/>
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -312,6 +313,9 @@
           </Constraints>
         </Component>
         <Component class="javax.swing.JTextField" name="txtDescripcionRol">
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDescripcionRolKeyTyped"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="90" y="60" width="220" height="-1"/>
@@ -344,7 +348,7 @@
               <Group type="102" alignment="1" attributes="0">
                   <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="77" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="168" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -427,6 +431,9 @@
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="TbRolMouseClicked"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    public boolean isCellEditable(int rowIndex, int colIndex) {&#xa;        return false; //Disallow the editing of any cell&#xa;    }&#xa;}"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
