@@ -721,12 +721,12 @@ public class ClienteForm extends javax.swing.JInternalFrame {
                         txtDigVerificador.setText(Character.toString(dv));
                         radioButtonRuc.setSelected(true);
                       }else{
-                                txtDigVerificador.setText("");
-                                txtDigVerificador.setVisible(false);
-                                lbGuion.setVisible(false);
-                                radioButtonCedula.setSelected(true);
-                                txtCedula.setText((String) modelo.getValueAt(c,1));
-                        }
+                         txtDigVerificador.setText("");
+                         txtDigVerificador.setVisible(false);
+                         lbGuion.setVisible(false);
+                         radioButtonCedula.setSelected(true);
+                         txtCedula.setText((String) modelo.getValueAt(c,1));
+                       }
                      txtCodigo.setText((String) modelo.getValueAt(c, 0));
                      txtNombre.setText((String) modelo.getValueAt(c, 2)); 
                      txtApellido.setText((String) modelo.getValueAt(c, 3));
@@ -1080,7 +1080,10 @@ public class ClienteForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCodigoKeyTyped
 
     private void tbClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClienteMouseClicked
-
+      
+      if(txtApellido.isEnabled() == false){
+            evt.consume();
+      }else{
         //variable ced que almacena el número de cédula de la fila seleccionada
         String ced = tbCliente.getValueAt(tbCliente.getSelectedRow(), 1).toString();
         
@@ -1137,11 +1140,10 @@ public class ClienteForm extends javax.swing.JInternalFrame {
                 txtLimite.setText(tbCliente.getValueAt(tbCliente.getSelectedRow(), 7).toString());
                 //int limite = Integer.parseInt(tbCliente.getValueAt(tbCliente.getSelectedRow(), 7).toString());
                 //String formatoLimite = formateador.format(limite);
-                //txtLimite.setText(formatoLimite);
-                
-                
+                //txtLimite.setText(formatoLimite);   
             }
         }
+      }  
     }//GEN-LAST:event_tbClienteMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
