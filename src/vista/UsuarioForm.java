@@ -559,6 +559,7 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
     private void borrar() {
         if (tbUsuario.getSelectedRow() == -1) {
             showMessageDialog(this, "Por favor seleccione una fila", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
         }
         if (showConfirmDialog(null, "Está seguro de eliminar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
             try {
