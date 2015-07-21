@@ -32,10 +32,8 @@ public class RolVentanaControlador {
         }
        }
         
-         public ResultSet datos() throws Exception {
+     public ResultSet datos() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        
-        
         String query = "SELECT rol.nombre, ventana.nombre from Rol as rol, Ventanas as ventana, rol_ventanas where rol.id_rol=rol_ventanas.rol_id and ventana.id_ventana=rol_ventanas.id_ventana";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
@@ -50,11 +48,23 @@ public class RolVentanaControlador {
         baseDatos.beginTransaction();
         
         try {
-            baseDatos.createQuery("DELETE from RolVentanas where id_rol = " +intRol+ " and id_ventana= " +intVent+ "").executeUpdate();
+            baseDatos.createQuery("DELETE from RolVentanas where rol_id = " +intRol+ " and id_ventana= " +intVent+ "").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al eliminar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al eliminar: \n" + e.getMessage());
         }
+    }
+
+    public Long existeRegistro(int ventInt, int rolInt) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try {
+            return (Long) baseDatos.createQuery("select count (rol_id) from RolVentanas where rol_id = '" + rolInt + "' and id_ventana = '" + ventInt + "'").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error verificar registro: \n" + e.getMessage());
+        }
+           
     }
          
 }
