@@ -30,9 +30,9 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
         initComponents();
         establecerBotones("Nuevo"); 
         if(TbVentanas.getRowCount() == 0){
-            txtCodigo.setValue(k);
+            txtCodigo.setText(String.valueOf(k));
         }else{
-            txtCodigo.setValue(c);
+            txtCodigo.setText(String.valueOf(c));
         }
         txtCodigo.setEnabled(false);
         
@@ -63,14 +63,18 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         txtIdUsuario = new javax.swing.JTextField();
         labelCodigo = new javax.swing.JLabel();
-        txtCodigo = new javax.swing.JFormattedTextField();
         labelNombre = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TbVentanas = new javax.swing.JTable();
+        TbVentanas = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false; //Disallow the editing of any cell
+            }
+        };
 
         setClosable(true);
         setIconifiable(true);
@@ -171,13 +175,17 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
         labelCodigo.setText("Código:");
         jPanel3.add(labelCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 50, -1));
 
-        txtCodigo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jPanel3.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, 330, -1));
-
         labelNombre.setFont(new java.awt.Font("Berlin Sans FB Demi", 0, 11)); // NOI18N
         labelNombre.setText("Nombre:");
         jPanel3.add(labelNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 60, -1));
+
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
         jPanel3.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 330, -1));
+        jPanel3.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, 330, -1));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setForeground(new java.awt.Color(153, 153, 153));
@@ -219,7 +227,7 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -262,7 +270,7 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addContainerGap(132, Short.MAX_VALUE))
         );
 
         pack();
@@ -286,6 +294,11 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
      */
     private void guardar(){
        
+        if (txtNombre.getText().trim().isEmpty() == true) {
+                showMessageDialog(this, "Campo nombre vacío, por favor ingrese el nombre de la ventana ", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+         }
+        
        txtCodigo.setEnabled(false);
        if (showConfirmDialog(null, "Está seguro de guardar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
             
@@ -327,7 +340,7 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
     private void nuevo() {
         limpiar();
         establecerBotones("Nuevo");
-        txtCodigo.setValue(k);
+        txtCodigo.setText(String.valueOf(k));
        
         try {
             txtCodigo.requestFocusInWindow();     
@@ -425,9 +438,15 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void TbVentanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TbVentanasMouseClicked
-        txtCodigo.setValue(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 0));
+        txtCodigo.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 0).toString());
         txtNombre.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 1).toString());
     }//GEN-LAST:event_TbVentanasMouseClicked
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+         if (txtNombre.getText().length() > 19) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreKeyTyped
 
    
     
@@ -446,7 +465,7 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelCodigo;
     private javax.swing.JLabel labelNombre;
-    private javax.swing.JFormattedTextField txtCodigo;
+    private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtIdUsuario;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
