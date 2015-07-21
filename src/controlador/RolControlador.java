@@ -44,7 +44,7 @@ public class RolControlador {
         try {
            return (Integer) baseDatos.createQuery("Select idRol from Rol where nombre = '" +nombre+ "'").uniqueResult();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al modificar rol: \n" + e.getMessage());
         }
     }
      public ResultSet datos() throws Exception {
@@ -84,7 +84,7 @@ public class RolControlador {
                     + " where id_rol = " + i + "").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al modificar rol: \n" + e.getMessage());
         }
     }
     
@@ -93,10 +93,10 @@ public class RolControlador {
         baseDatos.beginTransaction();
         
         try {
-            baseDatos.createQuery("DELETE from Rol where rol_id = " +i+ "").executeUpdate();
+            baseDatos.createQuery("DELETE from Rol where id_rol = " +i+ "").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al eliminar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al eliminar rol: \n" + e.getMessage());
         }
     }
 }
