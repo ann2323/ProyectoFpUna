@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 15-jul-2015 17:18:19 by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.PrefijoFactura" table="prefijo_factura" schema="public">
         <id name="idprefijo" type="int">
             <column name="idprefijo" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="prefijo" type="string">
             <column name="prefijo" length="3" />
         </property>
-         <property name="tipoDocumento" type="string">
-            <column name="tipo_documento" length="1" />
-        </property>
         <property name="principiofactura" type="java.lang.Integer">
-            <column name="principiofactura" unique="false" />
+            <column name="principiofactura" />
         </property>
         <property name="finfactura" type="java.lang.Integer">
-            <column name="finfactura" unique="false" />
+            <column name="finfactura" />
+        </property>
+        <property name="tipoDocumento" type="string">
+            <column name="tipo_documento" length="1" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

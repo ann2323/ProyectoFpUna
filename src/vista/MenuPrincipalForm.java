@@ -55,16 +55,17 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mSalida = new javax.swing.JMenuItem();
         mTransferencia = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
-        mFacturacion = new javax.swing.JMenu();
-        mCliente = new javax.swing.JMenuItem();
-        mCuentasClientes = new javax.swing.JMenuItem();
+        mCompra = new javax.swing.JMenu();
         mProveedor = new javax.swing.JMenuItem();
-        mCuentasProveedores = new javax.swing.JMenuItem();
         mFacturaCompra = new javax.swing.JMenuItem();
-        mFacturaVenta = new javax.swing.JMenuItem();
+        mNotaCreditoCompra = new javax.swing.JMenuItem();
+        mCuentasProveedores = new javax.swing.JMenuItem();
+        mVenta = new javax.swing.JMenu();
+        mCliente = new javax.swing.JMenuItem();
         mPrefijo = new javax.swing.JMenuItem();
-        mPrefijo1 = new javax.swing.JMenuItem();
-        mPrefijo2 = new javax.swing.JMenuItem();
+        mFacturaVenta = new javax.swing.JMenuItem();
+        mNotaCreditoVenta = new javax.swing.JMenuItem();
+        mCuentasClientes = new javax.swing.JMenuItem();
         mAdministracion = new javax.swing.JMenu();
         mRol = new javax.swing.JMenuItem();
         mVentana = new javax.swing.JMenuItem();
@@ -78,12 +79,12 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         consultarCuentaCliente = new javax.swing.JMenuItem();
         consultarCuentaProveedor = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
-        mAnularFactura = new javax.swing.JMenuItem();
+        mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
-        anularNotaCreditoCompra = new javax.swing.JMenuItem();
-        anularNotaCreditoVenta = new javax.swing.JMenuItem();
-        anularNotaCreditoVenta1 = new javax.swing.JMenuItem();
-        anularNotaCreditoVenta2 = new javax.swing.JMenuItem();
+        mAnularNotaCreditoCompra = new javax.swing.JMenuItem();
+        mAnularNotaCreditoVenta = new javax.swing.JMenuItem();
+        mAnularPagoProveedor = new javax.swing.JMenuItem();
+        mAnularPagoCliente = new javax.swing.JMenuItem();
         mAcercaDe = new javax.swing.JMenu();
         mSalir = new javax.swing.JMenu();
 
@@ -189,11 +190,52 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 
         jMenuBar1.add(mProyecto);
 
-        mFacturacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
-        mFacturacion.setText("Facturación");
-        mFacturacion.addActionListener(new java.awt.event.ActionListener() {
+        mCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compra.png"))); // NOI18N
+        mCompra.setText("Compra");
+
+        mProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedores.png"))); // NOI18N
+        mProveedor.setText("Proveedor");
+        mProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mFacturacionActionPerformed(evt);
+                mProveedorActionPerformed(evt);
+            }
+        });
+        mCompra.add(mProveedor);
+
+        mFacturaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturaCompra.png"))); // NOI18N
+        mFacturaCompra.setText("Factura Compra");
+        mFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mFacturaCompraActionPerformed(evt);
+            }
+        });
+        mCompra.add(mFacturaCompra);
+
+        mNotaCreditoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1434930447_data-edit.png"))); // NOI18N
+        mNotaCreditoCompra.setText("Nota Crédito Compra");
+        mNotaCreditoCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mNotaCreditoCompraActionPerformed(evt);
+            }
+        });
+        mCompra.add(mNotaCreditoCompra);
+
+        mCuentasProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentasProveedores.png"))); // NOI18N
+        mCuentasProveedores.setText("Cuentas Proveedores");
+        mCuentasProveedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCuentasProveedoresActionPerformed(evt);
+            }
+        });
+        mCompra.add(mCuentasProveedores);
+
+        jMenuBar1.add(mCompra);
+
+        mVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
+        mVenta.setText("Venta");
+        mVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mVentaActionPerformed(evt);
             }
         });
 
@@ -205,52 +247,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
                 mClienteActionPerformed(evt);
             }
         });
-        mFacturacion.add(mCliente);
-
-        mCuentasClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentaCliente.png"))); // NOI18N
-        mCuentasClientes.setText("Cuentas Clientes");
-        mCuentasClientes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mCuentasClientesActionPerformed(evt);
-            }
-        });
-        mFacturacion.add(mCuentasClientes);
-
-        mProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedores.png"))); // NOI18N
-        mProveedor.setText("Proveedor");
-        mProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mProveedorActionPerformed(evt);
-            }
-        });
-        mFacturacion.add(mProveedor);
-
-        mCuentasProveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentasProveedores.png"))); // NOI18N
-        mCuentasProveedores.setText("Cuentas Proveedores");
-        mCuentasProveedores.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mCuentasProveedoresActionPerformed(evt);
-            }
-        });
-        mFacturacion.add(mCuentasProveedores);
-
-        mFacturaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturaCompra.png"))); // NOI18N
-        mFacturaCompra.setText("Factura Compra");
-        mFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mFacturaCompraActionPerformed(evt);
-            }
-        });
-        mFacturacion.add(mFacturaCompra);
-
-        mFacturaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
-        mFacturaVenta.setText("Factura Venta");
-        mFacturaVenta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mFacturaVentaActionPerformed(evt);
-            }
-        });
-        mFacturacion.add(mFacturaVenta);
+        mVenta.add(mCliente);
 
         mPrefijo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/prefijo.png"))); // NOI18N
         mPrefijo.setText("Prefijo Factura");
@@ -259,27 +256,36 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
                 mPrefijoActionPerformed(evt);
             }
         });
-        mFacturacion.add(mPrefijo);
+        mVenta.add(mPrefijo);
 
-        mPrefijo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1434930459_list.png"))); // NOI18N
-        mPrefijo1.setText("Nota Credito Compra");
-        mPrefijo1.addActionListener(new java.awt.event.ActionListener() {
+        mFacturaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
+        mFacturaVenta.setText("Factura Venta");
+        mFacturaVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mPrefijo1ActionPerformed(evt);
+                mFacturaVentaActionPerformed(evt);
             }
         });
-        mFacturacion.add(mPrefijo1);
+        mVenta.add(mFacturaVenta);
 
-        mPrefijo2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/notaCredito.png"))); // NOI18N
-        mPrefijo2.setText("Nota Credito Venta");
-        mPrefijo2.addActionListener(new java.awt.event.ActionListener() {
+        mNotaCreditoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/notaCredito.png"))); // NOI18N
+        mNotaCreditoVenta.setText("Nota Crédito Venta");
+        mNotaCreditoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mPrefijo2ActionPerformed(evt);
+                mNotaCreditoVentaActionPerformed(evt);
             }
         });
-        mFacturacion.add(mPrefijo2);
+        mVenta.add(mNotaCreditoVenta);
 
-        jMenuBar1.add(mFacturacion);
+        mCuentasClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentaCliente.png"))); // NOI18N
+        mCuentasClientes.setText("Cuentas Clientes");
+        mCuentasClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCuentasClientesActionPerformed(evt);
+            }
+        });
+        mVenta.add(mCuentasClientes);
+
+        jMenuBar1.add(mVenta);
 
         mAdministracion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/administracion.png"))); // NOI18N
         mAdministracion.setText("Administración");
@@ -384,14 +390,14 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anulaciones.png"))); // NOI18N
         jMenu1.setText("Anulaciones");
 
-        mAnularFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anular_factura2.png"))); // NOI18N
-        mAnularFactura.setText("Anular Factura Venta");
-        mAnularFactura.addActionListener(new java.awt.event.ActionListener() {
+        mAnularFacturaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anular_factura2.png"))); // NOI18N
+        mAnularFacturaVenta.setText("Anular Factura Venta");
+        mAnularFacturaVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mAnularFacturaActionPerformed(evt);
+                mAnularFacturaVentaActionPerformed(evt);
             }
         });
-        jMenu1.add(mAnularFactura);
+        jMenu1.add(mAnularFacturaVenta);
 
         mAnularFacturaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularFacturaCompra.png"))); // NOI18N
         mAnularFacturaCompra.setText("Anular Factura Compra");
@@ -402,41 +408,41 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         jMenu1.add(mAnularFacturaCompra);
 
-        anularNotaCreditoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularNotaCreditoCompra.png"))); // NOI18N
-        anularNotaCreditoCompra.setText("Anular Nota de Crédito - Compra");
-        anularNotaCreditoCompra.addActionListener(new java.awt.event.ActionListener() {
+        mAnularNotaCreditoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularNotaCreditoCompra.png"))); // NOI18N
+        mAnularNotaCreditoCompra.setText("Anular Nota de Crédito - Compra");
+        mAnularNotaCreditoCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                anularNotaCreditoCompraActionPerformed(evt);
+                mAnularNotaCreditoCompraActionPerformed(evt);
             }
         });
-        jMenu1.add(anularNotaCreditoCompra);
+        jMenu1.add(mAnularNotaCreditoCompra);
 
-        anularNotaCreditoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularNotaCreditoVenta.png"))); // NOI18N
-        anularNotaCreditoVenta.setText("Anular Nota de Crédito - Venta");
-        anularNotaCreditoVenta.addActionListener(new java.awt.event.ActionListener() {
+        mAnularNotaCreditoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularNotaCreditoVenta.png"))); // NOI18N
+        mAnularNotaCreditoVenta.setText("Anular Nota de Crédito - Venta");
+        mAnularNotaCreditoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                anularNotaCreditoVentaActionPerformed(evt);
+                mAnularNotaCreditoVentaActionPerformed(evt);
             }
         });
-        jMenu1.add(anularNotaCreditoVenta);
+        jMenu1.add(mAnularNotaCreditoVenta);
 
-        anularNotaCreditoVenta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pagoProvanular.png"))); // NOI18N
-        anularNotaCreditoVenta1.setText("Anular Pago Proveedor");
-        anularNotaCreditoVenta1.addActionListener(new java.awt.event.ActionListener() {
+        mAnularPagoProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pagoProvanular.png"))); // NOI18N
+        mAnularPagoProveedor.setText("Anular Pago Proveedor");
+        mAnularPagoProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                anularNotaCreditoVenta1ActionPerformed(evt);
+                mAnularPagoProveedorActionPerformed(evt);
             }
         });
-        jMenu1.add(anularNotaCreditoVenta1);
+        jMenu1.add(mAnularPagoProveedor);
 
-        anularNotaCreditoVenta2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularPagoCli.png"))); // NOI18N
-        anularNotaCreditoVenta2.setText("Anular Pago Cliente");
-        anularNotaCreditoVenta2.addActionListener(new java.awt.event.ActionListener() {
+        mAnularPagoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularPagoCli.png"))); // NOI18N
+        mAnularPagoCliente.setText("Anular Pago Cliente");
+        mAnularPagoCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                anularNotaCreditoVenta2ActionPerformed(evt);
+                mAnularPagoClienteActionPerformed(evt);
             }
         });
-        jMenu1.add(anularNotaCreditoVenta2);
+        jMenu1.add(mAnularPagoCliente);
 
         jMenuBar1.add(jMenu1);
 
@@ -474,21 +480,21 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mFacturacionActionPerformed
+    private void mVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mVentaActionPerformed
        
        
-    }//GEN-LAST:event_mFacturacionActionPerformed
+    }//GEN-LAST:event_mVentaActionPerformed
 
     private void mClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mClienteActionPerformed
        ClienteForm prueba = new ClienteForm();
-       /*try {
+       try {
             if (p.tiene(prueba.getTitle(),this.codRol) == 0){
                 showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
        this.jDesktopPane1.add(prueba);
        prueba.show();
     }//GEN-LAST:event_mClienteActionPerformed
@@ -636,64 +642,163 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
        this.dispose();
     }//GEN-LAST:event_mSalirActionPerformed
 
-    private void mAnularFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaActionPerformed
-        AnularFacturaVentaForm anular = new AnularFacturaVentaForm();
-        this.jDesktopPane1.add(anular);
-        anular.show();
-    }//GEN-LAST:event_mAnularFacturaActionPerformed
+    private void mAnularFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaVentaActionPerformed
+        try {
+            AnularFacturaVentaForm tf2 = new AnularFacturaVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mAnularFacturaVentaActionPerformed
 
     private void mFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mFacturaVentaActionPerformed
-        try {
-            //FacturaVentaInternalForm venta = new FacturaVentaInternalForm();
-            FacturaVentaForm venta = new FacturaVentaForm();
-            jDesktopPane1.add(venta);
-            venta.show();
+         try {
+            FacturaVentaForm tf2 = new FacturaVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_mFacturaVentaActionPerformed
 
     private void mCuentasProveedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCuentasProveedoresActionPerformed
-       CuentasProveedorForm cuentaProveedor = new CuentasProveedorForm();
-       this.jDesktopPane1.add(cuentaProveedor);
-       cuentaProveedor.show();
+       try {
+            CuentasProveedorForm tf2 = new CuentasProveedorForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mCuentasProveedoresActionPerformed
 
     private void mCuentasClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCuentasClientesActionPerformed
-       CuentasClientesForm cuentaCliente = new CuentasClientesForm();
-       this.jDesktopPane1.add(cuentaCliente);
-       cuentaCliente.show();
+      try {
+            CuentasClientesForm tf2 = new CuentasClientesForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mCuentasClientesActionPerformed
 
     private void mPrefijoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrefijoActionPerformed
-       PrefijoFacturaInternalForm prefijo = new PrefijoFacturaInternalForm();
-       this.jDesktopPane1.add(prefijo);
-       prefijo.show();
+      try {
+            PrefijoFacturaInternalForm tf2 = new PrefijoFacturaInternalForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mPrefijoActionPerformed
 
     private void mConsultarFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarFacturaVentaActionPerformed
-       ConsultarFacturaVentaForm consultarVenta = new ConsultarFacturaVentaForm();
-       this.jDesktopPane1.add(consultarVenta);
-       consultarVenta.show();
+      try {
+            ConsultarFacturaVentaForm tf2 = new ConsultarFacturaVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mConsultarFacturaVentaActionPerformed
 
     private void mConsultarFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarFacturaCompraActionPerformed
-       ConsultarFacturaCompraForm consultarCompra = new ConsultarFacturaCompraForm();
-       this.jDesktopPane1.add(consultarCompra);
-       consultarCompra.show();
+       try {
+            ConsultarFacturaCompraForm tf2 = new ConsultarFacturaCompraForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mConsultarFacturaCompraActionPerformed
 
     private void mAnularFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaCompraActionPerformed
-        AnularFacturaCompraForm anular = new AnularFacturaCompraForm();
-        this.jDesktopPane1.add(anular);
-        anular.show();
+         try {
+            AnularFacturaCompraForm tf2 = new AnularFacturaCompraForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mAnularFacturaCompraActionPerformed
 
     private void mConsultarNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarNotaCreditoVentaActionPerformed
-        try {
-            ConsultarNotaCreditoVentaForm notaCreditoV = new ConsultarNotaCreditoVentaForm();
-            this.jDesktopPane1.add(notaCreditoV);
-            notaCreditoV.show();
+         try {
+            ConsultarNotaCreditoVentaForm tf2 = new ConsultarNotaCreditoVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -701,78 +806,184 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 
     private void mConsultarNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarNotaCreditoCompraActionPerformed
         try {
-            ConsultarNotaCreditoCompraForm notaCreditoC = new ConsultarNotaCreditoCompraForm();
-            this.jDesktopPane1.add(notaCreditoC);
-            notaCreditoC.show();
+            ConsultarNotaCreditoCompraForm tf2 = new ConsultarNotaCreditoCompraForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_mConsultarNotaCreditoCompraActionPerformed
 
-    private void anularNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anularNotaCreditoVentaActionPerformed
-       AnularNotaCreditoVenta anularVenta = new AnularNotaCreditoVenta();
-       this.jDesktopPane1.add(anularVenta);
-       anularVenta.show();
-    }//GEN-LAST:event_anularNotaCreditoVentaActionPerformed
+    private void mAnularNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularNotaCreditoVentaActionPerformed
+        try {
+            AnularNotaCreditoVenta tf2 = new AnularNotaCreditoVenta();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mAnularNotaCreditoVentaActionPerformed
 
-    private void anularNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anularNotaCreditoCompraActionPerformed
-       AnularNotaCreditoCompra anularCompra = new AnularNotaCreditoCompra();
-       this.jDesktopPane1.add(anularCompra);
-       anularCompra.show();
+    private void mAnularNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularNotaCreditoCompraActionPerformed
+        try {
+            AnularNotaCreditoCompra tf2 = new AnularNotaCreditoCompra();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
-    }//GEN-LAST:event_anularNotaCreditoCompraActionPerformed
+    }//GEN-LAST:event_mAnularNotaCreditoCompraActionPerformed
 
     private void consultarCuentaProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaProveedorActionPerformed
-       ConsultarCuentaProveedorForm cuentaProveedor = new ConsultarCuentaProveedorForm();
-       this.jDesktopPane1.add(cuentaProveedor);
-       cuentaProveedor.show();
+       try {
+            ConsultarCuentaProveedorForm tf2 = new ConsultarCuentaProveedorForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_consultarCuentaProveedorActionPerformed
 
     private void consultarCuentaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaClienteActionPerformed
-       ConsultarCuentaClienteForm cuentaCliente = new ConsultarCuentaClienteForm();
-       this.jDesktopPane1.add(cuentaCliente);
-       cuentaCliente.show();
+        try {
+            ConsultarCuentaClienteForm tf2 = new ConsultarCuentaClienteForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_consultarCuentaClienteActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        ProyectosForm2 pro = new ProyectosForm2();
-       this.jDesktopPane1.add(pro);
-       pro.show();
+        try {
+            ProyectosForm2 tf2 = new ProyectosForm2();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void anularNotaCreditoVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anularNotaCreditoVenta1ActionPerformed
-       AnularPagoProveedorForm pro = new  AnularPagoProveedorForm();
-       this.jDesktopPane1.add(pro);
-       pro.show();
-    }//GEN-LAST:event_anularNotaCreditoVenta1ActionPerformed
-
-    private void anularNotaCreditoVenta2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anularNotaCreditoVenta2ActionPerformed
-       AnularPagoClienteForm cliente = new  AnularPagoClienteForm();
-       this.jDesktopPane1.add(cliente);
-       cliente.show();
-    }//GEN-LAST:event_anularNotaCreditoVenta2ActionPerformed
-
-    private void mPrefijo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrefijo1ActionPerformed
-       NotaCreditoCompraForm notaCredito = null;
-        try {
-            notaCredito = new  NotaCreditoCompraForm();
+    private void mAnularPagoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoProveedorActionPerformed
+       try {
+            AnularPagoProveedorForm tf2 = new AnularPagoProveedorForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-       this.jDesktopPane1.add(notaCredito);
-       notaCredito.show();
-    }//GEN-LAST:event_mPrefijo1ActionPerformed
+    }//GEN-LAST:event_mAnularPagoProveedorActionPerformed
 
-    private void mPrefijo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrefijo2ActionPerformed
-        NotaCreditoVentaForm notaCredito = null;
-        try {
-            notaCredito = new  NotaCreditoVentaForm();
+    private void mAnularPagoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoClienteActionPerformed
+       try {
+            AnularPagoClienteForm tf2 = new AnularPagoClienteForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-       this.jDesktopPane1.add(notaCredito);
-       notaCredito.show();
-    }//GEN-LAST:event_mPrefijo2ActionPerformed
+    }//GEN-LAST:event_mAnularPagoClienteActionPerformed
+
+    private void mNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNotaCreditoCompraActionPerformed
+       try {
+            NotaCreditoCompraForm tf2 = new NotaCreditoCompraForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mNotaCreditoCompraActionPerformed
+
+    private void mNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNotaCreditoVentaActionPerformed
+         try {
+             NotaCreditoVentaForm tf2 = new NotaCreditoVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mNotaCreditoVentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -810,10 +1021,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem anularNotaCreditoCompra;
-    private javax.swing.JMenuItem anularNotaCreditoVenta;
-    private javax.swing.JMenuItem anularNotaCreditoVenta1;
-    private javax.swing.JMenuItem anularNotaCreditoVenta2;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
     private javax.swing.JMenuItem consultarCuentaCliente;
     private javax.swing.JMenuItem consultarCuentaProveedor;
@@ -827,10 +1034,15 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JLabel lbUsuario;
     private javax.swing.JMenu mAcercaDe;
     private javax.swing.JMenu mAdministracion;
-    private javax.swing.JMenuItem mAnularFactura;
     private javax.swing.JMenuItem mAnularFacturaCompra;
+    private javax.swing.JMenuItem mAnularFacturaVenta;
+    private javax.swing.JMenuItem mAnularNotaCreditoCompra;
+    private javax.swing.JMenuItem mAnularNotaCreditoVenta;
+    private javax.swing.JMenuItem mAnularPagoCliente;
+    private javax.swing.JMenuItem mAnularPagoProveedor;
     private javax.swing.JMenuItem mCliente;
     private javax.swing.JMenuItem mComponente;
+    private javax.swing.JMenu mCompra;
     private javax.swing.JMenu mConsultar;
     private javax.swing.JMenuItem mConsultarFacturaCompra;
     private javax.swing.JMenuItem mConsultarFacturaVenta;
@@ -842,11 +1054,10 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem mEntrada;
     private javax.swing.JMenuItem mFacturaCompra;
     private javax.swing.JMenuItem mFacturaVenta;
-    private javax.swing.JMenu mFacturacion;
+    private javax.swing.JMenuItem mNotaCreditoCompra;
+    private javax.swing.JMenuItem mNotaCreditoVenta;
     private javax.swing.JMenuItem mPermiso;
     private javax.swing.JMenuItem mPrefijo;
-    private javax.swing.JMenuItem mPrefijo1;
-    private javax.swing.JMenuItem mPrefijo2;
     private javax.swing.JMenuItem mProveedor;
     private javax.swing.JMenu mProyecto;
     private javax.swing.JMenuItem mRol;
@@ -854,6 +1065,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenu mSalir;
     private javax.swing.JMenuItem mTransferencia;
     private javax.swing.JMenuItem mUsuario;
+    private javax.swing.JMenu mVenta;
     private javax.swing.JMenuItem mVentana;
     // End of variables declaration//GEN-END:variables
 }

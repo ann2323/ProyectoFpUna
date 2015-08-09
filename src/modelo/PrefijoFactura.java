@@ -1,5 +1,5 @@
 package modelo;
-// Generated Jun 27, 2015 5:39:32 PM by Hibernate Tools 3.6.0
+// Generated 15-jul-2015 17:18:17 by Hibernate Tools 3.6.0
 
 
 
@@ -11,30 +11,24 @@ public class PrefijoFactura  implements java.io.Serializable {
 
      private int idprefijo;
      private String prefijo;
-     private String tipoDocumento;
-
-    public String getTipoDocumento() {
-        return tipoDocumento;
-    }
-
-    public void setTipoDocumento(String tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
      private Integer principiofactura;
      private Integer finfactura;
+     private String tipoDocumento;
 
     public PrefijoFactura() {
     }
 
 	
-    public PrefijoFactura(int idprefijo) {
+    public PrefijoFactura(int idprefijo, String tipoDocumento) {
         this.idprefijo = idprefijo;
+        this.tipoDocumento = tipoDocumento;
     }
-    public PrefijoFactura(int idprefijo, String prefijo, Integer principiofactura, Integer finfactura) {
+    public PrefijoFactura(int idprefijo, String prefijo, Integer principiofactura, Integer finfactura, String tipoDocumento) {
        this.idprefijo = idprefijo;
        this.prefijo = prefijo;
        this.principiofactura = principiofactura;
        this.finfactura = finfactura;
+       this.tipoDocumento = tipoDocumento;
     }
    
     public int getIdprefijo() {
@@ -64,6 +58,13 @@ public class PrefijoFactura  implements java.io.Serializable {
     
     public void setFinfactura(Integer finfactura) {
         this.finfactura = finfactura;
+    }
+    public String getTipoDocumento() {
+        return this.tipoDocumento;
+    }
+    
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
     }
 
 

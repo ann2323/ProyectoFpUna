@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Jun 27, 2015 5:39:33 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 15-jul-2015 17:18:19 by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Ventanas" table="ventanas" schema="public">
         <id name="idVentana" type="int">
@@ -9,7 +9,7 @@
             <generator class="identity" />
         </id>
         <property name="nombre" type="string">
-            <column name="nombre" length="20" />
+            <column name="nombre" length="20" unique="true" />
         </property>
     </class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
 package modelo;
-// Generated Jun 27, 2015 5:39:32 PM by Hibernate Tools 3.6.0
+// Generated 15-jul-2015 17:18:17 by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -15,7 +15,6 @@ public class Venta  implements java.io.Serializable {
      private int precioTotal;
      private int cantidadTotal;
      private Integer descuento;
-     private Integer proyectoId;
      private Double iva;
      private Double precioExenta;
      private String pagoContado;
@@ -211,13 +210,7 @@ public class Venta  implements java.io.Serializable {
         this.iva5 = iva5;
     }
 
-public Integer getProyectoId() {
-        return this.proyectoId;
-    }
-    
-    public void setProyectoId(Integer proyectoId) {
-        this.proyectoId = proyectoId;
-    }
+
 
 
 }
