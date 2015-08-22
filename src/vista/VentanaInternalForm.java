@@ -438,8 +438,12 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void TbVentanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TbVentanasMouseClicked
-        txtCodigo.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 0).toString());
-        txtNombre.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 1).toString());
+        if(JBnuevo.isEnabled() == false){
+            evt.consume();
+        }else{
+            txtCodigo.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 0).toString());
+            txtNombre.setText(TbVentanas.getValueAt(TbVentanas.getSelectedRow(), 1).toString());
+        }    
     }//GEN-LAST:event_TbVentanasMouseClicked
 
     private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
