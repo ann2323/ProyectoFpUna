@@ -161,6 +161,33 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al actualizar estado factura: \n" + e.getMessage());
         }
     }
+    
+     public ResultSet datosComboSaldo() throws SQLException, Exception {
+            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Venta where es_factura='S'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+            }
+    }
+     
+      public ResultSet datosComboSaldoNotaCredito() throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Venta where es_factura='N'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+            }
+    }
+    
 
         //verifica si hay algún registro en la tabla ventas para continuar
         //la secuencia en el nro de la factura o ingresar desde la tabla prefijo
