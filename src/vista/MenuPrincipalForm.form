@@ -316,7 +316,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/consultaCuentaCliente.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Consultar Cuentas Clientes"/>
+                <Property name="text" type="java.lang.String" value="Consultar Saldo Factura de Compra"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarCuentaClienteActionPerformed"/>
@@ -327,7 +327,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/consultarCuentaProveedor.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Consultar Cuentas Proveedor"/>
+                <Property name="text" type="java.lang.String" value="Consultar Saldo Nota de Credito Compra"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarCuentaProveedorActionPerformed"/>

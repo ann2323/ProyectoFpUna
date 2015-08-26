@@ -7,13 +7,12 @@
 package vista;
 
 import controlador.ComponentesControlador;
-import controlador.CuentaCabeceraControlador;
 import controlador.DepositoControlador;
-import controlador.DetalleCuentaControlador;
 import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.ProveedorControlador;
 import controlador.ProyectoControlador;
+import controlador.SaldoCompraControlador;
 import controlador.StockControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -38,12 +37,11 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
 import modelo.Compra;
-import modelo.CuentaCabecera;
 import modelo.Deposito;
 import modelo.DetalleCompra;
-import modelo.DetalleCuenta;
 import modelo.Moneda;
 import modelo.Proyectos;
+import modelo.SaldoCompra;
 import modelo.Stock;
 
 /**
@@ -64,7 +62,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     }
     public static String getFechaActual() {
         Date ahora = new Date();
-        SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
         return formateador.format(ahora);
         
     }
@@ -84,17 +82,15 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
      
     StockControlador stockCont = new StockControlador();
     DepositoControlador depBD = new DepositoControlador();
+    SaldoCompraControlador saldoC = new SaldoCompraControlador();
     DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
     FacturaCabeceraCompraControlador compraControlador = new  FacturaCabeceraCompraControlador();
-    DetalleCuentaControlador cuentaDB = new DetalleCuentaControlador();
     ProveedorControlador provC = new ProveedorControlador();
-    CuentaCabeceraControlador cuentaC = new CuentaCabeceraControlador();
     ComponentesControlador componentesControl = new ComponentesControlador();
     
     Deposito depModel = new  Deposito();
-    DetalleCuenta cuentaDetalle = new DetalleCuenta();
-    CuentaCabecera cuentaCabecera = new CuentaCabecera();
     Moneda monedaModel = new Moneda();
+    SaldoCompra saldoModel = new SaldoCompra();
     DetalleCompra compraD = new DetalleCompra();
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
@@ -121,7 +117,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         }
     }*/
     private void getMonedaVector() {
-        JCmoneda.removeAll();
+ 
         Vector<Moneda> compVec = new Vector<Moneda>();
         try {
           
@@ -141,7 +137,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
         DefaultComboBoxModel md1 = new DefaultComboBoxModel(compVec); 
-        JCmoneda.setModel(md1);
+ 
     }
     private void getDepositosVector() {
         JCdeposito.removeAll();
@@ -278,63 +274,32 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
             Date ahora = new Date();
             compraC.setFechaRecepcion(ahora);
-            SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
-            Date date = formateador.parse(txtFechaCompra.getText());
+            SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = formato.parse(txtFechaCompra.getText());
             compraC.setFecha(date);
             compraC.setEsFactura('S');
             compraC.setEstado("PAGADO");
             int idProveedor = provC.devuelveId(txtProveedor.getText().replace(".", ""));
             compraC.setProveedorId(idProveedor);
-            Moneda moneda = (Moneda) this.JCmoneda.getSelectedItem();
-            compraC.setMonedaId(moneda.getMonedaId());
             Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
             compraC.setCodDeposito(dep.getCodigo());
             compraC.setPagoContado(JCpago.getSelectedItem().toString());
+            int idSaldo = saldoC.nuevoCodigo();
+            saldoModel.setSaldoCompraId(idSaldo);
+            saldoModel.setEstado("PENDIENTE");
+            saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
+            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
+            saldoModel.setEsFactura("S");
+            saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
             compraC.setPagoEn(Integer.parseInt(JCpagoEn.getSelectedItem().toString()));  
             String dateVenc = (compraControlador.Vencimiento(compraC.getFecha(), compraC.getPagoEn()));  
             compraC.setEstado("PENDIENTE");
-            compraC.setVencimiento(formateador.parse(dateVenc)); 
-            int idCuenta= cuentaC.nuevoCodigo(); 
-            cuentaCabecera.setCuentaId(idCuenta);
-            cuentaCabecera.setNroPago(idCuenta);
-            cuentaCabecera.setProveedorId(idProveedor);
-            cuentaCabecera.setTotalSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
-            cuentaCabecera.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            cuentaCabecera.setEstado("PENDIENTE");
-            int cuenta_id = cuentaCabecera.getCuentaId();
-            for (int i = 1; i <= Integer.parseInt(JCpagoEn.getSelectedItem().toString()); i++) {
-                int idCuentaDetalle = cuentaDB.nuevaLinea();
-                cuentaDetalle.setIdDetalleCuenta(idCuentaDetalle);
-                cuentaDetalle.setCuentaId(cuenta_id);
-                cuentaDetalle.setCuotas(i);
-                cuentaDetalle.setFechaPago(ahora);
-                cuentaDetalle.setEstado("PENDIENTE");
-                cuentaDetalle.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-                cuentaDetalle.setMontoAbonado(0);
-                cuentaDB.insert(cuentaDetalle);
-                }
-            }else{
-            int idCuenta= cuentaC.nuevoCodigo(); 
-            cuentaCabecera.setCuentaId(idCuenta);
-            int idProv = provC.devuelveId(txtProveedor.getText().replace(".", ""));
-            cuentaCabecera.setProveedorId(idProv);
-            cuentaCabecera.setTotalSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
-            cuentaDetalle.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            cuentaCabecera.setEstado("PAGADO");  
-            compraC.setVencimiento(formateador.parse(txtFechaCompra.getText()));
-            int idCuentaDetalle = cuentaDB.nuevaLinea();
-            cuentaDetalle.setIdDetalleCuenta(idCuentaDetalle);
-            cuentaDetalle.setCuentaId(idCuenta);
-            cuentaDetalle.setFechaPago(ahora);
-            cuentaDetalle.setCuotas(1);
-            cuentaCabecera.setNroPago(idCuenta);
-            cuentaDetalle.setEstado("PAGADO");
-            cuentaDetalle.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            cuentaDetalle.setMontoAbonado(Integer.parseInt(txtTotal.getText().trim().replace(".", "")));
-            cuentaDetalle.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            cuentaDB.insert(cuentaDetalle);
+            compraC.setVencimiento(formato.parse(dateVenc)); 
             }
+            
+            compraC.setVencimiento(date); 
+            
             compraC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText()));
         
             compraC.setDescuento(Integer.parseInt(txtDescuento.getText()));
@@ -394,7 +359,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                         return;
                     }
                     compraControlador.cambiarAEnProceso(pro.getCodigo());
-                    cuentaC.insert(cuentaCabecera);
+                    saldoC.insert(saldoModel);
                     compraControlador.insert(compraC);
                     nuevo();
                     //getEntradas();
@@ -565,23 +530,20 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         txtPrefijoCompra = new javax.swing.JTextField();
         txtFacturaCompra = new javax.swing.JTextField();
         labelFechaRecepcion = new javax.swing.JLabel();
-        JCmoneda = new javax.swing.JComboBox();
-        labelMoneda = new javax.swing.JLabel();
         txtProveedor1 = new javax.swing.JTextField();
         labelDias = new javax.swing.JLabel();
         JCpagoEn = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         labelPagoen = new javax.swing.JLabel();
         JCpago = new javax.swing.JComboBox();
-        txtFechaCompra = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         JCdeposito = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
-        txtFechaRecepcion = new javax.swing.JTextField();
         JCproyecto1 = new javax.swing.JComboBox();
         labelFechaCompra = new javax.swing.JLabel();
         labelFacturaCompra = new javax.swing.JLabel();
         labelProveedorNombre = new javax.swing.JLabel();
+        btDetallePago = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -602,12 +564,15 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelTotal = new javax.swing.JLabel();
         txtIva5 = new javax.swing.JFormattedTextField();
         labelCantidadTotal4 = new javax.swing.JLabel();
+        txtFechaCompra = new datechooser.beans.DateChooserCombo();
+        txtFechaRecepcion = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Factura Compra");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturaCompra.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -634,7 +599,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("FACTURA DE COMPRA");
         jLabel7.setOpaque(true);
-        JpanelCompra.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(-9, 0, 930, 56));
+        JpanelCompra.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(-9, 0, 950, 56));
 
         jPanel1.setFont(new java.awt.Font("Aharoni", 0, 12)); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 5));
@@ -717,38 +682,30 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelFechaRecepcion.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaRecepcion.setText("Fecha de Recepcion");
         labelFechaRecepcion.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        JpanelCompra.add(labelFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(219, 140, -1, -1));
-
-        JCmoneda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONTADO", "CREDITO", " " }));
-        JpanelCompra.add(JCmoneda, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 200, 100, 20));
-
-        labelMoneda.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
-        labelMoneda.setText("Tipo de Pago");
-        JpanelCompra.add(labelMoneda, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 203, 80, -1));
-        JpanelCompra.add(txtProveedor1, new org.netbeans.lib.awtextra.AbsoluteConstraints(219, 200, 212, -1));
+        JpanelCompra.add(labelFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 130, 40));
+        JpanelCompra.add(txtProveedor1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, 260, -1));
 
         labelDias.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelDias.setText("Cuotas");
-        JpanelCompra.add(labelDias, new org.netbeans.lib.awtextra.AbsoluteConstraints(555, 171, 42, -1));
+        JpanelCompra.add(labelDias, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 200, 42, -1));
 
         JCpagoEn.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
-        JpanelCompra.add(JCpagoEn, new org.netbeans.lib.awtextra.AbsoluteConstraints(506, 168, 45, -1));
+        JpanelCompra.add(JCpagoEn, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 200, 45, 20));
 
         jLabel2.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel2.setText("Pago");
-        JpanelCompra.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 140, 35, -1));
+        JpanelCompra.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 170, 35, -1));
 
         labelPagoen.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPagoen.setText("Pago en:");
-        JpanelCompra.add(labelPagoen, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 171, 53, -1));
+        JpanelCompra.add(labelPagoen, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 200, 53, -1));
 
         JCpago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONTADO", "CREDITO", " " }));
-        JpanelCompra.add(JCpago, new org.netbeans.lib.awtextra.AbsoluteConstraints(506, 137, 100, -1));
-        JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 168, 93, -1));
+        JpanelCompra.add(JCpago, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 170, 120, 20));
 
         jLabel3.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel3.setText("Proyecto");
-        JpanelCompra.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 52, -1));
+        JpanelCompra.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 200, 52, -1));
 
         JCdeposito.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NODO1", "NODO13", "NODO2" }));
         JCdeposito.addActionListener(new java.awt.event.ActionListener() {
@@ -756,20 +713,19 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 JCdepositoActionPerformed(evt);
             }
         });
-        JpanelCompra.add(JCdeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 170, -1, -1));
+        JpanelCompra.add(JCdeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 140, -1, 20));
 
         jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel4.setText("Deposito ");
-        JpanelCompra.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 170, 71, -1));
-        JpanelCompra.add(txtFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(338, 137, 93, -1));
+        JpanelCompra.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 60, 20));
 
         JCproyecto1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-        JpanelCompra.add(JCproyecto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 140, 100, -1));
+        JpanelCompra.add(JCproyecto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 200, 100, -1));
 
         labelFechaCompra.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaCompra.setText("Fecha de Compra");
         labelFechaCompra.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        JpanelCompra.add(labelFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(235, 171, -1, -1));
+        JpanelCompra.add(labelFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, -1, -1));
 
         labelFacturaCompra.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFacturaCompra.setText("Nro. Factura");
@@ -778,10 +734,19 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelProveedorNombre.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelProveedorNombre.setText("Proveedor");
         JpanelCompra.add(labelProveedorNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 203, 76, -1));
+
+        btDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
+        btDetallePago.setText("Detalle de Pago");
+        btDetallePago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDetallePagoActionPerformed(evt);
+            }
+        });
+        JpanelCompra.add(btDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 140, 190, 50));
         JpanelCompra.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 135, -1, -1));
 
         jLabel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10))); // NOI18N
-        JpanelCompra.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 890, 120));
+        JpanelCompra.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 920, 120));
 
         tbDetalleCompra.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -805,7 +770,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tbDetalleCompra);
 
-        JpanelCompra.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 890, 230));
+        JpanelCompra.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 920, 230));
 
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -818,27 +783,27 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(389, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(450, 450, 450)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(333, 333, 333))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
         );
 
-        JpanelCompra.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 890, 30));
+        JpanelCompra.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 920, 30));
         JpanelCompra.add(labelCantidadTotal2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 650, 200, -1));
-        JpanelCompra.add(txtIva10, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 520, 87, -1));
+        JpanelCompra.add(txtIva10, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 520, 87, -1));
 
         labelCantidadTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal.setText("Cantidad Total");
-        JpanelCompra.add(labelCantidadTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 520, 90, -1));
+        JpanelCompra.add(labelCantidadTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 520, 90, -1));
 
         labelCantidadTotal3.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal3.setText("Iva 10%");
-        JpanelCompra.add(labelCantidadTotal3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 520, 47, -1));
+        JpanelCompra.add(labelCantidadTotal3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 520, 47, -1));
 
         txtCantidadTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCantidadTotal.addActionListener(new java.awt.event.ActionListener() {
@@ -846,18 +811,18 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 txtCantidadTotalActionPerformed(evt);
             }
         });
-        JpanelCompra.add(txtCantidadTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 520, 52, -1));
+        JpanelCompra.add(txtCantidadTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 520, 52, -1));
 
         txtSubTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        JpanelCompra.add(txtSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 520, 85, -1));
+        JpanelCompra.add(txtSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 520, 85, -1));
 
         labelSubTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelSubTotal.setText("Sub Total");
-        JpanelCompra.add(labelSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 520, 60, 20));
+        JpanelCompra.add(labelSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 520, 60, 20));
 
         labelDescuento.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelDescuento.setText("Descuento");
-        JpanelCompra.add(labelDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 550, 60, 20));
+        JpanelCompra.add(labelDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 550, 60, 20));
 
         txtDescuento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         txtDescuento.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -870,36 +835,81 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 txtDescuentoKeyPressed(evt);
             }
         });
-        JpanelCompra.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 550, 50, -1));
+        JpanelCompra.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 550, 50, -1));
 
         jLabel8.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel8.setText("%");
-        JpanelCompra.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 550, -1, -1));
+        JpanelCompra.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 550, 20, -1));
 
         txtTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        JpanelCompra.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 580, 85, -1));
+        JpanelCompra.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 580, 85, -1));
 
         labelTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelTotal.setText("Total");
-        JpanelCompra.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 580, 40, 20));
-        JpanelCompra.add(txtIva5, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, 87, -1));
+        JpanelCompra.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 580, 40, 20));
+        JpanelCompra.add(txtIva5, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 520, 87, -1));
 
         labelCantidadTotal4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal4.setText("Iva 5%");
-        JpanelCompra.add(labelCantidadTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 520, 47, -1));
+        JpanelCompra.add(labelCantidadTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, 47, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JpanelCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 619, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        txtFechaCompra.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
+            new datechooser.view.appearance.ViewAppearance("custom",
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(0, 0, 0),
+                    new java.awt.Color(0, 0, 255),
+                    false,
+                    true,
+                    new datechooser.view.appearance.swing.ButtonPainter()),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(0, 0, 0),
+                    new java.awt.Color(0, 0, 255),
+                    true,
+                    true,
+                    new datechooser.view.appearance.swing.ButtonPainter()),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(0, 0, 255),
+                    new java.awt.Color(0, 0, 255),
+                    false,
+                    true,
+                    new datechooser.view.appearance.swing.ButtonPainter()),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(128, 128, 128),
+                    new java.awt.Color(0, 0, 255),
+                    false,
+                    true,
+                    new datechooser.view.appearance.swing.LabelPainter()),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(0, 0, 0),
+                    new java.awt.Color(0, 0, 255),
+                    false,
+                    true,
+                    new datechooser.view.appearance.swing.LabelPainter()),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                    new java.awt.Color(0, 0, 0),
+                    new java.awt.Color(255, 0, 0),
+                    false,
+                    false,
+                    new datechooser.view.appearance.swing.ButtonPainter()),
+                (datechooser.view.BackRenderer)null,
+                false,
+                true)));
+    txtFechaCompra.setLocale(new java.util.Locale("es", "BO", ""));
+    JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 140, -1));
+    JpanelCompra.add(txtFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 140, -1));
 
-        pack();
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(JpanelCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+    );
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tbDetalleCompraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDetalleCompraKeyPressed
@@ -1196,16 +1206,27 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private void txtProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProveedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtProveedorActionPerformed
+
+    private void btDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDetallePagoActionPerformed
+     try {
+         DetallePago detallePago = new DetallePago();
+         MenuPrincipalForm.jDesktopPane1.add(detallePago);
+         detallePago.toFront();
+         detallePago.setVisible(true);
+     } catch (Exception ex) {
+         Logger.getLogger(FacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
+     }
+    }//GEN-LAST:event_btDetallePagoActionPerformed
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox JCdeposito;
-    private javax.swing.JComboBox JCmoneda;
     private javax.swing.JComboBox JCpago;
     private javax.swing.JComboBox JCpagoEn;
     private javax.swing.JComboBox JCproyecto1;
     private javax.swing.JPanel JpanelCompra;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
+    private javax.swing.JButton btDetallePago;
     private org.edisoncor.gui.button.ButtonTask jBCancelar;
     private org.edisoncor.gui.button.ButtonTask jBGuardar1;
     private javax.swing.JLabel jLabel1;
@@ -1228,7 +1249,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel labelFacturaCompra;
     private javax.swing.JLabel labelFechaCompra;
     private javax.swing.JLabel labelFechaRecepcion;
-    private javax.swing.JLabel labelMoneda;
     private javax.swing.JLabel labelPagoen;
     private javax.swing.JLabel labelPrefijoCompra;
     private javax.swing.JLabel labelProveedorNombre;
@@ -1238,7 +1258,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JFormattedTextField txtCantidadTotal;
     private javax.swing.JFormattedTextField txtDescuento;
     private javax.swing.JTextField txtFacturaCompra;
-    private javax.swing.JTextField txtFechaCompra;
+    private datechooser.beans.DateChooserCombo txtFechaCompra;
     private javax.swing.JTextField txtFechaRecepcion;
     private javax.swing.JFormattedTextField txtIva10;
     private javax.swing.JFormattedTextField txtIva5;

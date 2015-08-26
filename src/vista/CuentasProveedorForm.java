@@ -587,6 +587,7 @@ public class CuentasProveedorForm extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Cuentas Proveedores");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentasProveedores.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }

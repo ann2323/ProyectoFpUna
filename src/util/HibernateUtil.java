@@ -6,9 +6,6 @@
 
 package util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -16,7 +13,7 @@ import org.hibernate.SessionFactory;
  * Hibernate Utility class with a convenient method to get Session Factory
  * object.
  *
- * @author Grossling
+ * @author Pathy
  */
 public class HibernateUtil {
 
@@ -36,19 +33,5 @@ public class HibernateUtil {
     
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
-    }
-    
-    public static Connection getConnection() throws SQLException{
-        String USER = "postgres";
-        String PASSWORD = "admin";
-        String DRIVER = "org.postgresql.Driver";
-        String URL = "jdbc:postgresql://localhost:5432/intersat";
-        try{
-            Class.forName(DRIVER);
-        }catch(ClassNotFoundException e){
-            System.err.println(e.getMessage());
-        }
-        Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-        return conn;
     }
 }

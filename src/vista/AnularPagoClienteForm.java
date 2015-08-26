@@ -435,6 +435,7 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Anular Pago Cliente");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularPagoCli.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -508,7 +509,7 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 349, -1, -1));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 370, -1, -1));
         jPanel3.getAccessibleContext().setAccessibleName("Datos Factura de Compra");
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Factura Compra", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Aharoni", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
@@ -576,7 +577,7 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
         });
         jPanel1.add(bCancelar);
 
-        bGuardar.setIcon(new javax.swing.ImageIcon("C:\\Users\\anex\\Documents\\NetBeansProjects\\intersatManagmentTool v0\\src\\imagenes\\anular.png")); // NOI18N
+        bGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pagoProvanular.png"))); // NOI18N
         bGuardar.setText("Anular");
         bGuardar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
         bGuardar.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N

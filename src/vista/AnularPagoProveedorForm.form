@@ -6,6 +6,9 @@
     <Property name="maximizable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="Anular Pago Proveedor"/>
+    <Property name="frameIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+      <Image iconType="3" name="/imagenes/a&#xf1;adirPago.png"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -311,7 +314,7 @@
         <Component class="org.edisoncor.gui.button.ButtonTask" name="bGuardar">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\anex\Documents\NetBeansProjects\intersatManagmentTool v0\src\imagenes\anular.png"/>
+              <Image iconType="3" name="/imagenes/1434930410_note-delete.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Anular"/>
             <Property name="categoryFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">

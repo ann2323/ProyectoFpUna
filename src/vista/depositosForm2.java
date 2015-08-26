@@ -68,6 +68,7 @@ public class depositosForm2 extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Depositos");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/deposito.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }

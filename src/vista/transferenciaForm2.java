@@ -102,6 +102,7 @@ public class transferenciaForm2 extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Transferencia");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/transferencia.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }

@@ -543,6 +543,11 @@ private void modoBusqueda(boolean v){
         jLabel6.setFont(new java.awt.Font("Aharoni", 0, 11)); // NOI18N
         jLabel6.setText("Telefono/Celular:");
 
+        txtdv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtdvActionPerformed(evt);
+            }
+        });
         txtdv.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtdvKeyTyped(evt);
@@ -893,7 +898,9 @@ private void modoBusqueda(boolean v){
     }//GEN-LAST:event_JRrucMouseClicked
 
     private void txtciFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtciFocusLost
-       if (JRruc.isSelected()){
+       txtdv.setVisible(true);
+       labelGuion.setVisible(true);
+        if (JRruc.isSelected()){
         txtdv.setText((Pa_Calcular_Dv_11_A(txtci.getText(), 11))); }
        else{
         txtdv.setText("");
@@ -1155,6 +1162,10 @@ private void modoBusqueda(boolean v){
 
         txtDireccion.setText(direccion);
     }//GEN-LAST:event_txtDireccionKeyReleased
+
+    private void txtdvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdvActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtdvActionPerformed
 
     private void datosActuales(){
             String ced = modelo.getValueAt(k, 1).toString();

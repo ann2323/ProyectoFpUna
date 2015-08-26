@@ -42,7 +42,7 @@ public class FacturaCabeceraCompraControlador {
             baseDatos.createQuery("update Compra set estado = 'PAGADO' where nro_factura = '" +nro_factura+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al eliminar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al actualizar el estado de la factura de compra: \n" + e.getMessage());
         }
     }
      public ResultSet datosTablaBusqueda2(int codigo) throws Exception {
@@ -54,7 +54,7 @@ public class FacturaCabeceraCompraControlador {
                 //System.out.println("CORRECTA BUSQUEDA");
                 return rs;
             } catch(HibernateException e){
-                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+                throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
             }
         }
     
@@ -72,7 +72,7 @@ public class FacturaCabeceraCompraControlador {
         }
            
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Componentes: \n" + e.getMessage());
+            throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
         }
          return res;
     }
@@ -102,6 +102,32 @@ public class FacturaCabeceraCompraControlador {
             }
     }
     
+     public ResultSet datosComboSaldo() throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Compra where es_factura='S'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+            }
+    }
+     
+      public ResultSet datosComboSaldoNotaCredito() throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Compra where es_factura='N'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+            }
+    }
+    
     public Integer nuevoCodigo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
@@ -121,7 +147,7 @@ public class FacturaCabeceraCompraControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Deposito: \n" + e.getMessage());
+            throw new Exception("Error al consultar la tabla moneda \n" + e.getMessage());
         }
     }
     public String getDate(Integer nro_factura){
@@ -147,7 +173,7 @@ public class FacturaCabeceraCompraControlador {
         try {
            return (Integer) baseDatos.createQuery("select pagoEn from Compra where nro_factura = '" + nro_factura + "'").uniqueResult();
         } catch(HibernateException e){
-            throw new Exception("Error al traer precio total: \n" + e.getMessage());
+            throw new Exception("Error al obtener cuotas: \n" + e.getMessage());
         }
     }
     
@@ -160,7 +186,7 @@ public class FacturaCabeceraCompraControlador {
                 //System.out.println("CORRECTA BUSQUEDA");
                 return rs;
             } catch(HibernateException e){
-                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+                throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
             }
         }
      

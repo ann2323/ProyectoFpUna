@@ -106,7 +106,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     CuentaCabecera cuentaCabecera = new CuentaCabecera();
     DetalleCuenta cuentaDetalle = new DetalleCuenta();
     ComponentesControlador cmpCont = new ComponentesControlador();
-    /*Patricia*/
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
     
     
@@ -169,12 +168,17 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         limpiar();
         establecerBotones("Nuevo");
         getNroFactura();
-        /*Patricia*/
+        
         //si no hay ningún registro en venta el nro de factura se carga de la 
         //tabla prefijo
+         System.out.println("ventacontrolador verificar registro "+ventaControlador.verificarRegistro());
+         System.out.println("prefijo controlador primer nro facutra "+prefijoControlador.primernrofactura());
+         System.out.println("ventacontrolador ultmo nro facutra "+ventaControlador.ultimoNroFactura());
+         
+         
          try {
-            System.out.println(ventaControlador.verificarRegistro());
             if (ventaControlador.verificarRegistro()==0){
+                System.out.println("Se cargo de la tabla prefijo \n "+ventaControlador.verificarRegistro());
                 try {
                     formato = new Formatter();
                     txtFacturaVenta.setText(formato.format("%07d", prefijoControlador.primernrofactura()).toString());
@@ -185,8 +189,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 //si hay registros pero el último nro de factura de la tabla venta es menor 
                 // al inicio factura de la tabla prefijo se sigue la secuencia del nro factura
                 //de la tabla venta
-            }else if(ventaControlador.verificarRegistro() >0 && prefijoControlador.primernrofactura() < ventaControlador.ultimoNroFactura()) {
+            }else if(ventaControlador.verificarRegistro() >0 && prefijoControlador.primernrofactura() <= ventaControlador.ultimoNroFactura()) {
                 try {
+                    System.out.println("Se siguio la secuencia");
                     formato = new Formatter();
                     txtFacturaVenta.setText(formato.format("%07d", ventaControlador.nroFactura()).toString());
                 } catch (Exception ex) {
@@ -198,6 +203,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 //en la tabla prefijo y se debe reiniciar la secuencia
             }else if(ventaControlador.verificarRegistro() >0 && prefijoControlador.primernrofactura() > ventaControlador.ultimoNroFactura()){
                  try {
+                     System.out.println("Reinicio secuencia");
                     formato = new Formatter();
                     txtFacturaVenta.setText(formato.format("%07d", prefijoControlador.primernrofactura()).toString());
                 } catch (Exception ex) {
@@ -208,16 +214,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
          
-       if(Integer.parseInt(txtFacturaVenta.getText()) > prefijoControlador.finfactura()){
+       /*if(Integer.parseInt(txtFacturaVenta.getText()) > prefijoControlador.finfactura()){
            showMessageDialog(this, "Fin de lote de factura. Ingrese un nuevo lote ", "Error en el número de factura", JOptionPane.ERROR_MESSAGE);
            this.dispose();
            PrefijoFacturaInternalForm prefijoFactura = new PrefijoFacturaInternalForm();
            MenuPrincipalForm.jDesktopPane1.add(prefijoFactura);
            prefijoFactura.moveToFront();
            prefijoFactura.show();
-       }
-         /*Patricia (lo que está despues de esto no modifique)*/
-        getClientes();
+       }*/
+        
+        //getClientes();
         comboPago.setSelectedItem(true);
         comboCuota.setEditable(false);
         txtFechaVenta.setText(getFechaActual());
@@ -349,7 +355,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Date date = formateador.parse(txtFechaVenta.getText());
             ventaC.setFecha(date);
             ventaC.setEsFactura('S');
-            ventaC.setProyectoId(setearProyecto());
+            //ventaC.setProyectoId(setearProyecto());
             ventaC.setEstado("BORRADOR");
             int idCliente = cliC.devuelveId(txtCliente.getText());
             ventaC.setClienteId(idCliente);
@@ -470,6 +476,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(ventaD);
                                 i++;
+                                //nuevo();
                             }else{
                                 try {
                                     System.out.println("Entro en el update de detalle");
@@ -566,7 +573,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-         /*Patricia*/
+         
         //si no hay ningún registro en venta el nro de factura se carga de la 
         //tabla prefijo
          try {
@@ -582,7 +589,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 //si hay registros pero el último nro de factura de la tabla venta es menor 
                 // al inicio factura de la tabla prefijo se sigue la secuencia del nro factura
                 //de la tabla venta
-            }else if(ventaControlador.verificarRegistro() >0 && prefijoControlador.primernrofactura() < ventaControlador.ultimoNroFactura()) {
+            }else if(ventaControlador.verificarRegistro() >0 && prefijoControlador.primernrofactura() <= ventaControlador.ultimoNroFactura()) {
                 try {
                     formato = new Formatter();
                     txtFacturaVenta.setText(formato.format("%07d", ventaControlador.nroFactura()).toString());
@@ -639,6 +646,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     
     private void getClientes() {
         try {
+            
             modeloBusqueda.setColumnCount(0);
             modeloBusqueda.setRowCount(0);
            
@@ -655,7 +663,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 while (rs.next()) {
                     Object[] fila = new Object[cantidadColumnas];
                     for (int i = 0; i < cantidadColumnas; i++) {
-                        fila[i]=rs.getObject(i+1);
+                       fila[i]=rs.getObject(i+1);          
                     }
                     modeloBusqueda.addRow(fila);
                 }
@@ -668,9 +676,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     }
      private void datosActuales(){
        if (bNuevo.isEnabled() == true) {
-                txtCliente.setText(modeloBusqueda.getValueAt(k, 0).toString());
-                txtCliente1.setText(modeloBusqueda.getValueAt(k, 1).toString());  
-        }
+            txtCliente.setText(modeloBusqueda.getValueAt(k, 0).toString());
+            txtCliente1.setText(modeloBusqueda.getValueAt(k, 1).toString());  
+       }
        establecerBotones("Nuevo");
     }
     
@@ -692,6 +700,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         txtIva10 = new javax.swing.JFormattedTextField();
         txtTotal = new javax.swing.JFormattedTextField();
         txtDescuento = new javax.swing.JFormattedTextField();
+        jButton1 = new javax.swing.JButton();
         txtCantidadTotal = new javax.swing.JFormattedTextField();
         jLabel4 = new javax.swing.JLabel();
         comboDeposito = new javax.swing.JComboBox();
@@ -791,6 +800,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 530, 50, -1));
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
+        jButton1.setText("Detalle de Pago");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 150, 190, 50));
+
         txtCantidadTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCantidadTotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -855,6 +873,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         lbCliente.setText("Cliente");
         jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 40, -1));
 
+        txtCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtClienteFocusLost(evt);
+            }
+        });
         txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtClienteKeyPressed(evt);
@@ -1095,6 +1118,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
        //establecerBotones("Ed");
        
         if (tbDetalleVenta.getSelectedColumn()==0){
+            if(txtCliente.getText().equals("")){
+                showMessageDialog(this, "Por favor ingrese un cliente", "Atención", JOptionPane.WARNING_MESSAGE);
+                txtCliente.requestFocus();
+            }else{
                 if (evt.getKeyCode() == KeyEvent.VK_TAB) {
                         BuscarForm bf = new BuscarForm(null, true);
                         bf.columnas = "codigo, descripcion";
@@ -1112,8 +1139,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                         }
                     }
 
-                
-              
                 for(int c=0; c<modeloComponente.getRowCount(); c ++){
                     if (modeloComponente.getValueAt(c, 0).equals(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0))){
                         k2 = c;  
@@ -1121,11 +1146,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                        datosActualesComponente();
                        return;
                     }
-
-                }
-                
+                } 
             }
         }
+      }
        
        
         if (!tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 2).equals("")&&!tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).equals("")){
@@ -1155,7 +1179,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
          
          //Aca pregunta si el tipoIva es 0 entonces tiene iva 10
          if(cmpCont.getTipoIva(codigo)==0 && tipoDeCliente.equals("Normal")){
-             System.out.println("Entro en el normal");
+             System.out.println("Entro en el normal, iva 10");
              formateador = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), tbDetalleVenta.getSelectedRow(), 5);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", "").trim());
@@ -1171,7 +1195,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              ventaC.setIva10(Integer.parseInt(txtIva10.getText().toString().replace(".", "").trim()));
          
              //iva 10 cliente exento
-         }else if(cmpCont.getTipoIva(codigo)==0 && tipoDeCliente.equals("Exento")){      
+         }else if(cmpCont.getTipoIva(codigo)==0 && tipoDeCliente.equals("Exento")){ 
+            System.out.println("Entro en el exento, iva 10");
              double iva_10 = 0.0;
              formateador = new DecimalFormat("###,###.##");
              total=(precio*cantidad);
@@ -1189,6 +1214,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
               
              //si el tipo iva es 1 iva 5
          }else if (cmpCont.getTipoIva(codigo)==1 && tipoDeCliente.equals("Normal")){
+                System.out.println("Entro en el normal, iva 5");
              formateador = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), tbDetalleVenta.getSelectedRow(), 5);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", "").trim());
@@ -1203,6 +1229,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              
              //iva 5% cliente exento
          }else if(cmpCont.getTipoIva(codigo)==1 && tipoDeCliente.equals("Exento")){
+             System.out.println("Entro en el exento, iva 5");
              double iva_5 = 0.0;
              formateador = new DecimalFormat("###,###.##");
              total=(precio*cantidad);
@@ -1568,6 +1595,36 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFacturaVentaKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+          try {
+            DetallePago detallePago = new DetallePago();
+            MenuPrincipalForm.jDesktopPane1.add(detallePago);
+            detallePago.toFront();
+            detallePago.setVisible(true);
+          }catch (Exception ex) {
+            Logger.getLogger(FacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusLost
+        String texto = txtCliente.getText();
+        DecimalFormat formatea = new DecimalFormat("###,###.##");
+        try
+        {
+            // parse() lanza una ParseException en caso de fallo que hay
+            // que capturar.
+            Object ced = formatea.parse(texto);
+            txtCliente.setText(String.valueOf(ced));
+            // Estas dos líneas se puede abreviar con
+        // double valor = formateador.parse(texto).doubleValue();
+        }
+        catch (ParseException e)
+        {
+        // Error. El usuario ha escrito algo que no se puede convertir
+        // a número.
+        }
+    }//GEN-LAST:event_txtClienteFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bBuscar;
@@ -1579,6 +1636,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
     private javax.swing.JComboBox comboTipoPago;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;

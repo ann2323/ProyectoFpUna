@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.SaldoVenta" table="saldo_venta" schema="public">
+        <id name="saldoVentaId" type="int">
+            <column name="saldo_venta_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="prefijo" type="java.lang.Integer">
+            <column name="prefijo" />
+        </property>
+        <property name="numero" type="java.lang.Integer">
+            <column name="numero" />
+        </property>
+        <property name="saldo" type="java.lang.Integer">
+            <column name="saldo" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" />
+        </property>
+        <property name="esFactura" type="string">
+            <column name="es_factura" />
+        </property>
+    </class>
+</hibernate-mapping>

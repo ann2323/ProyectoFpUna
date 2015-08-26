@@ -656,7 +656,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame implements 
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Factura Venta");
+        setTitle("Nota Crédito Venta");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(1200, 680));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {

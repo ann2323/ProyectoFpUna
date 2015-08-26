@@ -108,7 +108,7 @@ public class ProveedorControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Componentes: \n" + e.getMessage());
+            throw new Exception("Error al obtener proveedor: \n" + e.getMessage());
         }
     }
     
@@ -119,7 +119,7 @@ public class ProveedorControlador {
         try {
            return (Integer) baseDatos.createQuery("Select proveedorId from Proveedor where ci='"+ci+"'").uniqueResult();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al devolver id del proveedor: \n" + e.getMessage());
         }
     }
     
@@ -130,7 +130,7 @@ public class ProveedorControlador {
         try {
            return (Integer) baseDatos.createQuery("Select proveedorId from Proveedor where nombre = '" +nombre+ "' or ci='"+ci+"'").uniqueResult();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al devolver id del proveedor: \n" + e.getMessage());
         }
     }
     
@@ -144,7 +144,7 @@ public class ProveedorControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Componentes: \n" + e.getMessage());
+            throw new Exception("Error al devolver datos del Proveedor: \n" + e.getMessage());
         }
     }
      public ResultSet datosBusqueda2() throws Exception {
@@ -157,7 +157,7 @@ public class ProveedorControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Componentes: \n" + e.getMessage());
+            throw new Exception("Error al devolver datos del Proveedor: \n" + e.getMessage());
         }
     }
     public String getDato(Integer codigo) throws Exception {
@@ -169,7 +169,7 @@ public class ProveedorControlador {
             rs.next();
             return (String) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al consultar Proveedor: \n" + e.getMessage());
+            throw new Exception("Error al devolver datos del Proveedor: \n" + e.getMessage());
         }
     }
     

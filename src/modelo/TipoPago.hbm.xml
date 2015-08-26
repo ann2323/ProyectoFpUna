@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 15-jul-2015 17:18:19 by Hibernate Tools 3.6.0 -->
+<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.TipoPago" table="tipo_pago" schema="public">
         <id name="tipoPagoId" type="int">
             <column name="tipo_pago_id" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="nombrePago" type="string">
             <column name="nombre_pago" length="10" not-null="true" />
         </property>
-        <property name="pagoDocumentoId" type="int">
-            <column name="pago_documento_id" not-null="true" />
+        <property name="pagado" type="java.lang.Integer">
+            <column name="pagado" />
+        </property>
+        <property name="pendiente" type="java.lang.Integer">
+            <column name="pendiente" />
         </property>
     </class>
 </hibernate-mapping>

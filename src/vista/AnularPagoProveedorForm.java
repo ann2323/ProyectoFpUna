@@ -434,6 +434,7 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Anular Pago Proveedor");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/añadirPago.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -575,7 +576,7 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
         });
         jPanel1.add(bCancelar);
 
-        bGuardar.setIcon(new javax.swing.ImageIcon("C:\\Users\\anex\\Documents\\NetBeansProjects\\intersatManagmentTool v0\\src\\imagenes\\anular.png")); // NOI18N
+        bGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1434930410_note-delete.png"))); // NOI18N
         bGuardar.setText("Anular");
         bGuardar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
         bGuardar.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N

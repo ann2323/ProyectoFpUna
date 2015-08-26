@@ -1,5 +1,5 @@
 package modelo;
-// Generated 15-jul-2015 17:18:17 by Hibernate Tools 3.6.0
+// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
 
 
 
@@ -11,15 +11,22 @@ public class TipoPago  implements java.io.Serializable {
 
      private int tipoPagoId;
      private String nombrePago;
-     private int pagoDocumentoId;
+     private Integer pagado;
+     private Integer pendiente;
 
     public TipoPago() {
     }
 
-    public TipoPago(int tipoPagoId, String nombrePago, int pagoDocumentoId) {
+	
+    public TipoPago(int tipoPagoId, String nombrePago) {
+        this.tipoPagoId = tipoPagoId;
+        this.nombrePago = nombrePago;
+    }
+    public TipoPago(int tipoPagoId, String nombrePago, Integer pagado, Integer pendiente) {
        this.tipoPagoId = tipoPagoId;
        this.nombrePago = nombrePago;
-       this.pagoDocumentoId = pagoDocumentoId;
+       this.pagado = pagado;
+       this.pendiente = pendiente;
     }
    
     public int getTipoPagoId() {
@@ -36,12 +43,19 @@ public class TipoPago  implements java.io.Serializable {
     public void setNombrePago(String nombrePago) {
         this.nombrePago = nombrePago;
     }
-    public int getPagoDocumentoId() {
-        return this.pagoDocumentoId;
+    public Integer getPagado() {
+        return this.pagado;
     }
     
-    public void setPagoDocumentoId(int pagoDocumentoId) {
-        this.pagoDocumentoId = pagoDocumentoId;
+    public void setPagado(Integer pagado) {
+        this.pagado = pagado;
+    }
+    public Integer getPendiente() {
+        return this.pendiente;
+    }
+    
+    public void setPendiente(Integer pendiente) {
+        this.pendiente = pendiente;
     }
 
 

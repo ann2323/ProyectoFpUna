@@ -1,5 +1,5 @@
 package modelo;
-// Generated 15-jul-2015 17:18:17 by Hibernate Tools 3.6.0
+// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
 
 
 
@@ -42,6 +42,7 @@ public class Moneda  implements java.io.Serializable {
     public String toString(){
         return this.nombre;
     }
+
 
 
 }

@@ -368,7 +368,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mConsultar.add(mConsultarNotaCreditoVenta);
 
         consultarCuentaCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
-        consultarCuentaCliente.setText("Consultar Cuentas Clientes");
+        consultarCuentaCliente.setText("Consultar Saldo Factura de Compra");
         consultarCuentaCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 consultarCuentaClienteActionPerformed(evt);
@@ -377,7 +377,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mConsultar.add(consultarCuentaCliente);
 
         consultarCuentaProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
-        consultarCuentaProveedor.setText("Consultar Cuentas Proveedor");
+        consultarCuentaProveedor.setText("Consultar Saldo Nota de Credito Compra");
         consultarCuentaProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 consultarCuentaProveedorActionPerformed(evt);
@@ -860,21 +860,9 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mAnularNotaCreditoCompraActionPerformed
 
     private void consultarCuentaProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaProveedorActionPerformed
-       try {
-            ConsultarCuentaProveedorForm tf2 = new ConsultarCuentaProveedorForm();
-            try {
-                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            this.jDesktopPane1.add(tf2);
-            tf2.show();
-        } catch (Exception ex) {
-            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       ConsultarSaldoNotaCreditoForm saldoNotaCredito = new ConsultarSaldoNotaCreditoForm();
+       this.jDesktopPane1.add(saldoNotaCredito);
+       saldoNotaCredito.show();
     }//GEN-LAST:event_consultarCuentaProveedorActionPerformed
 
     private void consultarCuentaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaClienteActionPerformed
