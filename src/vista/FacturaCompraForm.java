@@ -6,9 +6,11 @@
 
 package vista;
 
+import controlador.CabeceraPagoCompraControlador;
 import controlador.ComponentesControlador;
 import controlador.DepositoControlador;
 import controlador.DetalleFacturaCompra;
+import controlador.DetallePagoControlador;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.ProveedorControlador;
 import controlador.ProyectoControlador;
@@ -35,11 +37,12 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableModel; 
 import modelo.Compra;
 import modelo.Deposito;
 import modelo.DetalleCompra;
-import modelo.Moneda;
+import modelo.DetallePagoCompra;
+import modelo.CabeceraPagoCompra;
 import modelo.Proyectos;
 import modelo.SaldoCompra;
 import modelo.Stock;
@@ -57,7 +60,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         JCpago.setSelectedIndex(-1);
         JCdeposito.setSelectedIndex(0);
         JCpagoEn.setSelectedIndex(-1);
-        JCproyecto1.setSelectedIndex(-1);   
+        JCproyecto1.setSelectedIndex(-1); 
+        tbDetallePagoCompra.setVisible(true);
          
     }
     public static String getFechaActual() {
@@ -70,6 +74,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloComponentes = new DefaultTableModel();
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     DefaultTableModel modeloD = new DefaultTableModel();
+    DefaultTableModel modeloDetallePago = new DefaultTableModel();
     
  
     Stock stock = new Stock();
@@ -84,17 +89,20 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     DepositoControlador depBD = new DepositoControlador();
     SaldoCompraControlador saldoC = new SaldoCompraControlador();
     DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
+    DetallePagoControlador pagoDetalleControlador = new DetallePagoControlador();
+    CabeceraPagoCompraControlador pagoCabeceraControlador = new CabeceraPagoCompraControlador();
     FacturaCabeceraCompraControlador compraControlador = new  FacturaCabeceraCompraControlador();
     ProveedorControlador provC = new ProveedorControlador();
     ComponentesControlador componentesControl = new ComponentesControlador();
     
     Deposito depModel = new  Deposito();
-    Moneda monedaModel = new Moneda();
     SaldoCompra saldoModel = new SaldoCompra();
     DetalleCompra compraD = new DetalleCompra();
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
     Compra compraC = new Compra ();
+    DetallePagoCompra detPagoModel = new DetallePagoCompra();
+    CabeceraPagoCompra cabeceraPagoModel = new CabeceraPagoCompra();
 
    
 
@@ -116,29 +124,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }*/
-    private void getMonedaVector() {
- 
-        Vector<Moneda> compVec = new Vector<Moneda>();
-        try {
-          
-            try (ResultSet rs = compraControlador.datoCombo()) {
-                while(rs.next()){
-                    monedaModel=new Moneda();
-                    monedaModel.setMonedaId(rs.getInt(1));
-                    monedaModel.setNombre(rs.getString(2));           
-                    compVec.add(monedaModel);
-                }
-                rs.close();
-                                    
-            } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-            }
-        } catch (HeadlessException ex) {
-            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-        }
-        DefaultComboBoxModel md1 = new DefaultComboBoxModel(compVec); 
- 
-    }
     private void getDepositosVector() {
         JCdeposito.removeAll();
         Vector<Deposito> depVec = new Vector<Deposito>();
@@ -173,7 +158,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         nuevoDetalle();
         getProveedores();
         getProyectoVector();
-        getMonedaVector();
         getDepositosVector();
         getComponentes();
         
@@ -288,7 +272,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
+            saldoModel.setNumero(txtFacturaCompra.getText());
             saldoModel.setEsFactura("S");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
@@ -308,12 +292,24 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             
             Proyectos pro = (Proyectos) this.JCproyecto1.getSelectedItem();
             compraC.setProyectoId(pro.getId());
+            
+            cabeceraPagoModel.setCabeceraPagoCompraId(pagoCabeceraControlador.nuevoCodigo());
+            
+            cabeceraPagoModel.setEsFactura("S");
+            
+            cabeceraPagoModel.setCompraId(compraC.getCompraId());
+            
+            cabeceraPagoModel.setPagado(Integer.parseInt(DetallePagoForm.txtPagado.getText().replace(".","").trim()));
+            
+            cabeceraPagoModel.setCambio(Integer.parseInt(DetallePagoForm.txtCambio.getText().replace(".","").trim()));
+            
+            cabeceraPagoModel.setPendiente(Integer.parseInt(DetallePagoForm.txtPendiente.getText().replace(".","").trim()));
 
             if (bNuevo.isEnabled() == false) {
                     try {
                     int i = 0;
                     try {
-                        int compra_id = compraC.getCompraId();                       
+                        int compra_id = compraC.getCompraId(); 
                         while (!"".equals(tbDetalleCompra.getValueAt(i, 0).toString())){
                             compraD.setCompraId(compra_id);
                             compraD.setDetalleCompraId(facturaDetalleCont.nuevaLinea());
@@ -351,6 +347,18 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                             }
                             facturaDetalleCont.insert(compraD);
                             i++;
+                        }
+                        //*26/08/2015
+                        while (!"".equals(tbDetallePagoCompra.getValueAt(i, 0).toString())){
+                           detPagoModel.setDetallePagoCompraId(pagoDetalleControlador.nuevaLinea());
+                           detPagoModel.setCabeceraPagoCompraId(cabeceraPagoModel.getCabeceraPagoCompraId());
+                           detPagoModel.setNombrePago(tbDetallePagoCompra.getValueAt(i, 0).toString());
+                           detPagoModel.setNroTarjeta(Integer.parseInt(tbDetallePagoCompra.getValueAt(i, 1).toString().trim()));
+                           detPagoModel.setAutorizacion(Integer.parseInt(tbDetallePagoCompra.getValueAt(i, 2).toString().trim()));
+                           
+                           
+                         
+                         
                         }
                     } catch (Exception ex) {
                      
@@ -543,12 +551,13 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelFechaCompra = new javax.swing.JLabel();
         labelFacturaCompra = new javax.swing.JLabel();
         labelProveedorNombre = new javax.swing.JLabel();
-        btDetallePago = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbDetalleCompra = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbDetallePagoCompra = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         labelCantidadTotal2 = new javax.swing.JLabel();
         txtIva10 = new javax.swing.JFormattedTextField();
@@ -564,6 +573,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelTotal = new javax.swing.JLabel();
         txtIva5 = new javax.swing.JFormattedTextField();
         labelCantidadTotal4 = new javax.swing.JLabel();
+        btDetallePago = new javax.swing.JButton();
         txtFechaCompra = new datechooser.beans.DateChooserCombo();
         txtFechaRecepcion = new javax.swing.JTextField();
 
@@ -572,7 +582,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Factura Compra");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturaCompra.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -734,15 +743,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelProveedorNombre.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelProveedorNombre.setText("Proveedor");
         JpanelCompra.add(labelProveedorNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 203, 76, -1));
-
-        btDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
-        btDetallePago.setText("Detalle de Pago");
-        btDetallePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDetallePagoActionPerformed(evt);
-            }
-        });
-        JpanelCompra.add(btDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 140, 190, 50));
         JpanelCompra.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 135, -1, -1));
 
         jLabel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10))); // NOI18N
@@ -775,6 +775,19 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        tbDetallePagoCompra.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tbDetallePagoCompra);
+
         jLabel6.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("LISTA DE PRODUCTOS");
@@ -787,10 +800,17 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 .addGap(450, 450, 450)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(302, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(67, 67, 67)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         JpanelCompra.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 920, 30));
@@ -853,39 +873,48 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelCantidadTotal4.setText("Iva 5%");
         JpanelCompra.add(labelCantidadTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, 47, -1));
 
+        btDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
+        btDetallePago.setText("Detalle de Pago");
+        btDetallePago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDetallePagoActionPerformed(evt);
+            }
+        });
+        JpanelCompra.add(btDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 140, 190, 50));
+
         txtFechaCompra.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     true,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 255),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(128, 128, 128),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(255, 0, 0),
                     false,
@@ -902,11 +931,13 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(JpanelCompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(JpanelCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+            .addContainerGap())
     );
 
     pack();
@@ -1209,7 +1240,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
 
     private void btDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDetallePagoActionPerformed
      try {
-         DetallePago detallePago = new DetallePago();
+         DetallePagoForm detallePago = new DetallePagoForm();
          MenuPrincipalForm.jDesktopPane1.add(detallePago);
          detallePago.toFront();
          detallePago.setVisible(true);
@@ -1240,6 +1271,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelCantidadTotal;
     private javax.swing.JLabel labelCantidadTotal2;
     private javax.swing.JLabel labelCantidadTotal3;
@@ -1255,6 +1287,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel labelSubTotal;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JTable tbDetalleCompra;
+    public static javax.swing.JTable tbDetallePagoCompra;
     private javax.swing.JFormattedTextField txtCantidadTotal;
     private javax.swing.JFormattedTextField txtDescuento;
     private javax.swing.JTextField txtFacturaCompra;
@@ -1266,6 +1299,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtProveedor;
     private javax.swing.JTextField txtProveedor1;
     private javax.swing.JFormattedTextField txtSubTotal;
-    private javax.swing.JFormattedTextField txtTotal;
+    public static javax.swing.JFormattedTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }
