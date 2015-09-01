@@ -1597,7 +1597,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
           try {
-            DetallePago detallePago = new DetallePago();
+            DetallePagoForm detallePago = new DetallePagoForm();
             MenuPrincipalForm.jDesktopPane1.add(detallePago);
             detallePago.toFront();
             detallePago.setVisible(true);
