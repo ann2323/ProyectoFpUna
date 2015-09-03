@@ -39,7 +39,6 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Compra;
 import modelo.Deposito;
 import modelo.DetalleCompra;
-import modelo.Moneda;
 import modelo.Proyectos;
 import modelo.SaldoCompra;
 import modelo.Stock;
@@ -87,7 +86,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     SaldoCompraControlador saldoC = new SaldoCompraControlador();
     
     Deposito depModel = new  Deposito();
-    Moneda monedaModel = new Moneda();
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
     DetalleCompra compraD = new DetalleCompra();
@@ -137,29 +135,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         DefaultComboBoxModel md1 = new DefaultComboBoxModel(compVec); 
         JCproyecto1.setModel(md1);
     }
-    private void getMonedaVector() {
-        JCmoneda.removeAll();
-        Vector<Moneda> compVec = new Vector<Moneda>();
-        try {
-          
-            try (ResultSet rs = compraControlador.datoCombo()) {
-                while(rs.next()){
-                    monedaModel=new Moneda();
-                    monedaModel.setMonedaId(rs.getInt(1));
-                    monedaModel.setNombre(rs.getString(2));           
-                    compVec.add(monedaModel);
-                }
-                rs.close();
-                                    
-            } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-            }
-        } catch (HeadlessException ex) {
-            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-        }
-        DefaultComboBoxModel md1 = new DefaultComboBoxModel(compVec); 
-        JCmoneda.setModel(md1);
-    }
+  
     private void getDepositosVector() {
         JCdeposito.removeAll();
         Vector<Deposito> depVec = new Vector<Deposito>();
@@ -192,7 +168,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         txtFechaRecepcion.setEnabled(false);
         nuevoDetalle();
         getProveedores();
-        getMonedaVector();
         getProyectoVector();
         getDepositosVector();
         getComponentes();
@@ -301,8 +276,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             compraC.setEstado("PAGADO");
             int idProveedor = provC.devuelveId(txtProveedor.getText().replace(".", ""));
             compraC.setProveedorId(idProveedor);
-            Moneda moneda = (Moneda) this.JCmoneda.getSelectedItem();
-            compraC.setMonedaId(moneda.getMonedaId());
             Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
             compraC.setCodDeposito(dep.getCodigo());
             compraC.setPagoContado(JCpago.getSelectedItem().toString());
@@ -322,7 +295,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
+            saldoModel.setNumero((txtFacturaCompra.getText()));
             saldoModel.setEsFactura("N");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
           

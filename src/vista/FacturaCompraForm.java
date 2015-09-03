@@ -41,8 +41,6 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Compra;
 import modelo.Deposito;
 import modelo.DetalleCompra;
-import modelo.DetallePagoCompra;
-import modelo.CabeceraPagoCompra;
 import modelo.Proyectos;
 import modelo.SaldoCompra;
 import modelo.Stock;
@@ -74,7 +72,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloComponentes = new DefaultTableModel();
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     DefaultTableModel modeloD = new DefaultTableModel();
-    DefaultTableModel modeloDetallePago = new DefaultTableModel();
     
  
     Stock stock = new Stock();
@@ -101,8 +98,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
     Compra compraC = new Compra ();
-    DetallePagoCompra detPagoModel = new DetallePagoCompra();
-    CabeceraPagoCompra cabeceraPagoModel = new CabeceraPagoCompra();
+
 
    
 
@@ -272,7 +268,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
+            saldoModel.setNumero((txtFacturaCompra.getText()));
             saldoModel.setEsFactura("S");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
@@ -292,19 +288,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             
             Proyectos pro = (Proyectos) this.JCproyecto1.getSelectedItem();
             compraC.setProyectoId(pro.getId());
-            
-            cabeceraPagoModel.setCabeceraPagoCompraId(pagoCabeceraControlador.nuevoCodigo());
-            
-            cabeceraPagoModel.setEsFactura("S");
-            
-            cabeceraPagoModel.setCompraId(compraC.getCompraId());
-            
-            cabeceraPagoModel.setPagado(Integer.parseInt(DetallePagoForm.txtPagado.getText().replace(".","").trim()));
-            
-            cabeceraPagoModel.setCambio(Integer.parseInt(DetallePagoForm.txtCambio.getText().replace(".","").trim()));
-            
-            cabeceraPagoModel.setPendiente(Integer.parseInt(DetallePagoForm.txtPendiente.getText().replace(".","").trim()));
-
+           
             if (bNuevo.isEnabled() == false) {
                     try {
                     int i = 0;
@@ -348,18 +332,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                             facturaDetalleCont.insert(compraD);
                             i++;
                         }
-                        //*26/08/2015
-                        while (!"".equals(tbDetallePagoCompra.getValueAt(i, 0).toString())){
-                           detPagoModel.setDetallePagoCompraId(pagoDetalleControlador.nuevaLinea());
-                           detPagoModel.setCabeceraPagoCompraId(cabeceraPagoModel.getCabeceraPagoCompraId());
-                           detPagoModel.setNombrePago(tbDetallePagoCompra.getValueAt(i, 0).toString());
-                           detPagoModel.setNroTarjeta(Integer.parseInt(tbDetallePagoCompra.getValueAt(i, 1).toString().trim()));
-                           detPagoModel.setAutorizacion(Integer.parseInt(tbDetallePagoCompra.getValueAt(i, 2).toString().trim()));
-                           
-                           
-                         
-                         
-                        }
+                    
                     } catch (Exception ex) {
                      
                        showMessageDialog(null, ex, "Atención", INFORMATION_MESSAGE);
@@ -573,7 +546,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelTotal = new javax.swing.JLabel();
         txtIva5 = new javax.swing.JFormattedTextField();
         labelCantidadTotal4 = new javax.swing.JLabel();
-        btDetallePago = new javax.swing.JButton();
         txtFechaCompra = new datechooser.beans.DateChooserCombo();
         txtFechaRecepcion = new javax.swing.JTextField();
 
@@ -714,7 +686,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
 
         jLabel3.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel3.setText("Proyecto");
-        JpanelCompra.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 200, 52, -1));
+        JpanelCompra.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 140, 52, -1));
 
         JCdeposito.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NODO1", "NODO13", "NODO2" }));
         JCdeposito.addActionListener(new java.awt.event.ActionListener() {
@@ -729,7 +701,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         JpanelCompra.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 60, 20));
 
         JCproyecto1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-        JpanelCompra.add(JCproyecto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 200, 100, -1));
+        JpanelCompra.add(JCproyecto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 140, 100, -1));
 
         labelFechaCompra.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaCompra.setText("Fecha de Compra");
@@ -873,15 +845,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelCantidadTotal4.setText("Iva 5%");
         JpanelCompra.add(labelCantidadTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, 47, -1));
 
-        btDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
-        btDetallePago.setText("Detalle de Pago");
-        btDetallePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDetallePagoActionPerformed(evt);
-            }
-        });
-        JpanelCompra.add(btDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 140, 190, 50));
-
         txtFechaCompra.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
                 new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
@@ -986,8 +949,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
              System.out.println(subTotalFormat);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
-             double j =((Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "")))*10)/100;
-             iva10=iva10+Math.round(j*10/10);
+             double j = (Integer.parseInt(txtTotal.getText().toString().replace(".", ""))) - (Integer.parseInt((txtTotal.getText().toString().replace(".", "")))/1.1);
+             Long l = Math.round(j);
+             iva10=Integer.valueOf(l.intValue());
              String ivaFormat=formateador.format(iva10);
              txtIva10.setText(ivaFormat);
              
@@ -998,8 +962,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
              String subTotalFormat=formateador.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
-             double j =((Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", ""))) *5)/100;
-             iva5=iva5+Math.round(j*10/10);
+             double j =(Integer.parseInt(txtTotal.getText().toString().replace(".", ""))) - (Integer.parseInt((txtTotal.getText().toString().replace(".", "")))/1.05);
+             Long l = Math.round(j);
+             iva5=Integer.valueOf(l.intValue());
              String ivaFormat=formateador.format(iva5);
              txtIva5.setText(ivaFormat);
          }else{
@@ -1035,14 +1000,16 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                     subTotal=subTotal-total2;
                     if (componentesControl.getTipoIva(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 0).toString())==0) {
                     DecimalFormat formato = new DecimalFormat("###,###.##");
-                    Integer iva102=(total2*10)/100;
-                    iva10=iva10-iva102;
+                    Double iva102=total2-total2/1.1;
+                    Long l = Math.round(iva102);
+                    iva10=iva10 - Integer.valueOf(l.intValue());
                     String ivaFormat=formato.format(iva10);
                     txtIva10.setText(ivaFormat);
                     } else if  (componentesControl.getTipoIva(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 0).toString())==1)  {
                     DecimalFormat formato = new DecimalFormat("###,###.##");
-                    Integer iva25=(total2*5)/100;
-                    iva5=iva5-iva25;
+                    Double iva25=total2-total2/1.05;
+                    Long l = Math.round(iva25);
+                    iva5=iva5- Integer.valueOf(l.intValue());
                     String ivaFormat=formato.format(iva5);
                     txtIva5.setText(ivaFormat);
                     }
@@ -1078,14 +1045,16 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             
             if (componentesControl.getTipoIva(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 0).toString())==0) {
                  DecimalFormat FormatDeletIva10 = new DecimalFormat("###,###.##");
-                 Integer iva102=(total2*10)/100;
-                 iva10=Integer.parseInt(txtIva10.getText().replace(".", "").trim())-iva102;
+                 double iva102=total2-total2/1.1;
+                 Long L = Math.round(iva102);
+                 iva10=Integer.parseInt(txtIva10.getText().replace(".", "").trim())- Integer.valueOf(L.intValue());
                  String ivaFormat=FormatDeletIva10.format(iva10);
                  txtIva10.setText(ivaFormat);
             } else if  (componentesControl.getTipoIva(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 0).toString())==1)  {
                  DecimalFormat FormatDeletIva5 = new DecimalFormat("###,###.##");
-                 Integer iva25=(total2*5)/100;
-                 iva5=Integer.parseInt(txtIva5.getText().replace(".", "").trim())-iva25;
+                 Double iva25=total2-total2/1.05;
+                 Long L = Math.round(iva25);
+                 iva5=Integer.parseInt(txtIva5.getText().replace(".", "").trim())- Integer.valueOf(L.intValue());
                  String ivaFormat=FormatDeletIva5.format(iva5);
                  txtIva5.setText(ivaFormat);
             }
@@ -1237,17 +1206,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private void txtProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProveedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtProveedorActionPerformed
-
-    private void btDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDetallePagoActionPerformed
-     try {
-         DetallePagoForm detallePago = new DetallePagoForm();
-         MenuPrincipalForm.jDesktopPane1.add(detallePago);
-         detallePago.toFront();
-         detallePago.setVisible(true);
-     } catch (Exception ex) {
-         Logger.getLogger(FacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
-     }
-    }//GEN-LAST:event_btDetallePagoActionPerformed
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1257,7 +1215,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox JCproyecto1;
     private javax.swing.JPanel JpanelCompra;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
-    private javax.swing.JButton btDetallePago;
     private org.edisoncor.gui.button.ButtonTask jBCancelar;
     private org.edisoncor.gui.button.ButtonTask jBGuardar1;
     private javax.swing.JLabel jLabel1;
