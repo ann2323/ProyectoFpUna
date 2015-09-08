@@ -268,7 +268,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero((txtFacturaCompra.getText()));
+            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
             saldoModel.setEsFactura("S");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
