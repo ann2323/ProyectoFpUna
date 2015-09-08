@@ -346,7 +346,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setEsFactura('S');
             //ventaC.setProyectoId(setearProyecto());
             ventaC.setEstado("BORRADOR");
-            int idCliente = cliC.devuelveId(txtCliente.getText());
+            int idCliente = cliC.devuelveId(txtCliente.getText().replace(".", ""));
             ventaC.setClienteId(idCliente);
             Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
             ventaC.setCodDeposito(dep.getCodigo());
@@ -664,7 +664,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         tbDetalleVenta = new javax.swing.JTable();
         txtCliente1 = new javax.swing.JTextField();
         lbCliente = new javax.swing.JLabel();
-        txtCliente = new javax.swing.JTextField();
         txtPrefijoVenta = new javax.swing.JTextField();
         txtFacturaVenta = new javax.swing.JTextField();
         labelPrefijoVenta = new javax.swing.JLabel();
@@ -691,6 +690,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jScrollPane2 = new javax.swing.JScrollPane();
         tbDetallePagoVenta = new javax.swing.JTable();
         btAgregarFila = new javax.swing.JButton();
+        txtCliente = new javax.swing.JFormattedTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
 
@@ -820,18 +820,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         lbCliente.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbCliente.setText("Cliente");
         jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 40, -1));
-
-        txtCliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtClienteFocusLost(evt);
-            }
-        });
-        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtClienteKeyPressed(evt);
-            }
-        });
-        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
 
         txtPrefijoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1016,6 +1004,14 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel1.add(btAgregarFila, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 500, -1, -1));
 
+        txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClienteKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
+
         jPanel5.setBackground(new java.awt.Color(51, 94, 137));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel5.setPreferredSize(new java.awt.Dimension(101, 25));
@@ -1138,9 +1134,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
          cantProducto=cantProducto+cantidad;
          txtCantidadTotal.setText(Integer.toString(cantProducto));
          
-           String tipoDeCliente = cliC.getExento(txtCliente.getText());
+           String tipoDeCliente = cliC.getExento(txtCliente.getText().replace(".", ""));
          //validacion de producto y cliente exento
-           System.out.println("TIPO CLIENTE"+cliC.getExento(txtCliente.getText()));
+           System.out.println("TIPO CLIENTE"+cliC.getExento(txtCliente.getText().replace(".", "")));
          
          if(txtCliente.getText().equals("")){
              showMessageDialog(null, "Ingrese el número de cédula del cliente", "Atención", INFORMATION_MESSAGE);
@@ -1525,6 +1521,38 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
      }
     }//GEN-LAST:event_bImprimirActionPerformed
 
+    private void txtFacturaVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaVentaKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFacturaVentaKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+          try {
+            DetallePagoVentaForm detallePago = new DetallePagoVentaForm();
+            MenuPrincipalForm.jDesktopPane1.add(detallePago);
+            detallePago.toFront();
+            detallePago.setVisible(true);
+          }catch (Exception ex) {
+            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void comboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPagoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboPagoActionPerformed
+
+    private void comboPagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboPagoItemStateChanged
+        if(comboPago.getSelectedIndex() == 1){
+            comboCuota.setEnabled(true);
+        }else{
+            comboCuota.setEnabled(false);
+        }
+    }//GEN-LAST:event_comboPagoItemStateChanged
+
+    private void btAgregarFilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAgregarFilaActionPerformed
+       modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+      
+    }//GEN-LAST:event_btAgregarFilaActionPerformed
+
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if ("*".equals(txtCliente.getText())) {
@@ -1548,56 +1576,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
         }
     }//GEN-LAST:event_txtClienteKeyPressed
-
-    private void txtFacturaVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaVentaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFacturaVentaKeyReleased
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-          try {
-            DetallePagoVentaForm detallePago = new DetallePagoVentaForm();
-            MenuPrincipalForm.jDesktopPane1.add(detallePago);
-            detallePago.toFront();
-            detallePago.setVisible(true);
-          }catch (Exception ex) {
-            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-          }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void txtClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusLost
-        String texto = txtCliente.getText();
-        DecimalFormat formatea = new DecimalFormat("###,###.##");
-        try{
-            // parse() lanza una ParseException en caso de fallo que hay
-            // que capturar.
-            Object ced = formatea.parse(texto);
-            txtCliente.setText(String.valueOf(ced));
-            // Estas dos líneas se puede abreviar con
-        // double valor = formateador.parse(texto).doubleValue();
-        }
-        catch (ParseException e)
-        {
-        // Error. El usuario ha escrito algo que no se puede convertir
-        // a número.
-        }
-    }//GEN-LAST:event_txtClienteFocusLost
-
-    private void comboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPagoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboPagoActionPerformed
-
-    private void comboPagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboPagoItemStateChanged
-        if(comboPago.getSelectedIndex() == 1){
-            comboCuota.setEnabled(true);
-        }else{
-            comboCuota.setEnabled(false);
-        }
-    }//GEN-LAST:event_comboPagoItemStateChanged
-
-    private void btAgregarFilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAgregarFilaActionPerformed
-       modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
-      
-    }//GEN-LAST:event_btAgregarFilaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1638,7 +1616,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     public static javax.swing.JTable tbDetallePagoVenta;
     private javax.swing.JTable tbDetalleVenta;
     private javax.swing.JFormattedTextField txtCantidadTotal;
-    private javax.swing.JTextField txtCliente;
+    private javax.swing.JFormattedTextField txtCliente;
     private javax.swing.JTextField txtCliente1;
     private javax.swing.JFormattedTextField txtDescuento;
     private javax.swing.JTextField txtFacturaVenta;
