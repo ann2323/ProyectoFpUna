@@ -295,7 +295,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero((txtFacturaCompra.getText()));
+            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
             saldoModel.setEsFactura("N");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
           
