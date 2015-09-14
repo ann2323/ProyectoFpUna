@@ -3,7 +3,6 @@ package vista;
 
 import controlador.ClienteControlador;
 import controlador.ComponentesControlador;
-import controlador.CuentaCabeceraControlador;
 import controlador.DepositoControlador;
 import controlador.DetalleCuentaControlador;
 import controlador.DetalleFacturaVenta;
@@ -21,6 +20,8 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.DecimalFormat;
@@ -28,6 +29,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,10 +48,15 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Deposito;
 import modelo.DetalleCuenta;
 import modelo.DetalleVenta;
-import modelo.Moneda;
 import modelo.PrefijoFactura;
 import modelo.Stock;
 import modelo.Venta;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 
 /**
@@ -87,6 +95,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloDetallePago = new DefaultTableModel();
     
+    /**
+     *
+     */
+    public String totalLetras;
+    
     Stock stock = new Stock();
     PrefijoFactura prefijo = new PrefijoFactura();
     private boolean esPrimero = true;
@@ -110,10 +123,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     
     
     Deposito depModel = new  Deposito();
-    Moneda monedaModel = new Moneda();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta ();
-
     
     private void getDepositosVector() {
         comboDeposito.removeAll();
@@ -260,7 +271,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 bCancelar.setEnabled(true);
                 bGuardar.setEnabled(true);
                 bBuscar.setEnabled(false);
-                bImprimir.setEnabled(false);
+                bImprimir.setEnabled(true);
                 break;
             case "Edicion":
                 bNuevo.setEnabled(true);
@@ -367,6 +378,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
                    
             ventaC.setPrecioTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+            
+            
+             
+  
             
            
             //if (bNuevo.isEnabled() == false) {
@@ -483,6 +498,25 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
      }
     }
     
+     private Connection coneccionSQL()
+ 
+    {
+            try
+             {
+                    String cadena;
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
+                    Class.forName("org.postgresql.Driver");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
+                     return con;
+            }
+             catch(Exception e)
+             {
+                  System.out.println(e.getMessage());
+             }
+              return null;
+     }
+     
+
     private void nuevoDetalle() {
        tbDetalleVenta.removeAll();
         try {
@@ -652,7 +686,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         txtIva10 = new javax.swing.JFormattedTextField();
         txtTotal = new javax.swing.JFormattedTextField();
         txtDescuento = new javax.swing.JFormattedTextField();
-        jButton1 = new javax.swing.JButton();
         txtCantidadTotal = new javax.swing.JFormattedTextField();
         jLabel4 = new javax.swing.JLabel();
         comboDeposito = new javax.swing.JComboBox();
@@ -747,15 +780,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
         });
         jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 530, 50, -1));
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
-        jButton1.setText("Detalle de Pago");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 150, 190, 50));
 
         txtCantidadTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCantidadTotal.addActionListener(new java.awt.event.ActionListener() {
@@ -1469,7 +1493,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
      if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-        if ("".equals(txtFechaVenta.getText())) {
+     /*   if ("".equals(txtFechaVenta.getText())) {
             showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
             txtFechaVenta.requestFocusInWindow();
             return;
@@ -1502,9 +1526,34 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              ventaControlador.updateEstado(Integer.parseInt(txtFacturaVenta.getText()));
          } catch (Exception ex) {
              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+         }*/
+         
+          try {
+              
+ 
+            JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/facturaVenta.jrxml");
+                      
+            String monto = ventaControlador.totalLetras(Integer.parseInt(txtTotal.getText().trim().replace(".", "")));
+            
+            Map parametro = new HashMap ();
+            
+            parametro.put("letras", monto);
+            parametro.put("prefijo", txtPrefijoVenta.getText());
+            parametro.put("factura", 2);
+ 
+            JasperPrint print = JasperFillManager.fillReport(report, parametro, coneccionSQL());
+ 
+            JasperViewer.viewReport(print, false);
+ 
+           } catch (JRException jRException) {
+ 
+            System.out.println(jRException.getMessage());
+ 
+           } catch (Exception ex) {
+             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
          }
 
-        //Crea y devuelve un printerjob que se asocia con la impresora predeterminada
+        /*//Crea y devuelve un printerjob que se asocia con la impresora predeterminada
         //del sistema, si no hay, retorna NULL
         PrinterJob printerJob = PrinterJob.getPrinterJob();
         //Se pasa la instancia del JFrame al PrinterJob
@@ -1517,24 +1566,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             } catch (PrinterException ex) {
             System.out.println("Error:" + ex);
             }
-        }
+        }*/
+         
+         
      }
     }//GEN-LAST:event_bImprimirActionPerformed
 
     private void txtFacturaVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaVentaKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFacturaVentaKeyReleased
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-          try {
-            DetallePagoVentaForm detallePago = new DetallePagoVentaForm();
-            MenuPrincipalForm.jDesktopPane1.add(detallePago);
-            detallePago.toFront();
-            detallePago.setVisible(true);
-          }catch (Exception ex) {
-            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-          }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void comboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPagoActionPerformed
         // TODO add your handling code here:
@@ -1588,7 +1628,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private javax.swing.JComboBox comboCuota;
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
