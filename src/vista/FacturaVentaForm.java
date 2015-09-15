@@ -51,12 +51,12 @@ import modelo.DetalleVenta;
 import modelo.PrefijoFactura;
 import modelo.Stock;
 import modelo.Venta;
-import net.sf.jasperreports.engine.JRException;
+/*import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.view.JasperViewer;
+import net.sf.jasperreports.view.JasperViewer;*/
 
 
 /**
@@ -1535,9 +1535,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
          }*/
          
-          try {
+          /*try {
               
- 
+            //reporte  
             JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");
                       
             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());
@@ -1559,7 +1559,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
  
            } catch (Exception ex) {
              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-         }
+         }*/
 
         /*//Crea y devuelve un printerjob que se asocia con la impresora predeterminada
         //del sistema, si no hay, retorna NULL
