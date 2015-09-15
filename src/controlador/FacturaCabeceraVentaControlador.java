@@ -67,6 +67,25 @@ public class FacturaCabeceraVentaControlador {
         }
     }
     
+      public String totalLetras(int precio_total) throws SQLException, Exception
+    {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        String res="";
+        try {
+        String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+        res=rs.getString(1);
+        }
+           
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
+        }
+         return res;
+    }
+      
       public ResultSet datosTablaBusqueda(int codigo) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", cantidad_total as \"Cantidad Total\", precio_total as \"Total\", estado as \"Estado\" from Venta where es_factura = 'S' and cliente_id = '" + codigo + "'";

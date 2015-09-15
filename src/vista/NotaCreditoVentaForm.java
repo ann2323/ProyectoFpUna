@@ -3,7 +3,6 @@ package vista;
 
 import controlador.ClienteControlador;
 import controlador.ComponentesControlador;
-import controlador.CuentaCabeceraControlador;
 import controlador.DepositoControlador;
 import controlador.DetalleCuentaControlador;
 import controlador.DetalleFacturaVenta;
@@ -41,11 +40,9 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import javax.swing.table.DefaultTableModel;
-import modelo.CuentaCabecera;
 import modelo.Deposito;
 import modelo.DetalleCuenta;
 import modelo.DetalleVenta;
-import modelo.Moneda;
 import modelo.PrefijoFactura;
 import modelo.Stock;
 import modelo.Venta;
@@ -104,43 +101,16 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame implements 
     DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
     FacturaCabeceraVentaControlador ventaControlador = new  FacturaCabeceraVentaControlador();
     ClienteControlador cliC = new ClienteControlador();
-    CuentaCabeceraControlador cuentaC = new CuentaCabeceraControlador();
-    CuentaCabecera cuentaCabecera = new CuentaCabecera();
     DetalleCuenta cuentaDetalle = new DetalleCuenta();
     ComponentesControlador cmpCont = new ComponentesControlador();
     
     
     Deposito depModel = new  Deposito();
-    Moneda monedaModel = new Moneda();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta ();
 
-    private void getMonedaVector() {
-        comboTipoPago.removeAll();
-        Vector<Moneda> ventaVec = new Vector<Moneda>();
-        try {
-          
-            try (ResultSet rs = ventaControlador.datoCombo()) {
-                while(rs.next()){
-                    monedaModel=new Moneda();
-                    monedaModel.setMonedaId(rs.getInt(1));
-                    monedaModel.setNombre(rs.getString(2));           
-                    ventaVec.add(monedaModel);
-                }
-                rs.close();
-                                    
-            } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-            }
-        } catch (HeadlessException ex) {
-            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-        }
-        DefaultComboBoxModel md1 = new DefaultComboBoxModel(ventaVec); 
-        comboTipoPago.setModel(md1);
-    }
     
-    
-    private void getDepositosVector() {
+      private void getDepositosVector() {
         comboDeposito.removeAll();
         Vector<Deposito> depVec = new Vector<Deposito>();
         try {
@@ -334,8 +304,6 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame implements 
             ventaC.setEstado("BORRADOR");
             int idCliente = cliC.devuelveId(txtCliente.getText());
             ventaC.setClienteId(idCliente);
-            Moneda moneda = (Moneda) this.comboTipoPago.getSelectedItem();
-            ventaC.setMonedaId(moneda.getMonedaId());
             Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
             ventaC.setCodDeposito(dep.getCodigo());
             ventaC.setPagoContado(comboPago.getSelectedItem().toString());
@@ -343,7 +311,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame implements 
             Date ahora = new Date();
             ventaC.setVencimiento(ahora);
            
-           cuentaC.updateSaldoVenta(Integer.parseInt(txtFacturaReferenciada.getText()), idCliente, Integer.parseInt(txtTotal.getText().replace(".", "")));
+         
             if(!txtDescuento.getText().equals("")){
                 ventaC.setDescuento(Integer.parseInt(txtDescuento.getText())); 
             }
@@ -984,7 +952,6 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame implements 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         nuevo();
         getDepositosVector();
-        getMonedaVector();
         getComponentes();
         txtPrefijoVenta.setEditable(false);
         //txtFacturaVenta.setEditable(false);

@@ -68,6 +68,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         return formateador.format(ahora);
         
     }
+    
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     DefaultTableModel modeloComponentes = new DefaultTableModel();
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
@@ -99,8 +100,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     ProyectoControlador proControl = new ProyectoControlador ();
     Compra compraC = new Compra ();
 
-
-   
 
   
     /*private void getDepositos() {
@@ -268,7 +267,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             saldoModel.setSaldoCompraId(idSaldo);
             saldoModel.setEstado("PENDIENTE");
             saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
+            saldoModel.setNumero((txtFacturaCompra.getText()));
             saldoModel.setEsFactura("S");
             saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
@@ -285,6 +284,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             compraC.setDescuento(Integer.parseInt(txtDescuento.getText()));
           
             compraC.setPrecioTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+            
             
             Proyectos pro = (Proyectos) this.JCproyecto1.getSelectedItem();
             compraC.setProyectoId(pro.getId());
@@ -546,8 +546,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelTotal = new javax.swing.JLabel();
         txtIva5 = new javax.swing.JFormattedTextField();
         labelCantidadTotal4 = new javax.swing.JLabel();
-        txtFechaCompra = new datechooser.beans.DateChooserCombo();
         txtFechaRecepcion = new javax.swing.JTextField();
+        txtFechaCompra = new datechooser.beans.DateChooserCombo();
 
         setClosable(true);
         setIconifiable(true);
@@ -844,66 +844,23 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelCantidadTotal4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal4.setText("Iva 5%");
         JpanelCompra.add(labelCantidadTotal4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 520, 47, -1));
+        JpanelCompra.add(txtFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 140, -1));
+        JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 140, -1));
 
-        txtFechaCompra.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
-            new datechooser.view.appearance.ViewAppearance("custom",
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(0, 0, 0),
-                    new java.awt.Color(0, 0, 255),
-                    false,
-                    true,
-                    new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(0, 0, 0),
-                    new java.awt.Color(0, 0, 255),
-                    true,
-                    true,
-                    new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(0, 0, 255),
-                    new java.awt.Color(0, 0, 255),
-                    false,
-                    true,
-                    new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(128, 128, 128),
-                    new java.awt.Color(0, 0, 255),
-                    false,
-                    true,
-                    new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(0, 0, 0),
-                    new java.awt.Color(0, 0, 255),
-                    false,
-                    true,
-                    new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
-                    new java.awt.Color(0, 0, 0),
-                    new java.awt.Color(255, 0, 0),
-                    false,
-                    false,
-                    new datechooser.view.appearance.swing.ButtonPainter()),
-                (datechooser.view.BackRenderer)null,
-                false,
-                true)));
-    txtFechaCompra.setLocale(new java.util.Locale("es", "BO", ""));
-    JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 140, -1));
-    JpanelCompra.add(txtFechaRecepcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 140, -1));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(JpanelCompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(JpanelCompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    );
-    layout.setVerticalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-            .addComponent(JpanelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
-            .addContainerGap())
-    );
-
-    pack();
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tbDetalleCompraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDetalleCompraKeyPressed
