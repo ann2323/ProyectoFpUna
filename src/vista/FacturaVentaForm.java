@@ -374,6 +374,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                     int i = 0;
                     try {
                         int venta_id = ventaC.getVentaId();                       
+                        int borrado  = 0;
                         while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
                             ventaD.setVentaId(venta_id);
                             ventaD.setDetalleFacturaId(facturaDetalleCont.nuevaLinea());
@@ -436,10 +437,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                                     System.out.println("Cabecera id "+ventaC.getVentaId());
                                     System.out.println("Detalle Venta Id" +ventaD.getVentaId());
                                     System.out.println("Nro factura devuelve id"+ventaControlador.devuelveId(ventaC.getNroFactura()));
-                                    facturaDetalleCont.borrarDetalle(ventaControlador.devuelveId(ventaC.getNroFactura()));
+                                                                        
+                                    if (borrado == 0){
+                                        facturaDetalleCont.borrarDetalle(ventaControlador.devuelveId(ventaC.getNroFactura()));
+                                    }
+                                    borrado = 1;
                                     facturaDetalleCont.insert(ventaD);
                                     //showMessageDialog(null, "Detalle actualizado correctamente");
-                                    limpiar();
+                                    i++;
+                                    //limpiar();
                                 }catch(Exception ex){
                                     showMessageDialog(null, ex, "Error al actualizar detalle venta", ERROR_MESSAGE);   
                                 }        
@@ -1549,8 +1555,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     }//GEN-LAST:event_comboPagoItemStateChanged
 
     private void btAgregarFilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAgregarFilaActionPerformed
-       modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
-      
+       for (int i = 0; i < 12 - tbDetalleVenta.getRowCount();  i++) {
+        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+       }
     }//GEN-LAST:event_btAgregarFilaActionPerformed
 
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
