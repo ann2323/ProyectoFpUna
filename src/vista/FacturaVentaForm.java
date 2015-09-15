@@ -110,6 +110,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
      Integer  cantProducto=0;
      int k, k2;
      double iva10=0.0, iva5=0.0; //variables que suman el iva al traer los componentes
+     double iva_10 = 0.0, iva_5 = 0.0;
 
     StockControlador stockCont = new StockControlador();
     DepositoControlador depBD = new DepositoControlador();
@@ -1185,8 +1186,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              System.out.println(subTotalFormat);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
-             double j =((Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", "")))*10)/100;
-             iva10= iva10+Math.round(j*10/10);
+             double j = (Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", ""))) - (Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", ""))/1.1);
+             Long l = Math.round(j);
+             iva10=iva10+Integer.valueOf(l.intValue());
+             /*double j =((Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", "")))*10)/100;
+             iva10= iva10+Math.round(j*10/10);*/
              String ivaFormat=formateador.format(iva10);
              txtIva10.setText(ivaFormat);
              ventaC.setIva10(Integer.parseInt(txtIva10.getText().toString().replace(".", "").trim()));
@@ -1194,11 +1198,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              //iva 10 cliente exento
          }else if(cmpCont.getTipoIva(codigo)==0 && tipoDeCliente.equals("Exento")){ 
             System.out.println("Entro en el exento, iva 10");
-             double iva_10 = 0.0;
              formateador = new DecimalFormat("###,###.##");
              total=(precio*cantidad);
-             double j = (double) total*10/100; //calculo el iva 10, si el total es 4000 j es 400
-             iva_10= iva_10+Math.round(j*10/10);
+             double j = (double) total/11; //calculo el iva 10, si el total es 4000 j 3636
+             iva_10 =Math.round(j);
              total = (int) (total - iva_10);
              totalFormat=(formateador.format(total));
              tbDetalleVenta.setValueAt((totalFormat), tbDetalleVenta.getSelectedRow(), 4);      
@@ -1211,15 +1214,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
               
              //si el tipo iva es 1 iva 5
          }else if (cmpCont.getTipoIva(codigo)==1 && tipoDeCliente.equals("Normal")){
-                System.out.println("Entro en el normal, iva 5");
+             System.out.println("Entro en el normal, iva 5");
              formateador = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), tbDetalleVenta.getSelectedRow(), 5);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", "").trim());
              String subTotalFormat=formateador.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
-             double j =((Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", ""))) *5)/100;
-             iva5=iva5+Math.round(j*10/10);
+             double j = (Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", ""))) - (Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 5).toString().replace(".", ""))/1.05);
+             Long l = Math.round(j);
+             iva5= iva5+Integer.valueOf(l.intValue());
              String ivaFormat=formateador.format(iva5);
              txtIva5.setText(ivaFormat);
              ventaC.setIva5(Integer.parseInt(txtIva5.getText().toString().replace(".", "").trim()));
@@ -1227,11 +1231,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              //iva 5% cliente exento
          }else if(cmpCont.getTipoIva(codigo)==1 && tipoDeCliente.equals("Exento")){
              System.out.println("Entro en el exento, iva 5");
-             double iva_5 = 0.0;
              formateador = new DecimalFormat("###,###.##");
              total=(precio*cantidad);
-             double j = (double) total*5/100; //calculo el iva 5, si el total es 4000 j es 
-             iva_5= iva_5+Math.round(j*10/10);
+             double j = (double) total/21; //calculo el iva 5, si el total es 4000 j es 
+             iva_5= Math.round(j);
              total = (int) (total - iva_5);
              totalFormat=(formateador.format(total));
              tbDetalleVenta.setValueAt((totalFormat), tbDetalleVenta.getSelectedRow(), 4);      
@@ -1268,8 +1271,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            int cantidad2 = 0;
            cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim());
            int total2 = 0;
-           int iva102 = 0;
-           int iva25 = 0;
+           double iva102 = 0.0;
+           double iva25 = 0.0;
            total2=(precio2*cantidad2);
            cantProducto=cantProducto-cantidad2;
            subTotal=subTotal-total2;
@@ -1277,14 +1280,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            
             if (cmpCont.getTipoIva(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString())==0) {
                DecimalFormat formato = new DecimalFormat("###,###.##");
-               iva102=(total2*10)/100;
-               iva10=iva10-iva102;
+               iva102=total2-total2/1.1;
+               Long l = Math.round(iva102);
+               iva10=iva10 - Integer.valueOf(l.intValue());
                String ivaFormat=formato.format(iva10);
                txtIva10.setText(ivaFormat);
              } else if  (cmpCont.getTipoIva(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString())==1)  {
                 DecimalFormat formato = new DecimalFormat("###,###.##");
-                iva25=(total2*5)/100;
-                iva5=iva5-iva25;
+                iva25 = total2-total2/1.05;
+                Long l = Math.round(iva25);
+               iva5=iva5- Integer.valueOf(l.intValue());
                 String ivaFormat=formato.format(iva5);
                 txtIva5.setText(ivaFormat);
               }
@@ -1321,16 +1326,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             
             if (cmpCont.getTipoIva(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString())==0) {
                  DecimalFormat FormatDeletIva10 = new DecimalFormat("###,###.##");
-                 int iva102 = 0;
-                  iva102=(total2*10)/100;
-                 iva10=Integer.parseInt(txtIva10.getText().replace(".", "").trim())-iva102;
+                 double iva102=total2-total2/1.1;
+                 Long L = Math.round(iva102);
+                 iva10=Integer.parseInt(txtIva10.getText().replace(".", "").trim())- Integer.valueOf(L.intValue());
                  String ivaFormat=FormatDeletIva10.format(iva10);
                  txtIva10.setText(ivaFormat);
-            } else if  (cmpCont.getTipoIva(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString())==1)  {
+            } else if(cmpCont.getTipoIva(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString())==1)  {
                  DecimalFormat FormatDeletIva5 = new DecimalFormat("###,###.##");
-                 int iva25 = 0;
-                 iva25=(total2*5)/100;
-                 iva5=Integer.parseInt(txtIva5.getText().replace(".", "").trim())-iva25;
+                 Double iva25=total2-total2/1.05;
+                 Long L = Math.round(iva25);
+                 iva5=Integer.parseInt(txtIva5.getText().replace(".", "").trim())- Integer.valueOf(L.intValue());
                  String ivaFormat=FormatDeletIva5.format(iva5);
                  txtIva5.setText(ivaFormat);
             }
@@ -1499,7 +1504,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
-     if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+     if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
      /*   if ("".equals(txtFechaVenta.getText())) {
             showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
             txtFechaVenta.requestFocusInWindow();
