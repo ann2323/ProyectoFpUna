@@ -342,7 +342,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setVentaId(id);
             ventaC.setNroPrefijo(txtPrefijoVenta.getText());
             if(!txtIva10.getText().equals("")){
-               ventaC.setIva10(Integer.parseInt(txtIva10.getText()));
+               ventaC.setIva10(Integer.parseInt(txtIva10.getText().trim().replace(".", "")));
             }
             
              if(!txtIva5.getText().equals("")){
@@ -362,6 +362,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
             ventaC.setCodDeposito(dep.getCodigo());
             ventaC.setPagoContado(comboPago.getSelectedItem().toString());
+            ventaC.setVencimiento(date);
             
             
             if ("CREDITO".equals(comboPago.getSelectedItem().toString())){
@@ -1531,15 +1532,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
           try {
               
  
-            JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/facturaVenta.jrxml");
+            JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");
                       
-            String monto = ventaControlador.totalLetras(Integer.parseInt(txtTotal.getText().trim().replace(".", "")));
+            String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());
             
-            Map parametro = new HashMap ();
+            Map parametro = new HashMap ();        
             
+            parametro.put("factura", ventaC.getNroFactura());
             parametro.put("letras", monto);
-            parametro.put("prefijo", txtPrefijoVenta.getText());
-            parametro.put("factura", 2);
+            //parametro.put("prefijo", txtPrefijoVenta.getText());
+           
  
             JasperPrint print = JasperFillManager.fillReport(report, parametro, coneccionSQL());
  
