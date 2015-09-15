@@ -71,7 +71,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
      */
     public FacturaVentaForm() throws Exception {
         initComponents();
-        btAgregarFila.setVisible(false);
         getClientes();
         getComponentes();
         comboPago.setSelectedIndex(-1);
@@ -338,7 +337,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             System.out.println("EL ID ES"+id);
             
             
-            btAgregarFila.setVisible(false);
+            
             //datos cabecera de venta
             ventaC.setVentaId(id);
             ventaC.setNroPrefijo(txtPrefijoVenta.getText());
@@ -381,11 +380,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                    
             ventaC.setPrecioTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
             
-            
-             
-  
-            
-           
+
             //if (bNuevo.isEnabled() == false) {
                     try {
                     int i = 0;
@@ -437,16 +432,18 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                                     showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
                                     return;        
                                 }
-                                stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                                //stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
             
+                              }
                             }
-                         }
+                         
                             
                             if (bNuevo.isEnabled() == false){ 
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(ventaD);
                                 i++;
                                 //nuevo();
+                                //si no inserta, actualiza (factura en suspension)
                             }else{
                                 try {
                                     
@@ -454,7 +451,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                                     System.out.println("Cabecera id "+ventaC.getVentaId());
                                     System.out.println("Detalle Venta Id" +ventaD.getVentaId());
                                     System.out.println("Nro factura devuelve id"+ventaControlador.devuelveId(ventaC.getNroFactura()));
-                                                                        
+                                         
+                                    //borra el detalle para actualizar en caso de que ingrese más componentes
                                     if (borrado == 0){
                                         facturaDetalleCont.borrarDetalle(ventaControlador.devuelveId(ventaC.getNroFactura()));
                                     }
@@ -481,8 +479,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                         nuevo();
                    }else{
                         try {
+                            //factura en suspension
                             System.out.println("Entro en el update de cabecera");
                             //ventaControlador.update(ventaC);
+                            //borra la cabecera para actualizar en caso que sea necesario
                             ventaControlador.borrarCabecera(ventaC.getNroFactura());
                             System.out.println("\n NRO FACTURA CABECERA "+ventaC.getNroFactura());
                             ventaControlador.insert(ventaC);
@@ -730,7 +730,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         txtIva5 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbDetallePagoVenta = new javax.swing.JTable();
-        btAgregarFila = new javax.swing.JButton();
         txtCliente = new javax.swing.JFormattedTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -1027,14 +1026,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jScrollPane2.setViewportView(tbDetallePagoVenta);
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 327, 120, 100));
-
-        btAgregarFila.setText("Agregar Fila");
-        btAgregarFila.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAgregarFilaActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btAgregarFila, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 500, -1, -1));
 
         txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1371,6 +1362,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             System.out.println("STOCK ACTUAL "+stockActual + "\nCantidad introducida "+cantidadIntroducida);
             if(stockActual < cantidadIntroducida){
                 showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
+                //stock. Si no hay stock sale un mensaje y vuelve a la columna cantidad
+                tbDetalleVenta.changeSelection(tbDetalleVenta.getSelectedRow(), 2, false, false);
             }
        } catch (Exception ex) {
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1454,10 +1447,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         nuevoDetalle();
     }//GEN-LAST:event_bBuscarActionPerformed
 
+    //factura en suspension. Busca por numero de factura la cabecera y detalle
     private void txtFacturaVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaVentaKeyPressed
          if (txtCliente.isEnabled() == true){
              System.out.println("Es true");
-            return;
+             return;
         }  
          else{
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -1467,7 +1461,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 bf.columnas = "v.nro_factura";
                 bf.tabla = "venta v";
                 bf.order = "v.nro_factura";
-                bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'";
+                bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
@@ -1505,81 +1499,17 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
      if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-     /*   if ("".equals(txtFechaVenta.getText())) {
-            showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
-            txtFechaVenta.requestFocusInWindow();
-            return;
-        } else if ("".equals(txtCliente.getText())) {
-            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
-            txtCliente.requestFocusInWindow();
-            return;
-        }else if ("".equals(txtCliente1.getText())) {
-            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
-            txtCliente1.requestFocusInWindow();
-            return;
-        }else if ("".equals(txtFacturaVenta.getText())) {
-            showMessageDialog(null, "Debe ingresar algun nro de factura", "Atención", INFORMATION_MESSAGE);
-            txtFacturaVenta.requestFocusInWindow();
-            return;
-        }else if ("".equals(txtPrefijoVenta.getText())) {
-            showMessageDialog(null, "Debe ingresar algun nro de prefijo", "Atención", INFORMATION_MESSAGE);
-            txtPrefijoVenta.requestFocusInWindow();
-            return;
-        }else if (comboDeposito.getSelectedIndex() == -1) {
-            showMessageDialog(null, "Debe seleccionar el deposito", "Atención", INFORMATION_MESSAGE);
-            comboDeposito.requestFocusInWindow();
-            return;
-        } else if (comboPago.getSelectedIndex() == -1) {
-            showMessageDialog(null, "Debe seleccionar el pago Contado/Credito", "Atención", INFORMATION_MESSAGE);
-            comboDeposito.requestFocusInWindow();
-            return;
-        }
-         try {
-             ventaControlador.updateEstado(Integer.parseInt(txtFacturaVenta.getText()));
-         } catch (Exception ex) {
-             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-         }*/
-         
-          /*try {
-              
-            //reporte  
-            JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");
-                      
-            String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());
-            
-            Map parametro = new HashMap ();        
-            
-            parametro.put("factura", ventaC.getNroFactura());
-            parametro.put("letras", monto);
-            //parametro.put("prefijo", txtPrefijoVenta.getText());
-           
- 
-            JasperPrint print = JasperFillManager.fillReport(report, parametro, coneccionSQL());
- 
-            JasperViewer.viewReport(print, false);
- 
-           } catch (JRException jRException) {
- 
-            System.out.println(jRException.getMessage());
- 
+       int i = 0;
+       
+       while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
+           Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
+           try {
+               stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+               i++;
            } catch (Exception ex) {
-             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-         }*/
-
-        /*//Crea y devuelve un printerjob que se asocia con la impresora predeterminada
-        //del sistema, si no hay, retorna NULL
-        PrinterJob printerJob = PrinterJob.getPrinterJob();
-        //Se pasa la instancia del JFrame al PrinterJob
-        printerJob.setPrintable(this);
-        //muestra ventana de dialogo para imprimir
-        if ( printerJob.printDialog())
-        {
-            try {
-                printerJob.print();
-            } catch (PrinterException ex) {
-            System.out.println("Error:" + ex);
-            }
-        }*/
+               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       }
          
          
      }
@@ -1600,12 +1530,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             comboCuota.setEnabled(false);
         }
     }//GEN-LAST:event_comboPagoItemStateChanged
-
-    private void btAgregarFilaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAgregarFilaActionPerformed
-       for (int i = 0; i < 12 - tbDetalleVenta.getRowCount();  i++) {
-        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
-       }
-    }//GEN-LAST:event_btAgregarFilaActionPerformed
 
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -1638,7 +1562,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private org.edisoncor.gui.button.ButtonTask bGuardar;
     private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
-    private javax.swing.JButton btAgregarFila;
     private javax.swing.JComboBox comboCuota;
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
@@ -1767,6 +1690,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         }
     }
 
+    //factura en suspension. recupera los datos de la cabecera cabecera
     private void datosActualesNroFactura() {
               
             txtPrefijoVenta.setText(modeloNroFactura.getValueAt(k2, 0).toString());
@@ -1816,7 +1740,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }    
            
             cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString())); 
-            btAgregarFila.setVisible(true);
+            
     }
 
     private void cargarDetalleFactura(int idventa) {
@@ -1842,10 +1766,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                     }
                     modeloDetalleBusqueda.addRow(fila);
                 }
-                
-                   /*for (int i = 0; i < 11; i++) {
+                //Factura en suspension. una vez que devuelve las filas de la factura se agregan hasta completar las 12
+                for (int i = 0; i < 11; i++) {
                         modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
-                    }*/
+                 }
                    
                  tbDetalleVenta.setModel(modeloDetalleBusqueda);
             } catch (Exception ex) {
