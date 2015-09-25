@@ -8,6 +8,7 @@ package controlador;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import modelo.Proveedor;
 import modelo.Temporal;
@@ -242,6 +243,32 @@ public class ProveedorControlador {
         } catch(HibernateException e){
             throw new Exception("Error al consultar la tabla Proveedor: \n" + e.getMessage());
         }
+    }
+     
+      public String getCedula(String dato) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT ci from Proveedor where proveedor_id = '" + dato + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (String) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar Proveedor: \n" + e.getMessage());
+        }
+    }
+      
+     public String getNombreProveedor(String idProveedor) throws SQLException, Exception  {
+       Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT nombre ||' '|| apellido as \"Nombre\" from Proveedor where proveedor_id = '" + idProveedor + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (String) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar Proveedor: \n" + e.getMessage());
+        } 
     }
 }
    
