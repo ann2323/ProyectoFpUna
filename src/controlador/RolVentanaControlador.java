@@ -66,5 +66,15 @@ public class RolVentanaControlador {
         }
            
     }
+    
+     public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(idRolVentana), 0) + 1 from RolVentanas").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
+        }
+    }
          
 }
