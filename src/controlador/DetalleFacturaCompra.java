@@ -8,6 +8,7 @@ package controlador;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import modelo.DetalleCompra;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -49,5 +50,27 @@ public class DetalleFacturaCompra {
             throw new Exception("Error al generar nuevo código detalle - compra: \n" + e.getMessage());
         }
     }
-   
+    public void borrarDetalle(Integer idcompra) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try{
+            baseDatos.createQuery("Delete from DetalleCompra where compra_id = '" + idcompra + "'").executeUpdate();
+            baseDatos.beginTransaction().commit();
+        }catch(HibernateException e){
+            throw new Exception("Error al eliminar detalle de compra: \n" + e.getMessage());
+        }
+    }
+    
+     public ResultSet getDetalle(int idcompra) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unit as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", sub_total as \"Subtotal\" from detalle_compra where compra_id='"+idcompra+"'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
 }
