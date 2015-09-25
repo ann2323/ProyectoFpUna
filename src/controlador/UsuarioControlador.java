@@ -23,12 +23,12 @@ public class UsuarioControlador{
         
        
         try{
-            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+       Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             Query query = baseDatos.createQuery("Select nombreusuario, contrasenha from Usuario WHERE nombreusuario = '" + usr.getNombreusuario() + "'"
                     + " and contrasenha = md5('" + usr.getContrasenha() + "')");
             
             System.out.println("query "+query);
-            
+        
             if(!query.list().isEmpty()){
                  //System.out.println("ENTRO EN TRUE");
                 return true;
