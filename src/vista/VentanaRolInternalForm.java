@@ -95,6 +95,8 @@ public class VentanaRolInternalForm extends javax.swing.JInternalFrame {
                 rolVent.setRolId(rolInt);
                 int ventInt=ventBD.devuelveId((String) jComboVentana.getSelectedItem());
                 rolVent.setIdVentana(ventInt);
+                int rolVentId=rolVentBD.nuevoCodigo();
+                rolVent.setIdRolVentana(rolVentId);
                 if(rolVentBD.existeRegistro(ventInt, rolInt) > 0){
                     showMessageDialog(this, "El rol "+ jComboRol.getSelectedItem()+ " ya tiene acceso a la ventana " +jComboVentana.getSelectedItem(), "Atención", JOptionPane.WARNING_MESSAGE);
                 }else{
