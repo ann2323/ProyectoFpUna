@@ -22,8 +22,10 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,12 +53,15 @@ import modelo.DetalleVenta;
 import modelo.PrefijoFactura;
 import modelo.Stock;
 import modelo.Venta;
-/*import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.view.JasperViewer;*/
+import net.sf.jasperreports.view.JasperViewer;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import util.HibernateUtil;
 
 
 /**
@@ -120,11 +125,31 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     ComponentesControlador cmpCont = new ComponentesControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
     
-    
+ 
     
     Deposito depModel = new  Deposito();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta ();
+    
+    public String totalLetras(int precio_total) throws SQLException, Exception
+    {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        String res="";
+        try {
+        String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+       res=rs.getString(1);
+        }
+           
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
+        }
+         return res;
+    }
+    
     
     private void getDepositosVector() {
         comboDeposito.removeAll();
@@ -384,7 +409,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             //if (bNuevo.isEnabled() == false) {
                     try {
                     int i = 0;
-                    try {
+                    try {             
                         int venta_id = ventaC.getVentaId();                       
                         int borrado  = 0;
                         while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
@@ -495,7 +520,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                         }        
                     }
                     
-                    //getEntradas();
+                    //getEntradas():
                 } catch (Exception ex) {
                     showMessageDialog(null, ex, "Atención", INFORMATION_MESSAGE);
                     //bGuardar.requestFocusInWindow();
@@ -982,7 +1007,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
         lbDatosGenerales.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)), "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
-        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 990, 150));
+        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 990, 60));
 
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -1376,7 +1401,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 return;
             } */
          
-     
+       
     }//GEN-LAST:event_tbDetalleVentaKeyPressed
 
     private void txtDescuentoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyPressed
@@ -1509,8 +1534,33 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            } catch (Exception ex) {
                Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
            }
+           
        }
          
+         try {	
+               		               
+	 //reporte  
+             JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");		         
+                       		                       
+             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
+             		             
+             Map parametro = new HashMap ();        		               
+             		             
+             parametro.put("factura", ventaC.getNroFactura());		     
+             parametro.put("letras", monto);		          
+             //parametro.put("prefijo", txtPrefijoVenta.getText());		  
+            		            	  
+             JasperPrint print = JasperFillManager.fillReport(report, parametro, coneccionSQL());
+  		  
+             JasperViewer.viewReport(print, false);		      
+  		  
+            } catch (JRException jRException) {		           
+  		  
+             System.out.println(jRException.getMessage());		            
+  		  
+            } catch (Exception ex) {		        
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);		            
+         }
          
      }
     }//GEN-LAST:event_bImprimirActionPerformed
@@ -1524,7 +1574,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     }//GEN-LAST:event_comboPagoActionPerformed
 
     private void comboPagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboPagoItemStateChanged
-        if(comboPago.getSelectedIndex() == 1){
+       if(comboPago.getSelectedIndex() == 1){
             comboCuota.setEnabled(true);
         }else{
             comboCuota.setEnabled(false);
