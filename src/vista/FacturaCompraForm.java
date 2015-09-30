@@ -107,24 +107,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     Compra compraC = new Compra ();
 
 
-  
-    /*private void getDepositos() {
-        try {
-            try (ResultSet rs = depBD.datoCombo()) {
-                
-                modelCombo.removeAllElements();
-                
-                while (rs.next()) {
-                    modelCombo.addElement(rs.getObject("dato").toString());
-                }
-            JCdeposito.setModel(modelCombo);
-            } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-            }
-        } catch (HeadlessException ex) {
-            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-        }
-    }*/
+
     private void getDepositosVector() {
         JCdeposito.removeAll();
         Vector<Deposito> depVec = new Vector<Deposito>();
@@ -345,7 +328,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                             } catch (NumberFormatException e) {
                                 compraD.setSubTotal(Integer.parseInt(tbDetalleCompra.getValueAt(i, 5).toString()+"0"));
                             }  
-                           
+                            
                             if (stockCont.tieneCodStock(tbDetalleCompra.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
                                 showMessageDialog(null, "No se encuentra en stock el codigo solicitado", "Atención", INFORMATION_MESSAGE);
                             } else {
@@ -363,8 +346,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                 //nuevo();
                                 //si no inserta, actualiza (factura en suspension)
                             }else{
-                                try {
-                                      System.out.println("holaaaaaaaaaa detalle");   
+                                try {                            
                                     //borra el detalle para actualizar en caso de que ingrese más componentes
                                     if (borrado == 0){
                                         facturaDetalleCont.borrarDetalle(compraControlador.devuelveId(compraC.getNroFactura()));
@@ -373,7 +355,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                           facturaDetalleCont.insert(compraD);
                                           i++;
                                      }catch(Exception ex){
-                                              showMessageDialog(null, ex, "Error al actualizar detalle venta", ERROR_MESSAGE);   
+                                              showMessageDialog(null, ex, "Error al actualizar detalle compra", ERROR_MESSAGE);   
                                      }     
                             }
                         }
@@ -420,17 +402,17 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
 
   
     private void guardar() throws ParseException, Exception{
+        establecerBotones("Nuevo");
 
     }
-    private void datosActualesComponentes(){
-           if (bNuevo.isEnabled() == true) {
+    private void datosActualesComponentes(){  
            tbDetalleCompra.setValueAt(modeloComponentes.getValueAt(k2, 0), tbDetalleCompra.getSelectedRow(), 0);
            tbDetalleCompra.setValueAt(modeloComponentes.getValueAt(k2, 1), tbDetalleCompra.getSelectedRow(), 1);
            formateador = new DecimalFormat("###,###.##");
            String precio=formateador.format((Integer)modeloComponentes.getValueAt(k2, 2));
            tbDetalleCompra.setValueAt(precio, tbDetalleCompra.getSelectedRow(), 2);
            tbDetalleCompra.setColumnSelectionInterval(2, 2);
-    }}
+    }
  
     private void nuevoDetalle() {
         try {
@@ -581,6 +563,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             }
             
             txtFechaCompra.setText(modeloNroFactura.getValueAt(k2, 3).toString());
+            txtFechaRecepcion.setText(modeloNroFactura.getValueAt(k2, 13).toString());
             JCpago.setSelectedItem(modeloNroFactura.getValueAt(k2, 4).toString());
             forma = new DecimalFormat("###,###.##");
             String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
@@ -849,6 +832,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Factura Compra");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -860,9 +846,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
             }
         });
 
@@ -1439,7 +1422,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         }
         if (tbDetalleCompra.getSelectedColumn()==0){
             if(txtProveedor.getText().equals("")){
-                showMessageDialog(this, "Por favor ingrese un cliente", "Atención", JOptionPane.WARNING_MESSAGE);
+                showMessageDialog(this, "Por favor ingrese un proveedor", "Atención", JOptionPane.WARNING_MESSAGE);
                 txtProveedor.requestFocus();
             }else{
                 if (evt.getKeyCode() == KeyEvent.VK_TAB) {
@@ -1453,8 +1436,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                         for(int c=0; c<modeloComponentes.getRowCount(); c ++){
                         if (modeloComponentes.getValueAt(c, 0).toString().equals(bf.retorno)){
                             k2 = c;
-                          
-                           establecerBotones("Edicion");
+                           //establecerBotones("Edicion");
                            datosActualesComponentes();
                         return;
                         }
@@ -1466,7 +1448,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                     if (modeloComponentes.getValueAt(c, 0).equals(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 0))){
       
                         k2 = c;  
-                          establecerBotones("Edicion");
+                         // establecerBotones("Edicion");
                        datosActualesComponentes();
                        return;
                     }
