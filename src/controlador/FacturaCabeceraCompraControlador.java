@@ -92,7 +92,7 @@ public class FacturaCabeceraCompraControlador {
      public ResultSet getNroFactura() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select v.nro_prefijo, v.nro_factura, v.proveedor_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.compra_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0) from compra v where v.estado != 'PAGADO'";
+          String query = "Select v.nro_prefijo, v.nro_factura, v.proveedor_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.compra_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha_recepcion,'dd/mm/yyyy'), v.fact_referenciada from compra v where v.estado != 'PAGADO'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -102,7 +102,7 @@ public class FacturaCabeceraCompraControlador {
             throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
         }
     }
-    
+     
     public ResultSet datosBusqueda() throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, pago_contado as \"Forma de pago\", precio_total as \"Total\", estado as \"Estado\" from Compra where estado != 'ANULADO'";
@@ -266,7 +266,7 @@ public class FacturaCabeceraCompraControlador {
             rs.next();
             return (int) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al devolver nro de factura de venta: \n" + e.getMessage());
+            throw new Exception("Error al devolver nro de factura de compra: \n" + e.getMessage());
         } 
      }
      
