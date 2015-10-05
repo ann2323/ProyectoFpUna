@@ -432,6 +432,11 @@ public class FacturaCabeceraVentaControlador {
         } 
     }
 
+    public String verificarEstadoFactura(int nroFactura) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        return (String) baseDatos.createQuery("Select estado from Venta where nro_factura = '" + nroFactura + "'").uniqueResult();
+    }
+
    
       
 }
