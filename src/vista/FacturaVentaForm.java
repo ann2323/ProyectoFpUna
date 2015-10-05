@@ -9,6 +9,7 @@ import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
 import controlador.PrefijoFacturaControlador;
 import controlador.ProyectoControlador;
+import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -51,6 +52,7 @@ import modelo.Deposito;
 import modelo.DetalleCuenta;
 import modelo.DetalleVenta;
 import modelo.PrefijoFactura;
+import modelo.SaldoVenta;
 import modelo.Stock;
 import modelo.Venta;
 import net.sf.jasperreports.engine.JRException;
@@ -98,6 +100,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DefaultTableModel modeloNroFactura;
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloDetallePago = new DefaultTableModel();
+    SaldoVenta saldoModel = new SaldoVenta();
     
     /**
      *
@@ -123,6 +126,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     ClienteControlador cliC = new ClienteControlador();
     DetalleCuenta cuentaDetalle = new DetalleCuenta();
     ComponentesControlador cmpCont = new ComponentesControlador();
+    SaldoVentaControlador saldoV = new SaldoVentaControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
     
  
@@ -226,14 +230,14 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
          
-       /*if(Integer.parseInt(txtFacturaVenta.getText()) > prefijoControlador.finfactura()){
+       if(Integer.parseInt(txtFacturaVenta.getText()) > prefijoControlador.finfactura()){
            showMessageDialog(this, "Fin de lote de factura. Ingrese un nuevo lote ", "Error en el número de factura", JOptionPane.ERROR_MESSAGE);
            this.dispose();
            PrefijoFacturaInternalForm prefijoFactura = new PrefijoFacturaInternalForm();
            MenuPrincipalForm.jDesktopPane1.add(prefijoFactura);
            prefijoFactura.moveToFront();
            prefijoFactura.show();
-       }*/
+       }
         
         //getClientes();
         comboPago.setSelectedItem(true);
@@ -256,6 +260,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         txtDescuento.setText("");
         txtCantidadTotal.setText("");
         txtSubTotal.setText("");
+        txtIva10.setText("");
+        txtIva5.setText("");
         txtTotal.setText("");
         //nuevoDetalle();
      }
@@ -294,28 +300,28 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             case "Nuevo":
                 bNuevo.setEnabled(false);
                 bCancelar.setEnabled(true);
-                bGuardar.setEnabled(true);
+                bSuspender.setEnabled(true);
                 bBuscar.setEnabled(false);
                 bImprimir.setEnabled(true);
                 break;
             case "Edicion":
                 bNuevo.setEnabled(true);
                 bCancelar.setEnabled(false);
-                bGuardar.setEnabled(true);
+                bSuspender.setEnabled(true);
                 bBuscar.setEnabled(true);
                 bImprimir.setEnabled(true);
                 break;
             case "Vacio":
                 bNuevo.setEnabled(true);
                 bCancelar.setEnabled(false);
-                bGuardar.setEnabled(false);
+                bSuspender.setEnabled(false);
                 bBuscar.setEnabled(false);
                 bImprimir.setEnabled(false);
                 break;
             case "Buscar":
                 bNuevo.setEnabled(false);
                 bCancelar.setEnabled(true);
-                bGuardar.setEnabled(false);
+                bSuspender.setEnabled(false);
                 bBuscar.setEnabled(false);
                 bImprimir.setEnabled(false);
                 break;
@@ -328,7 +334,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             txtFechaVenta.requestFocusInWindow();
             return;
         } else if ("".equals(txtFechaVenta.getText())) {
-            showMessageDialog(null, "Debe ingresar la fecha de recepcion", "Atención", INFORMATION_MESSAGE);
+            showMessageDialog(null, "Debe ingresar la fecha de venta", "Atención", INFORMATION_MESSAGE);
             txtFechaVenta.requestFocusInWindow();
             return;
         } else if ("".equals(txtCliente.getText())) {
@@ -382,6 +388,13 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setEsFactura('S');
             //ventaC.setProyectoId(setearProyecto());
             ventaC.setEstado("BORRADOR");
+            int idSaldo = saldoV.nuevoCodigo();
+            saldoModel.setSaldo(idSaldo);
+            saldoModel.setEstado("PENDIENTE");
+            saldoModel.setPrefijo(Integer.parseInt(txtPrefijoVenta.getText()));
+            saldoModel.setNumero(Integer.parseInt(txtFacturaVenta.getText()));
+            saldoModel.setEsFactura("S");
+            saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
             int idCliente = cliC.devuelveId(txtCliente.getText().replace(".", ""));
             ventaC.setClienteId(idCliente);
             Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
@@ -510,6 +523,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                             //borra la cabecera para actualizar en caso que sea necesario
                             ventaControlador.borrarCabecera(ventaC.getNroFactura());
                             System.out.println("\n NRO FACTURA CABECERA "+ventaC.getNroFactura());
+                            saldoV.insert(saldoModel);
                             ventaControlador.insert(ventaC);
                             limpiar();
                             nuevo();
@@ -744,7 +758,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         labelCantidadTotal = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bNuevo = new org.edisoncor.gui.button.ButtonTask();
-        bGuardar = new org.edisoncor.gui.button.ButtonTask();
+        bSuspender = new org.edisoncor.gui.button.ButtonTask();
         bCancelar = new org.edisoncor.gui.button.ButtonTask();
         bBuscar = new org.edisoncor.gui.button.ButtonTask();
         bImprimir = new org.edisoncor.gui.button.ButtonTask();
@@ -765,7 +779,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         setResizable(true);
         setTitle("Factura Venta");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(1200, 680));
+        setPreferredSize(new java.awt.Dimension(1275, 680));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -953,17 +967,17 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel2.add(bNuevo);
 
-        bGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        bGuardar.setText("Guardar");
-        bGuardar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
-        bGuardar.setCategorySmallFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        bGuardar.setDescription(" ");
-        bGuardar.addActionListener(new java.awt.event.ActionListener() {
+        bSuspender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Pause.png"))); // NOI18N
+        bSuspender.setText("Suspender");
+        bSuspender.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        bSuspender.setCategorySmallFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        bSuspender.setDescription(" ");
+        bSuspender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bGuardarActionPerformed(evt);
+                bSuspenderActionPerformed(evt);
             }
         });
-        jPanel2.add(bGuardar);
+        jPanel2.add(bSuspender);
 
         bCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cancelar.png"))); // NOI18N
         bCancelar.setText("Cancelar");
@@ -992,8 +1006,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jPanel2.add(bBuscar);
 
         bImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        bImprimir.setText("Imprimir");
-        bImprimir.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 20)); // NOI18N
+        bImprimir.setText("Guardar e Imprimir");
+        bImprimir.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 16)); // NOI18N
+        bImprimir.setCategorySmallFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         bImprimir.setDescription(" ");
         bImprimir.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         bImprimir.addActionListener(new java.awt.event.ActionListener() {
@@ -1003,11 +1018,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel2.add(bImprimir);
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1240, -1));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, -1));
 
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
         lbDatosGenerales.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)), "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
-        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 990, 60));
+        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 990, 140));
 
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -1089,8 +1104,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1241, Short.MAX_VALUE)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1184, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1436,13 +1451,13 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         }
     }//GEN-LAST:event_bNuevoActionPerformed
 
-    private void bGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarActionPerformed
+    private void bSuspenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSuspenderActionPerformed
         try {
             guardar();
         } catch (Exception ex) {
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_bGuardarActionPerformed
+    }//GEN-LAST:event_bSuspenderActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
         cancelar();
@@ -1486,7 +1501,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 bf.columnas = "v.nro_factura";
                 bf.tabla = "venta v";
                 bf.order = "v.nro_factura";
-                bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
+                bf.filtroBusqueda = "es_factura = 'S' and estado != 'PAGADO'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
@@ -1523,8 +1538,20 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
-     if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-       int i = 0;
+      if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+          String nroFactura = "";
+          nroFactura = txtFacturaVenta.getText();
+          //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
+          //dos veces
+          try { 
+              if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText())) == null) {
+                 guardar();  
+              }
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          
+      int i = 0;
        
        while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
            Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
@@ -1536,7 +1563,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            }
            
        }
-         
+         try {
+             ventaControlador.updateEstado(Integer.parseInt(nroFactura));
+         } catch (Exception ex) {
+             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+         }
          try {	
                		               
 	 //reporte  
@@ -1559,10 +1590,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              System.out.println(jRException.getMessage());		            
   		  
             } catch (Exception ex) {		        
-              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);		            
-         }
-         
-     }
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex); 
+            }		            
+           
+      }
     }//GEN-LAST:event_bImprimirActionPerformed
 
     private void txtFacturaVentaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaVentaKeyReleased
@@ -1609,9 +1640,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bBuscar;
     private org.edisoncor.gui.button.ButtonTask bCancelar;
-    private org.edisoncor.gui.button.ButtonTask bGuardar;
     private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
+    private org.edisoncor.gui.button.ButtonTask bSuspender;
     private javax.swing.JComboBox comboCuota;
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
@@ -1740,13 +1771,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         }
     }
 
-    //factura en suspension. recupera los datos de la cabecera cabecera
+    //factura en suspension. recupera los datos de la cabecera
     private void datosActualesNroFactura() {
-              
+            
+            DecimalFormat forma = new DecimalFormat("###,###.##");  
             txtPrefijoVenta.setText(modeloNroFactura.getValueAt(k2, 0).toString());
             txtFacturaVenta.setText(modeloNroFactura.getValueAt(k2, 1).toString());
             try {
-                txtCliente.setText(cliC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString()));
+                String cedula=forma.format(Integer.parseInt(cliC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
+                txtCliente.setText(cedula);
                 txtCliente1.setText(cliC.getNombreCliente(modeloNroFactura.getValueAt(k2, 2).toString()));
                 comboDeposito.setSelectedItem(depBD.getDeposito(modeloNroFactura.getValueAt(k2, 6).toString()));
             
@@ -1761,9 +1794,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             
             txtFechaVenta.setText(modeloNroFactura.getValueAt(k2, 3).toString());
             comboPago.setSelectedItem(modeloNroFactura.getValueAt(k2, 4).toString());
-            txtCantidadTotal.setText(modeloNroFactura.getValueAt(k2, 7).toString());
-            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString());
-            txtTotal.setText(modeloNroFactura.getValueAt(k2, 8).toString());
+            String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", "")));
+            txtCantidadTotal.setText(cantidad);
+            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", ""));
+            String totalFormat=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString().trim().replace(".", "")));
+            txtTotal.setText(totalFormat);
             txtDescuento.setText(modeloNroFactura.getValueAt(k2, 9).toString());
             int total = 0;
             total = Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString());
@@ -1773,25 +1808,47 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             subtotal = total - descuento;
             //seteo el subTotal para que acumule en la búsqueda
             subTotal = subtotal;
-            txtSubTotal.setText(String.valueOf(subtotal));
+            String subTotalFormat=forma.format(subtotal);
+            txtSubTotal.setText(String.valueOf(subTotalFormat));
             if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()) == 0){
                 txtIva10.setText("");
                 iva10 = 0.0;
             }else{
-                txtIva10.setText(modeloNroFactura.getValueAt(k2, 11).toString());
-                iva10 = Double.valueOf(txtIva10.getText());
+                String iva10Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()));
+                txtIva10.setText(iva10Format);
+                iva10 = Integer.parseInt(txtIva10.getText().trim().replace(".",""));
             }
             if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 12).toString())== 0){
                 txtIva5.setText("");
                 iva5 = 0.0;
             }else{
-                txtIva5.setText(modeloNroFactura.getValueAt(k2, 12).toString());
-                iva5 = Double.valueOf(txtIva5.getText());
+                String iva5Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 12).toString()));
+                txtIva5.setText(iva5Format);
+                iva5 = Integer.parseInt(txtIva5.getText().trim().replace(".",""));
             }    
            
-            cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString())); 
+            cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()));
+            datosActualesDetalleFactura();
             
     }
+    
+    private void datosActualesDetalleFactura(){
+           DecimalFormat forma = new DecimalFormat("###,###.##");  
+           int i=0;
+           while (!"".equals(modeloDetalleBusqueda.getValueAt(i, 0).toString())){
+            tbDetalleVenta.setValueAt(modeloDetalleBusqueda.getValueAt(i, 0), i, 0);
+            tbDetalleVenta.setValueAt(modeloDetalleBusqueda.getValueAt(i, 1), i, 1);
+            String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
+            tbDetalleVenta.setValueAt(precioUnit, i, 2);
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
+            tbDetalleVenta.setValueAt(cantidadFormat, i, 3);
+            String exentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
+            tbDetalleVenta.setValueAt(exentasFormat, i, 4);
+            String subTotalFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 5).toString()));
+            tbDetalleVenta.setValueAt(subTotalFormat, i, 5);
+            i++;
+           }
+     }
 
     private void cargarDetalleFactura(int idventa) {
         tbDetalleVenta.removeAll();
