@@ -327,21 +327,26 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                 compraD.setSubTotal(Integer.parseInt(tbDetalleCompra.getValueAt(i, 5).toString().replace(".", "").trim()));
                             } catch (NumberFormatException e) {
                                 compraD.setSubTotal(Integer.parseInt(tbDetalleCompra.getValueAt(i, 5).toString()+"0"));
-                            }  
-                            
-                            if (stockCont.tieneCodStock(tbDetalleCompra.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
-                                showMessageDialog(null, "No se encuentra en stock el codigo solicitado", "Atención", INFORMATION_MESSAGE);
-                            } else {
-                                try {
-                                    stockCont.update(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
-                                 } catch (Exception ex) {
-                                    stockCont.update(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().replace(".", "").trim() + "0"));
-                                   }
                             }
+                              
+                            if (stockCont.tieneCodStock(tbDetalleCompra.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
+                                
+                                stock.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim()));
+                                stock.setCodComponente(tbDetalleCompra.getValueAt(i, 0).toString());
+                                stock.setCodDeposito(dep.getCodigo());
+                                stock.setLine(stockCont.nuevoCodigo());
+                                
+                                stockCont.insert(stock);
+                            }             
                             
                            if (bNuevo.isEnabled() == false){ 
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(compraD);
+                                try {
+                                    stockCont.update(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
+                                } catch (Exception ex) {
+                                    stockCont.update(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().replace(".", "").trim() + "0"));
+                                }
                                 i++;
                                 //nuevo();
                                 //si no inserta, actualiza (factura en suspension)
@@ -351,9 +356,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                     if (borrado == 0){
                                         facturaDetalleCont.borrarDetalle(compraControlador.devuelveId(compraC.getNroFactura()));
                                     }
-                                        borrado = 1;
-                                          facturaDetalleCont.insert(compraD);
-                                          i++;
+                                        borrado = 1;                                        
+                                        facturaDetalleCont.insert(compraD);
+                                        i++;
                                      }catch(Exception ex){
                                               showMessageDialog(null, ex, "Error al actualizar detalle compra", ERROR_MESSAGE);   
                                      }     
@@ -368,16 +373,16 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                     
                    if (bNuevo.isEnabled() == false){ 
                        System.out.println("Entro en el insert de cabecera");
+                        compraC.setEstado("CONFIRMADO");
                         compraControlador.insert(compraC);
                         txtFacturaCompra.setText("");
                         nuevo();
                    }else{
                         try {  
-                            System.out.println("holaaaaaaaaaa");
                             compraControlador.borrarCabecera(compraC.getNroFactura());
                             compraControlador.insert(compraC);
                             compraControlador.cambiarAEnProceso(pro.getCodigo());
-                    saldoC.insert(saldoModel);
+                            saldoC.insert(saldoModel);
                             limpiar();
                             nuevo();
                             //showMessageDialog(null, "Venta actualizada correctamente");
@@ -402,8 +407,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
 
   
     private void guardar() throws ParseException, Exception{
-        establecerBotones("Nuevo");
-
+       suspender();
     }
     private void datosActualesComponentes(){  
            tbDetalleCompra.setValueAt(modeloComponentes.getValueAt(k2, 0), tbDetalleCompra.getSelectedRow(), 0);
@@ -1256,72 +1260,70 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
      
         
         if (!tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 2).equals("")&&!tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).equals("")){
-        txtDescuento.setText("0");
-        formateador = new DecimalFormat();
-        
-        Integer precio;
-        String codigo = tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(),0).toString();
-        
-        precio = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 2).toString().replace(".", "").trim());
-        
-        Integer Cantidad; 
-        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim().replace(".", ""));
-        formateador = new DecimalFormat("###,###.##");
-        String cantidadDet=formateador.format(Cantidad);
-        tbDetalleCompra.setValueAt((cantidadDet), tbDetalleCompra.getSelectedRow(), 3); 
-        int total=(precio*Cantidad);
-        String totalFormat=(formateador.format(total));
-
-       if (tbDetalleCompra.getSelectedColumn()==5 && !(evt.getKeyCode() == KeyEvent.VK_DELETE)){
-                          
-               // tbDetalleCompra.setValueAt((total), tbDetalleCompra.getSelectedRow(), 4);
-         cantProducto=cantProducto+Cantidad;
-         formateador = new DecimalFormat("###,###.##");
-         String cantidad=formateador.format(cantProducto);
-         txtCantidadTotal.setText(cantidad);      
-         if(componentesControl.getTipoIva(codigo)==0){
-             formateador = new DecimalFormat("###,###.##");
-             tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 5); 
-          
-             subTotal=subTotal+   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());
-             System.out.println(subTotal);
-             String subTotalFormat=formateador.format(subTotal);
-             System.out.println(subTotalFormat);
-             txtSubTotal.setText(subTotalFormat);
-             txtTotal.setText(txtSubTotal.getText().trim());
-             double j =  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())/1.1; 
-             iva10=iva10+j;
-             String ivaFormat=formateador.format(Math.round(iva10));
-             txtIva10.setText(ivaFormat);
-             
-         }else if (componentesControl.getTipoIva(codigo)==1){
-             formateador = new DecimalFormat("###,###.##");
-             tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 5);
-             subTotal=subTotal+   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
-             txtSubTotal.setText(subTotalFormat);
-             txtTotal.setText(txtSubTotal.getText().trim());
-             double j =  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim()) - (  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())/1.05);
-             iva5=iva5+j;
-             String ivaFormat=formateador.format(Math.round(iva5));
-             txtIva5.setText(ivaFormat);
-         }else{
-             formateador = new DecimalFormat("###,###.##");
-             tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 4);      
-             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 4).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
-             txtSubTotal.setText(subTotalFormat);
-             txtTotal.setText(txtSubTotal.getText().trim());
-             
-            }
-       }
+                    
+                    txtDescuento.setText("0");
+                    formateador = new DecimalFormat();
+                    
+                    Integer precio;
+                    String codigo = tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(),0).toString();
+                    
+                    precio = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 2).toString().replace(".", "").trim());
+                    
+                    Integer Cantidad;
+                    Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim().replace(".", ""));
+                    formateador = new DecimalFormat("###,###.##");
+                    String cantidadDet=formateador.format(Cantidad);
+                    tbDetalleCompra.setValueAt((cantidadDet), tbDetalleCompra.getSelectedRow(), 3);
+                    int total=(precio*Cantidad);
+                    String totalFormat=(formateador.format(total));
+                    
+                    if (tbDetalleCompra.getSelectedColumn()==5 && !(evt.getKeyCode() == KeyEvent.VK_DELETE)){
+                        
+                        // tbDetalleCompra.setValueAt((total), tbDetalleCompra.getSelectedRow(), 4);
+                        cantProducto=cantProducto+Cantidad;
+                        formateador = new DecimalFormat("###,###.##");
+                        String cantidad=formateador.format(cantProducto);
+                        txtCantidadTotal.setText(cantidad);
+                        if(componentesControl.getTipoIva(codigo)==0){
+                            formateador = new DecimalFormat("###,###.##");
+                            tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 5);
+                            
+                            subTotal=subTotal+   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());
+                            String subTotalFormat=formateador.format(subTotal);
+                            txtSubTotal.setText(subTotalFormat);
+                            txtTotal.setText(txtSubTotal.getText().trim());
+                            double j =  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())/1.1;
+                            iva10=iva10+j;
+                            String ivaFormat=formateador.format(Math.round(iva10));
+                            txtIva10.setText(ivaFormat);
+                            
+                        }else if (componentesControl.getTipoIva(codigo)==1){
+                            formateador = new DecimalFormat("###,###.##");
+                            tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 5);
+                            subTotal=subTotal+   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());
+                            String subTotalFormat=formateador.format(subTotal);
+                            txtSubTotal.setText(subTotalFormat);
+                            txtTotal.setText(txtSubTotal.getText().trim());
+                            double j =  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim()) - (  Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())/1.05);
+                            iva5=iva5+j;
+                            String ivaFormat=formateador.format(Math.round(iva5));
+                            txtIva5.setText(ivaFormat);
+                        }else{
+                            formateador = new DecimalFormat("###,###.##");
+                            tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 4);
+                            subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 4).toString().replace(".", "").trim());
+                            String subTotalFormat=formateador.format(subTotal);
+                            txtSubTotal.setText(subTotalFormat);
+                            txtTotal.setText(txtSubTotal.getText().trim());
+                            
+                        }
+                    }
     
        if(evt.getKeyCode() == KeyEvent.VK_F9){
            if(tbDetalleCompra.getSelectedRow() == -1){
                 showMessageDialog(this, "Por favor seleccione una fila", "Atención", JOptionPane.WARNING_MESSAGE);
             }else{
                 if(showConfirmDialog (null, "¿Desea eliminar esta fila?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-                    System.out.println("Fila 1, columna 0 "+tbDetalleCompra.getValueAt(1, 2));
            
            Integer precio2;
                     
@@ -1357,10 +1359,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                     String cantidad=formatoCant.format(cantProducto);
                     txtCantidadTotal.setText(cantidad); 
                     modeloD.removeRow(tbDetalleCompra.getSelectedRow());                    
-                    System.out.println("Fila 1, columna 0 "+tbDetalleCompra.getValueAt(0, 2));
                     modeloD.addRow(new Object[]{"","","","",""});
                     tbDetalleCompra.setModel(modeloD);
-                    System.out.println("Cantidad de filas "+modeloD.getRowCount());
                     tbDetalleCompra.setColumnSelectionInterval(0, 0);
                 }
            }}
@@ -1377,7 +1377,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
        
             
             int total2=(precio2*Cantidad2);
-             System.out.println(total2);
            
             cantProducto=cantProducto-Cantidad2;
             
@@ -1395,10 +1394,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                  txtIva5.setText(ivaFormat);
             }
             DecimalFormat FormatSubTotal = new DecimalFormat("###,###.##");
-             System.out.println(subTotal);
             subTotal=subTotal-total2;
-            System.out.println(subTotal);
-            System.out.println(total2);
             String subTotalFormat=FormatSubTotal.format(subTotal);
             txtSubTotal.setText(subTotalFormat);
             txtTotal.setText(txtSubTotal.getText().trim()); 
@@ -1420,7 +1416,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
            
            }*/
         }
-        if (tbDetalleCompra.getSelectedColumn()==0){
+        if (tbDetalleCompra.getSelectedColumn()==0){         
             if(txtProveedor.getText().equals("")){
                 showMessageDialog(this, "Por favor ingrese un proveedor", "Atención", JOptionPane.WARNING_MESSAGE);
                 txtProveedor.requestFocus();
@@ -1583,9 +1579,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 
 
                 for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                    System.out.println("modelo row count "+modeloNroFactura.getRowCount());
                     if (modeloNroFactura.getValueAt(c, 1).toString().equals(bf.retorno)){
-                        System.out.println("MODELO "+modeloNroFactura.getValueAt(c, 1).toString());
                         modoBusqueda(false);
                         establecerBotones("Edicion");
                         k2 = c;
@@ -1597,8 +1591,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 
             }
             getNroFactura();
-            
-            System.out.println(modeloNroFactura.getRowCount());
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
                 if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtFacturaCompra.getText())){
                     modoBusqueda(false);
