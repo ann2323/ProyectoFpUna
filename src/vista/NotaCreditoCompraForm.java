@@ -222,7 +222,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     }
      
     private void guardar() throws ParseException, Exception{
-           
+       suspender();
     }
     
     private void getNroFactura() {
@@ -364,26 +364,22 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                             } catch (NumberFormatException e) {
                                 compraD.setSubTotal(Integer.parseInt(tbDetalleCompra.getValueAt(i, 5).toString()+"0"));
                             }  
-                           
-                             if (stockCont.tieneCodStock(tbDetalleCompra.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
-                                
-                                stock.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim()));
-                                stock.setCodComponente(tbDetalleCompra.getValueAt(i, 0).toString());
-                                stock.setCodDeposito(dep.getCodigo());
-                                stock.setLine(stockCont.nuevoCodigo());
-                                
-                                stockCont.insert(stock);
-                            } else {
-                                if(stockCont.tieneStock(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo()) < Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString()) ){
+   
+                            if(stockCont.tieneStock(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo()) < Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString()) ){
                                     showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
                                     return;        
-                                }
-                                stockCont.update2(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim()));
-            
                             }
+                              
+            
+                            
                             if (bNuevo.isEnabled() == false){ 
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(compraD);
+                                 try {
+                                    stockCont.update2(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
+                                } catch (Exception ex) {
+                                    stockCont.update2(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().replace(".", "").trim() + "0"));
+                                }
                                 i++;
                                 //nuevo();
                                 //si no inserta, actualiza (factura en suspension)
@@ -410,6 +406,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                     }
                     
                      if (bNuevo.isEnabled() == false){ 
+                        compraC.setEstado("CONFIRMADO");
                         compraControlador.insert(compraC);
                         txtFacturaCompra.setText("");
                         nuevo();
