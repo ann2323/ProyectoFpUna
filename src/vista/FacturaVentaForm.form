@@ -36,7 +36,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jPanel1" pref="1275" max="32767" attributes="0"/>
-          <Component id="jPanel5" alignment="0" pref="1275" max="32767" attributes="0"/>
+          <Component id="jPanel5" alignment="0" pref="1259" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

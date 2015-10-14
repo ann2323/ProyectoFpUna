@@ -423,7 +423,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                     try {
                     int i = 0;
                     try {             
-                        int venta_id = ventaC.getVentaId();                       
+                        int venta_id = ventaControlador.nuevoCodigo();                        
                         int borrado  = 0;
                         while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
                             ventaD.setVentaId(venta_id);
@@ -551,9 +551,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             try
              {
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/proyecto";
+                    cadena="jdbc:postgresql://localhost:5432/intersat";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
                      return con;
             }
              catch(Exception e)
@@ -1571,7 +1571,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
          try {	
                		               
 	 //reporte  
-             JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");		         
+             JasperReport report = JasperCompileManager.compileReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");		         
                        		                       
              String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
              		             
