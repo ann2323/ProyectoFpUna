@@ -432,7 +432,18 @@ public class FacturaCabeceraVentaControlador {
         } 
     }
 
-   
+    public ResultSet verificarEstadoFactura(int nroFactura) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT nro_factura from Venta where nro_factura = '" + nroFactura + "'";
+         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+        }
+
+   } 
       
 }
 
