@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaVenta" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="640695ee-d00c-4256-91a7-c45ad7c4642e">
-	<property name="ireport.zoom" value="1.6500000000000044"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaVenta" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="640695ee-d00c-4256-91a7-c45ad7c4642e">
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="111"/>
+	<property name="ireport.y" value="32"/>
 	<parameter name="factura" class="java.lang.Integer"/>
 	<parameter name="letras" class="java.lang.String"/>
 	<queryString>
@@ -41,12 +41,12 @@ WHERE  VEN.NRO_FACTURA=$P{factura}]]>
 		<variableExpression><![CDATA[$F{precio_total}]]></variableExpression>
 	</variable>
 	<variable name="iva5" class="java.lang.Integer">
-		<variableExpression><![CDATA[$F{precio_unitario}-($F{precio_unitario}/(1.05))]]></variableExpression>
+		<variableExpression><![CDATA[$F{precio_unitario}-($F{precio_unitario}/(105))]]></variableExpression>
 	</variable>
 	<variable name="iva10" class="java.lang.Integer">
 		<variableExpression><![CDATA[$F{precio_unitario}/11]]></variableExpression>
 	</variable>
-	<variable name="total_iva" class="java.math.BigDecimal">
+	<variable name="total_iva" class="java.lang.Integer">
 		<variableExpression><![CDATA[$F{iva5}+$F{iva10}]]></variableExpression>
 	</variable>
 	<background>
@@ -55,8 +55,8 @@ WHERE  VEN.NRO_FACTURA=$P{factura}]]>
 	<title>
 		<band height="109" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="6" width="86" height="84" uuid="7ea987eb-ada6-4c97-bd67-230116edeede"/>
-				<imageExpression><![CDATA["C:\\Users\\Any\\Desktop\\IMG-20150705-WA0002.jpg"]]></imageExpression>
+				<reportElement x="2" y="6" width="86" height="84" uuid="7ea987eb-ada6-4c97-bd67-230116edeede"/>
+				<imageExpression><![CDATA["C:\\Users\\Any\\Documents\\logo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="86" y="15" width="255" height="15" uuid="e2750fc4-f91d-42ad-8d6d-d5d7ea9ad4de"/>
