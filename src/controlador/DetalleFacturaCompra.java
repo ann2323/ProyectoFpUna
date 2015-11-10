@@ -45,7 +45,7 @@ public class DetalleFacturaCompra {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(detalleCompraId), 0) + 1 from DetalleCompra").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(detalle_compra_id), 0) + 1 from DetalleCompra").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código detalle - compra: \n" + e.getMessage());
         }
@@ -71,6 +71,30 @@ public class DetalleFacturaCompra {
             return rs;
         } catch(HibernateException e){
             throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
+    public ResultSet getDetalleFactura(int idcompra) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unit as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", sub_total as \"Subtotal\" from detalle_compra where compra_id='"+idcompra+"' and nota_credito is null";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
+    
+    public void updateFactura(int idcompra, String cmp) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try {
+            baseDatos.createQuery("update DetalleCompra set "
+                   +" nota_credito = 'S' where compra_id = '" +idcompra+ "' and codigo = '" +cmp+ "'").executeUpdate();
+            baseDatos.beginTransaction().commit();
+        } catch(HibernateException e){
+            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
         }
     }
 }
