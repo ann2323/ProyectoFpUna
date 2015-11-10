@@ -15,7 +15,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.awt.Graphics;
+import java.awt.Graphics; 
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -551,9 +551,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             try
              {
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/intersat";
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
                      return con;
             }
              catch(Exception e)
@@ -1544,7 +1544,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
           //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
           //dos veces
           try { 
-              if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText())) == null) {
+              if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText())) == 0) {
                  guardar();  
               }
           } catch (Exception ex) {
@@ -1569,29 +1569,26 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
          }
          try {	
-               		               
-	 //reporte  
-             JasperReport report = JasperCompileManager.compileReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");		         
-                       		                       
+                		                       
              String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
              		             
              Map parametro = new HashMap ();        		               
              		             
              parametro.put("factura", ventaC.getNroFactura());		     
              parametro.put("letras", monto);		          
-             //parametro.put("prefijo", txtPrefijoVenta.getText());		  
+             parametro.put("prefijo", txtPrefijoVenta.getText());		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport(report, parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
   		  
-             JasperViewer.viewReport(print, false);		      
+             JasperViewer.viewReport(print);		      
   		  
             } catch (JRException jRException) {		           
   		  
-             System.out.println(jRException.getMessage());		            
+             System.out.println(jRException.getMessage());
   		  
-            } catch (Exception ex) {		        
-              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex); 
-            }		            
+            } catch (Exception ex) {		            
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }		            
            
       }
     }//GEN-LAST:event_bImprimirActionPerformed
