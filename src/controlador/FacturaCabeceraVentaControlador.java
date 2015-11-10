@@ -117,11 +117,11 @@ public class FacturaCabeceraVentaControlador {
         }
          return res;
     }
-    public Integer nuevoCodigo() throws Exception {
+   public Integer nuevoCodigo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(venta_id), 0) + 1 from Venta").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(ventaId), 0) + 1 from Venta").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
         }
@@ -383,10 +383,10 @@ public class FacturaCabeceraVentaControlador {
             }
     }
      
-       public ResultSet getNroNotaDeCredito() throws SQLException, Exception {
+      public ResultSet getNroNotaDeCredito() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.moneda_id, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), v.fact_referenciada from venta v where v.estado = 'BORRADOR'";
+          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), v.fact_referenciada from venta v where v.estado = 'BORRADOR'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -441,9 +441,9 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al consultar tabla Venta: \n" + e.getMessage());
          }
 
+
    } 
       
 }
-
-    
+ 
 
