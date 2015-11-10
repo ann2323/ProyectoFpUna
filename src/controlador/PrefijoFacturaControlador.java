@@ -104,7 +104,7 @@ public class PrefijoFacturaControlador {
     //devuelve el fin de factura de la tabla prefijo
      public Integer finfactura() throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String query = "SELECT MAX(finfactura) from prefijo_factura";
+String query = "SELECT MAX(finfactura) from prefijo_factura where tipo_documento = 'F'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         try {
             ResultSet rs = ps.executeQuery();
@@ -114,8 +114,18 @@ public class PrefijoFacturaControlador {
             throw new Exception("Error al obtener el número final de factura: \n" + e.getMessage());
         }
     }
-
-   
+ public Integer finNotaC() throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT MAX(finfactura) from prefijo_factura where tipo_documento = 'N'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (Integer) rs.getObject(1);
+        } catch (HibernateException e) {
+            throw new Exception("Error al obtener el número final de nota de crédito: \n" + e.getMessage());
+        }
+    }
 
     public Long existeNroFinalFactura(int finalFactura) throws Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
