@@ -10,9 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import javax.swing.JOptionPane;
 import modelo.Compra;
-import modelo.Proveedor;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
@@ -93,6 +91,20 @@ public class FacturaCabeceraCompraControlador {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
           String query = "Select v.nro_prefijo, v.nro_factura, v.proveedor_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.compra_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha_recepcion,'dd/mm/yyyy'), v.fact_referenciada from compra v where v.estado != 'PAGADO'";
+         
+         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
+     
+     public ResultSet getNroFacturaPagadas() throws SQLException, Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+         
+          String query = "Select v.nro_prefijo, v.nro_factura, v.proveedor_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.compra_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha_recepcion,'dd/mm/yyyy'), v.fact_referenciada from compra v where v.estado = 'PAGADO'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
