@@ -265,7 +265,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
             Date date = formato.parse(txtFechaCompra.getText());
             compraC.setFecha(date);
-            compraC.setEsFactura('S');
+            compraC.setEsFactura("S");
             compraC.setEstado("BORRADOR");
             int idProveedor = provC.devuelveId(txtProveedor.getText().replace(".", ""));
             compraC.setProveedorId(idProveedor);
@@ -406,7 +406,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     }
 
   
-    private void guardar() throws ParseException, Exception{
+    private void guardar()throws ParseException, Exception{
        suspender();
     }
     private void datosActualesComponentes(){  
@@ -836,9 +836,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Factura Compra");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
-            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -850,6 +847,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
             }
         });
 
