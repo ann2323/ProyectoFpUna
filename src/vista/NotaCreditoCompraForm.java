@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+ 
 package vista;
 import java.awt.Color;
 import controlador.ComponentesControlador;
@@ -74,13 +74,13 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloD = new DefaultTableModel();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloNroFactura;
- 
+    
     Stock stock = new Stock();
     
      Integer subTotal= 0, totaldesc=0;
      double iva10=0.0, iva5=0.0;
      Integer  cantProducto=0;
-     int k, k2;
+     int k, k2, factRef;
      DecimalFormat formateador = new DecimalFormat("###,###.##");
      
     StockControlador stockCont = new StockControlador();
@@ -160,8 +160,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         getDepositosVector();
         getComponentes();
         getNroFactura();
-        
-        
+        getNroFacturaPagadas();         
     }
       private void limpiar() {
         txtPrefijoCompra.setText("");
@@ -256,6 +255,38 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }
+    
+        private void getNroFacturaPagadas() {
+        
+        modeloNroFactura=new DefaultTableModel();
+        try {
+            modeloNroFactura.setColumnCount(0);
+            modeloNroFactura.setRowCount(0);
+                      
+            try (ResultSet rs = compraControlador.getNroFacturaPagadas()) {
+           
+                ResultSetMetaData rsMd = rs.getMetaData();
+                
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                    modeloNroFactura.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloNroFactura.addRow(fila);
+                }
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    }
   
         private void suspender() throws ParseException, Exception{
         
@@ -306,7 +337,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
             Date date = formateador.parse(txtFechaCompra.getText());
             compraC.setFecha(date);
-            compraC.setEsFactura('N');
+            compraC.setEsFactura("N");
             compraC.setPagoContado("");
             compraC.setFactReferenciada(Integer.parseInt(txtFacturaReferenciada.getText().trim()));
             compraC.setEstado("BORRADOR");
@@ -325,6 +356,11 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             compraC.setProyectoId(pro.getId());
             
             compraC.setVencimiento(ahora);
+            
+            //id de la facturaRefenciada
+            if (compraC.getEsFactura().equals("N")){
+               factRef=compraControlador.devuelveId(Integer.parseInt(txtFacturaReferenciada.getText()));
+            }
             
             int idSaldo = saldoC.nuevoCodigo();
             saldoModel.setSaldoCompraId(idSaldo);
@@ -369,12 +405,12 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                                     showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
                                     return;        
                             }
-                              
-            
-                            
+                
+                          
                             if (bNuevo.isEnabled() == false){ 
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(compraD);
+                                facturaDetalleCont.updateFactura(factRef, tbDetalleCompra.getValueAt(i, 0).toString());
                                  try {
                                     stockCont.update2(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
                                 } catch (Exception ex) {
@@ -565,7 +601,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
   
             txtFechaCompra.setText(modeloNroFactura.getValueAt(k2, 3).toString());
             txtFechaRecepcion.setText(modeloNroFactura.getValueAt(k2, 13).toString());
-            txtFacturaReferenciada.setText(modeloNroFactura.getValueAt(k2, 14).toString());
             forma = new DecimalFormat("###,###.##");
             String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
             txtCantidadTotal.setText(cantidad);
@@ -610,6 +645,66 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             datosActualesDetalleFactura();
             
     }
+     
+         private void datosActualesNroFacturaFactura() {
+            DecimalFormat forma = new DecimalFormat("###,###.##");   
+            txtFacturaReferenciada.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            try {
+                         
+                String cedula=forma.format(Integer.parseInt(provC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
+                txtProveedor.setText(cedula);
+                txtProveedor1.setText(provC.getNombreProveedor(modeloNroFactura.getValueAt(k2, 2).toString()));
+                JCdeposito.setSelectedItem(modeloNroFactura.getValueAt(k2, 5).toString());
+            
+            } catch (Exception ex) {
+                Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+  
+
+            forma = new DecimalFormat("###,###.##");
+            String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
+            txtCantidadTotal.setText(cantidad);
+            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", ""));
+            String totalFormat=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", "")));
+            txtTotal.setText(totalFormat);
+            txtDescuento.setText(modeloNroFactura.getValueAt(k2, 8).toString());
+            int total = 0;
+            total = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString());
+            int descuento = 0;
+            descuento= Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString());
+            int subtotal = 0;
+            subtotal = total - descuento;
+            //seteo el subTotal para que acumule en la búsqueda
+            subTotal = subtotal;
+            forma = new DecimalFormat("###,###.##");
+            String subTotalFormat=forma.format(subtotal);
+            txtSubTotal.setText(String.valueOf(subTotalFormat));
+            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()) == 0){
+                txtIva10.setText("");
+                iva10 = 0.0;
+            }else{
+                iva10=0.0;
+                forma = new DecimalFormat("###,###.##");
+                String iva10Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()));
+                txtIva10.setText(iva10Format);
+                iva10 = Integer.parseInt(txtIva10.getText().trim().replace(".",""));
+            }
+            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString())== 0){
+                iva5=0.0;
+                txtIva5.setText("");
+                iva5 = 0.0;
+            }else{
+                iva5=0.0;
+                forma = new DecimalFormat("###,###.##");
+                String iva5Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()));
+                txtIva5.setText(iva5Format);
+                iva5 = Integer.parseInt(txtIva5.getText().trim().replace(".", ""));
+            }    
+           
+            cargarDetalleFacturaFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString())); 
+            datosActualesDetalleFactura();
+            
+    }
         
       private void datosActualesDetalleFactura(){
            DecimalFormat forma = new DecimalFormat("###,###.##");  
@@ -636,9 +731,48 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         
        private void cargarDetalleFactura(int idCompra) {
         tbDetalleCompra.removeAll();
+        modeloDetalleBusqueda=new DefaultTableModel();
         try {
             
             try (ResultSet rs = facturaDetalleCont.getDetalle(idCompra)) {
+                 modeloDetalleBusqueda.setColumnCount(0);
+                 modeloDetalleBusqueda.setRowCount(0);
+                 ResultSetMetaData rsMd = rs.getMetaData();
+                
+               //int cantidadColumnas = rsMd.getColumnCount();
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                   modeloDetalleBusqueda.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloDetalleBusqueda.addRow(fila);
+                }
+                //Factura en suspension. una vez que devuelve las filas de la factura se agregan hasta completar las 12
+                for (int i = 0; i < 11; i++) {
+                        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+                 }
+                   
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    
+    }
+       
+   private void cargarDetalleFacturaFactura(int idCompra) {
+        tbDetalleCompra.removeAll();
+        modeloDetalleBusqueda=new DefaultTableModel();
+        try {
+            
+            try (ResultSet rs = facturaDetalleCont.getDetalleFactura(idCompra)) {
                  modeloDetalleBusqueda.setColumnCount(0);
                  modeloDetalleBusqueda.setRowCount(0);
                  ResultSetMetaData rsMd = rs.getMetaData();
@@ -693,6 +827,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             txtFacturaCompra.setEnabled(true);
             txtFacturaCompra.requestFocusInWindow();
             txtFacturaCompra.setBackground(Color.yellow);
+            txtFacturaReferenciada.setEnabled(false);
             txtPrefijoCompra.setEnabled(false);
             txtCantidadTotal.setEnabled(false);
             txtProveedor.setEnabled(false);
@@ -709,6 +844,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         } else {
             txtFacturaCompra.setEnabled(true);
             txtFacturaCompra.setBackground(Color.white);
+            txtFacturaReferenciada.setEnabled(true);
             txtPrefijoCompra.setEnabled(true);
             txtPrefijoCompra.setEditable(true);
             txtCantidadTotal.setEnabled(true);
@@ -920,6 +1056,11 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         });
         JpanelCompra.add(txtPrefijoCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 57, -1));
 
+        txtFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFacturaCompraActionPerformed(evt);
+            }
+        });
         txtFacturaCompra.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtFacturaCompraFocusLost(evt);
@@ -960,6 +1101,11 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         txtFacturaReferenciada.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFacturaReferenciadaActionPerformed(evt);
+            }
+        });
+        txtFacturaReferenciada.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtFacturaReferenciadaKeyPressed(evt);
             }
         });
         JpanelCompra.add(txtFacturaReferenciada, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 140, 93, -1));
@@ -1196,10 +1342,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
              formateador = new DecimalFormat("###,###.##");
              tbDetalleCompra.setValueAt((totalFormat), tbDetalleCompra.getSelectedRow(), 5);      
 
-             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());
-             System.out.println(subTotal);
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim());      
              String subTotalFormat=formateador.format(subTotal);
-             System.out.println(subTotalFormat);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              double j = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().replace(".", "").trim())/1.1; 
@@ -1233,9 +1377,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
            if(tbDetalleCompra.getSelectedRow() == -1){
                 showMessageDialog(this, "Por favor seleccione una fila", "Atención", JOptionPane.WARNING_MESSAGE);
             }else{
-                if(showConfirmDialog (null, "¿Desea eliminar esta fila?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-                    System.out.println("Fila 1, columna 0 "+tbDetalleCompra.getValueAt(1, 2));
-           
+                if(showConfirmDialog (null, "¿Desea eliminar esta fila?", "Confirmar", YES_NO_OPTION) == YES_OPTION){                   
+       
            Integer precio2;
                     
            precio2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 2).toString().replace(".", "").trim());
@@ -1272,11 +1415,9 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                     String cantidad=formatoCant.format(cantProducto);
 
                     txtCantidadTotal.setText(cantidad); 
-                    modeloD.removeRow(tbDetalleCompra.getSelectedRow());                    
-                    System.out.println("Fila 1, columna 0 "+tbDetalleCompra.getValueAt(0, 2));
+                    modeloD.removeRow(tbDetalleCompra.getSelectedRow());                   
                     modeloD.addRow(new Object[]{"","","","",""});
-                    tbDetalleCompra.setModel(modeloD);
-                    System.out.println("Cantidad de filas "+modeloD.getRowCount());
+                    tbDetalleCompra.setModel(modeloD);        
                     tbDetalleCompra.setColumnSelectionInterval(0, 0);
                 }
            }}
@@ -1289,11 +1430,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
            Integer Cantidad2;
       
            Cantidad2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim());
-           
-       
-            
+                    
             int total2=(precio2*Cantidad2);
-             System.out.println(total2);
            
             cantProducto=cantProducto-Cantidad2;
             
@@ -1313,10 +1451,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                  txtIva5.setText(ivaFormat);
             }
             DecimalFormat FormatSubTotal = new DecimalFormat("###,###.##");
-             System.out.println(subTotal);
             subTotal=subTotal-total2;
-            System.out.println(subTotal);
-            System.out.println(total2);
             String subTotalFormat=FormatSubTotal.format(subTotal);
             txtSubTotal.setText(subTotalFormat);
             txtTotal.setText(txtSubTotal.getText().trim()); 
@@ -1536,7 +1671,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             }
             getNroFactura();
             
-            System.out.println(modeloNroFactura.getRowCount());
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
                 if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtFacturaCompra.getText())){
                     modoBusqueda(false);
@@ -1562,6 +1696,50 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
              evt.consume();
          }   
     }//GEN-LAST:event_txtDescuentoKeyTyped
+
+    private void txtFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFacturaCompraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFacturaCompraActionPerformed
+
+    private void txtFacturaReferenciadaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaReferenciadaKeyPressed
+     
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if ("*".equals(txtFacturaReferenciada.getText())) {
+                //TBdetalleCuenta2.setRowSelectionInterval(0,0);
+                BuscarForm bf = new BuscarForm( null, true);
+                bf.columnas = "v.nro_factura";
+                bf.tabla = "compra v";
+                bf.order = "v.nro_factura";
+                bf.filtroBusqueda = "es_factura = 'S' and estado = 'PAGADO'"; //factura en suspension. Solo los que esten en estado Borrador
+                bf.setLocationRelativeTo(this);
+                bf.setVisible(true);
+                
+
+                for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
+                    if (modeloNroFactura.getValueAt(c, 1).toString().equals(bf.retorno)){
+                        modoBusqueda(false);
+                        establecerBotones("Nuevo");
+                        k2 = c;
+                        datosActualesNroFacturaFactura();
+                       
+                    return;
+                    }
+                }
+                
+            }
+            getNroFacturaPagadas();
+       
+            for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
+                if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtFacturaCompra.getText())){
+                    modoBusqueda(false);
+                    establecerBotones("Edicion");
+                    k2 = c;                   
+                    datosActualesNroFacturaFactura();
+                   return;
+                }
+            }
+        }
+    }//GEN-LAST:event_txtFacturaReferenciadaKeyPressed
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
