@@ -121,7 +121,7 @@ public class FacturaCabeceraVentaControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(ventaId), 0) + 1 from Venta").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(venta_id), 0) + 1 from Venta").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
         }
@@ -432,16 +432,14 @@ public class FacturaCabeceraVentaControlador {
         } 
     }
 
-    public ResultSet verificarEstadoFactura(int nroFactura) throws SQLException, Exception {
+    public Long verificarEstadoFactura(int nroFactura) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT nro_factura from Venta where nro_factura = '" + nroFactura + "'";
-         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
-         ResultSet rs = ps.executeQuery();
-        try {
-            return rs;
-        } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
-        }
+     
+          try{
+            return (Long) baseDatos.createQuery("SELECT count (nro_factura) as factura from Venta where nro_factura = '" + nroFactura + "'").uniqueResult();
+         } catch(HibernateException e){
+            throw new Exception("Error al consultar tabla Venta: \n" + e.getMessage());
+         }
 
    } 
       
