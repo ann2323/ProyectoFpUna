@@ -79,7 +79,7 @@ public class DetalleFacturaVenta {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(detalleFacturaId), 0) + 1 from DetalleVenta").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(detalle_factura_id), 0) + 1 from DetalleVenta").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código detalle - venta: \n" + e.getMessage());
         }
