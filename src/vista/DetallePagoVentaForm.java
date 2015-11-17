@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.DecimalFormat;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -23,32 +25,33 @@ import modelo.Venta;
 
 /**
  *26/08/2015
- * @author anex
+ * @author Pathy
  */
 public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
   
     DefaultTableModel modeloPago = new DefaultTableModel();
     DefaultTableModel modeloNroFactura;
+    DefaultTableModel modeloNroNotaCredito;
     FacturaCabeceraVentaControlador facturaCabeceraControlador = new FacturaCabeceraVentaControlador();
     Venta facturaVenta = new Venta();
     DecimalFormat formateador = new DecimalFormat("###,###.##");
-    int total=0, i=0, pendiente=0, cambio=0, k2 = 0;
+    int total=0, i=0, pendiente=0, cambio=0, k2 = 0, clienteid = 0;
    
     
  public DetallePagoVentaForm() throws Exception {
         initComponents();
         getNroFactura();
-        
+        getNroNotaCredito();
         txtPagado.setEnabled(false);
         txtPendiente.setEnabled(false);
         txtCambio.setEnabled(false);
-        jPanelCheque.setVisible(false);
+        jPanelFormaPago.setVisible(false);
         jPanelNotaCredito.setVisible(false);
-        jPanelTarjeta.setVisible(false);
         
         modeloPago.addColumn("Forma de Pago");
-        modeloPago.addColumn("Tarjeta nro.");
-        modeloPago.addColumn("Autorizacion");
+        modeloPago.addColumn("Entidad Financiera");
+        modeloPago.addColumn("Nro Tarjeta de Crédito");
+        modeloPago.addColumn("Nro Nota de Crédito");
         modeloPago.addColumn("Total");
         modeloPago.isCellEditable(0,0);
         
@@ -66,7 +69,7 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
             modeloNroFactura.setColumnCount(0);
             modeloNroFactura.setRowCount(0);
                       
-            try (ResultSet rs = facturaCabeceraControlador.getNroFacturaDetalle()) {
+            try (ResultSet rs = facturaCabeceraControlador.getNroFacturaDetallePagoVenta()) {
            
                 ResultSetMetaData rsMd = rs.getMetaData();
                 
@@ -90,6 +93,41 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }
+    
+     
+     
+     private void getNroNotaCredito() {
+        
+         
+        modeloNroNotaCredito=new DefaultTableModel();
+        try {
+            modeloNroNotaCredito.setColumnCount(0);
+            modeloNroNotaCredito.setRowCount(0);
+                      
+            try (ResultSet rs = facturaCabeceraControlador.getNroNotaCreditoPagoVenta()) {
+           
+                ResultSetMetaData rsMd = rs.getMetaData();
+                
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                    modeloNroNotaCredito.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloNroNotaCredito.addRow(fila);
+                }
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    }
    
      
     /**
@@ -104,15 +142,28 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
         JpanelVent = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        bNuevo = new org.edisoncor.gui.button.ButtonTask();
-        jBCancelar = new org.edisoncor.gui.button.ButtonTask();
-        jBGuardar1 = new org.edisoncor.gui.button.ButtonTask();
+        btnAñadir = new org.edisoncor.gui.button.ButtonTask();
+        btnEliminarRegistro = new org.edisoncor.gui.button.ButtonTask();
+        btnGuardar = new org.edisoncor.gui.button.ButtonTask();
         JCtipoPago = new javax.swing.JComboBox();
         lbTipoPago = new javax.swing.JLabel();
+        jPanelFormaPago = new javax.swing.JPanel();
+        lbEntidadFinanciera = new javax.swing.JLabel();
+        txtNroDocumento = new javax.swing.JTextField();
+        lbNumeroDocumento = new javax.swing.JLabel();
+        cboEntidadFinanciera = new javax.swing.JComboBox();
+        jPanelNotaCredito = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        lbNotaCredito = new javax.swing.JLabel();
+        txtNotaCredito = new javax.swing.JTextField();
+        lbValorCredito = new javax.swing.JLabel();
+        txtValorCredito = new javax.swing.JTextField();
         txtValor = new javax.swing.JTextField();
         lbValor = new javax.swing.JLabel();
         txtNroFactura = new javax.swing.JTextField();
+        txtCliente = new javax.swing.JTextField();
         lbNroFactura = new javax.swing.JLabel();
+        lbCliente = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -169,50 +220,50 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
         jPanel1.setFont(new java.awt.Font("Aharoni", 0, 12)); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 5));
 
-        bNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/añadirPago.png"))); // NOI18N
-        bNuevo.setText("Añadir");
-        bNuevo.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
-        bNuevo.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
-        bNuevo.setDescription(" ");
-        bNuevo.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
-        bNuevo.setIconTextGap(2);
-        bNuevo.addActionListener(new java.awt.event.ActionListener() {
+        btnAñadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/añadirPago.png"))); // NOI18N
+        btnAñadir.setText("Añadir");
+        btnAñadir.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        btnAñadir.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
+        btnAñadir.setDescription(" ");
+        btnAñadir.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
+        btnAñadir.setIconTextGap(2);
+        btnAñadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bNuevoActionPerformed(evt);
+                btnAñadirActionPerformed(evt);
             }
         });
-        jPanel1.add(bNuevo);
-        bNuevo.getAccessibleContext().setAccessibleName("Añadir ");
+        jPanel1.add(btnAñadir);
+        btnAñadir.getAccessibleContext().setAccessibleName("Añadir ");
 
-        jBCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar.png"))); // NOI18N
-        jBCancelar.setText("Eliminar Registro");
-        jBCancelar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
-        jBCancelar.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
-        jBCancelar.setDescription(" ");
-        jBCancelar.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
-        jBCancelar.setIconTextGap(2);
-        jBCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminarRegistro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/borrar.png"))); // NOI18N
+        btnEliminarRegistro.setText("Eliminar Registro");
+        btnEliminarRegistro.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        btnEliminarRegistro.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
+        btnEliminarRegistro.setDescription(" ");
+        btnEliminarRegistro.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
+        btnEliminarRegistro.setIconTextGap(2);
+        btnEliminarRegistro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBCancelarActionPerformed(evt);
+                btnEliminarRegistroActionPerformed(evt);
             }
         });
-        jPanel1.add(jBCancelar);
-        jBCancelar.getAccessibleContext().setAccessibleDescription("");
+        jPanel1.add(btnEliminarRegistro);
+        btnEliminarRegistro.getAccessibleContext().setAccessibleDescription("");
 
-        jBGuardar1.setForeground(new java.awt.Color(0, 51, 102));
-        jBGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        jBGuardar1.setText("Guardar");
-        jBGuardar1.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
-        jBGuardar1.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
-        jBGuardar1.setDescription(" ");
-        jBGuardar1.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
-        jBGuardar1.setIconTextGap(2);
-        jBGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setForeground(new java.awt.Color(0, 51, 102));
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setText("Guardar");
+        btnGuardar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        btnGuardar.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
+        btnGuardar.setDescription(" ");
+        btnGuardar.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
+        btnGuardar.setIconTextGap(2);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBGuardar1ActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
-        jPanel1.add(jBGuardar1);
+        jPanel1.add(btnGuardar);
 
         JpanelVent.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 62, 900, 55));
 
@@ -222,31 +273,127 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
                 JCtipoPagoActionPerformed(evt);
             }
         });
-        JpanelVent.add(JCtipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 200, 140, 30));
+        JpanelVent.add(JCtipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 190, 170, 30));
 
         lbTipoPago.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbTipoPago.setText("Tipo de Pago");
-        JpanelVent.add(lbTipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 80, 30));
-        JpanelVent.add(txtValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 140, -1));
+        JpanelVent.add(lbTipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 80, 30));
+
+        lbEntidadFinanciera.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbEntidadFinanciera.setText("Entidad Financiera:");
+
+        lbNumeroDocumento.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbNumeroDocumento.setText("Numero:");
+
+        cboEntidadFinanciera.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Banco Regional", "Itaú", "GNB", "Continental", "Visión" }));
+
+        javax.swing.GroupLayout jPanelFormaPagoLayout = new javax.swing.GroupLayout(jPanelFormaPago);
+        jPanelFormaPago.setLayout(jPanelFormaPagoLayout);
+        jPanelFormaPagoLayout.setHorizontalGroup(
+            jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFormaPagoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbEntidadFinanciera)
+                    .addComponent(lbNumeroDocumento))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cboEntidadFinanciera, 0, 136, Short.MAX_VALUE)
+                    .addComponent(txtNroDocumento))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+        jPanelFormaPagoLayout.setVerticalGroup(
+            jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFormaPagoLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbEntidadFinanciera)
+                    .addComponent(cboEntidadFinanciera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFormaPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNroDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbNumeroDocumento))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        JpanelVent.add(jPanelFormaPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 160, 300, 60));
+
+        jPanelNotaCredito.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        lbNotaCredito.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbNotaCredito.setText("Nº Nota de Crédito");
+
+        txtNotaCredito.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNotaCreditoKeyPressed(evt);
+            }
+        });
+
+        lbValorCredito.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbValorCredito.setText("Valor del Crédito");
+
+        javax.swing.GroupLayout jPanelNotaCreditoLayout = new javax.swing.GroupLayout(jPanelNotaCredito);
+        jPanelNotaCredito.setLayout(jPanelNotaCreditoLayout);
+        jPanelNotaCreditoLayout.setHorizontalGroup(
+            jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelNotaCreditoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelNotaCreditoLayout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanelNotaCreditoLayout.createSequentialGroup()
+                        .addComponent(lbNotaCredito)
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtValorCredito, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                            .addComponent(txtNotaCredito)))
+                    .addComponent(lbValorCredito))
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+        jPanelNotaCreditoLayout.setVerticalGroup(
+            jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelNotaCreditoLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbNotaCredito, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNotaCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelNotaCreditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbValorCredito)
+                    .addComponent(txtValorCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        JpanelVent.add(jPanelNotaCredito, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 160, 290, 70));
+        JpanelVent.add(txtValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 230, 170, -1));
 
         lbValor.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbValor.setText("Valor:");
         lbValor.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        JpanelVent.add(lbValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, -1, 20));
+        JpanelVent.add(lbValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, -1, 20));
 
         txtNroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtNroFacturaKeyPressed(evt);
             }
         });
-        JpanelVent.add(txtNroFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 140, -1));
+        JpanelVent.add(txtNroFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 170, -1));
+        JpanelVent.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 260, 170, -1));
 
         lbNroFactura.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbNroFactura.setText("Nº Factura");
-        JpanelVent.add(lbNroFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, -1, 20));
+        JpanelVent.add(lbNroFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, -1, 20));
 
-        jLabel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos Pago", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10))); // NOI18N
-        JpanelVent.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 920, 140));
+        lbCliente.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbCliente.setText("Cliente");
+        JpanelVent.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, -1, 20));
+
+        jLabel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        JpanelVent.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 920, 170));
         JpanelVent.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 135, -1, -1));
 
         tbDetallePago.setModel(new javax.swing.table.DefaultTableModel(
@@ -254,7 +401,7 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Forma Pago", "Tarjeta Nro.", "Autorizacion", "Total"
+                "Forma Pago", "Entidad Financiera", "Nº Tarjeta", "Nº Nota de Crédito", "Total"
             }
         ));
         tbDetallePago.setEditingColumn(0);
@@ -305,25 +452,25 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
         jLabel14.setText("Pagado");
         JpanelVent.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 590, -1, -1));
         JpanelVent.add(txtCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 620, 90, -1));
-        JpanelVent.add(txtPagado, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 630, 90, -1));
+        JpanelVent.add(txtPagado, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 620, 90, -1));
 
         jLabel15.setText("Pendiente");
-        JpanelVent.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 600, -1, -1));
-        JpanelVent.add(txtPendiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 630, 90, -1));
+        JpanelVent.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 590, -1, 20));
+        JpanelVent.add(txtPendiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 620, 90, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(JpanelVent, javax.swing.GroupLayout.PREFERRED_SIZE, 979, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(JpanelVent, javax.swing.GroupLayout.PREFERRED_SIZE, 687, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(JpanelVent, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -334,11 +481,11 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
      
     }//GEN-LAST:event_tbDetallePagoKeyPressed
 
-    private void jBGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardar1ActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         FacturaVentaForm.tbDetallePagoVenta.setModel(modeloPago);
-    }//GEN-LAST:event_jBGuardar1ActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
+    private void btnEliminarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarRegistroActionPerformed
 
        if(tbDetallePago.getSelectedRow() == -1){
             showMessageDialog(this, "Por favor seleccione una fila", "Atención", JOptionPane.WARNING_MESSAGE);
@@ -387,60 +534,78 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
             tbDetallePago.setModel(modeloPago);
        }
            
-    }//GEN-LAST:event_jBCancelarActionPerformed
+    }//GEN-LAST:event_btnEliminarRegistroActionPerformed
 
-    private void bNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNuevoActionPerformed
+    private void btnAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAñadirActionPerformed
        if (!"".equals(txtValor.getText())){
         if (JCtipoPago.getSelectedItem().toString().equals("Tarjeta Debito")  || JCtipoPago.getSelectedItem().toString().equals("Tarjeta Credito")){
+            if(cboEntidadFinanciera.getSelectedIndex() == -1){
+                showMessageDialog(this, "Debe seleccionar una entidad financiera", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(txtNroDocumento.getText().equals("")){
+                showMessageDialog(this, "Ingrese el número de tarjeta", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             formateador = new DecimalFormat("###,###.##");
-            
-            String datos [] = new String [7];
-            datos[0]=JCtipoPago.getSelectedItem().toString();
-            datos[1]=txtNroTarjeta.getText();
-            datos[2]=txtAutorizacionTarjeta.getText();
-            datos[3]=formateador.format(Integer.parseInt(txtValor.getText()));
-            datos[4]="";
-            datos[5]="";
-            datos[6]="";
+            String datos [] = new String [5];
+            datos[0]=JCtipoPago.getSelectedItem().toString(); //forma de pago
+            datos[1]=cboEntidadFinanciera.getSelectedItem().toString(); //entidad Financiera
+            datos[2]= formateador.format(Integer.parseInt(txtNroDocumento.getText())); // Nro Tarjeta de Credito
+            datos[3]= ""; //Nro nota credito
+            datos[4]= formateador.format(Integer.parseInt(txtValor.getText()));;
             modeloPago.addRow(datos);  
         }
         if (JCtipoPago.getSelectedItem().toString().equals("Guaranies")){
-            String datos [] = new String [7];
-            datos[0]=JCtipoPago.getSelectedItem().toString();
-            datos[1]="";
-            datos[2]="";
-            datos[3]=formateador.format(Integer.parseInt(txtValor.getText()));
-            datos[4]="";
-            datos[5]="";
-            datos[6]="";
-            modeloPago.addRow(datos);   
+            String datos [] = new String [5];
+            datos[0]=JCtipoPago.getSelectedItem().toString(); //forma de pago
+            datos[1]=""; //entidad Financiera
+            datos[2]= ""; //nro tarjeta o cheque
+            datos[3]= ""; //Nro nota credito
+            datos[4]= formateador.format(Integer.parseInt(txtValor.getText()));
+            modeloPago.addRow(datos);  
         }
         if (JCtipoPago.getSelectedItem().toString().equals("Cheque")){
-            String datos [] = new String [7];
-            datos[0]=JCtipoPago.getSelectedItem().toString();
-            datos[1]=txtNroCheque.getText();
-            datos[2]=txtAutorizacionCheque.getText();
-            datos[3]=formateador.format(Integer.parseInt(txtValor.getText()));
-            datos[4]="";
-            datos[5]="";
-            datos[6]="";
-            modeloPago.addRow(datos);   
+             if(cboEntidadFinanciera.getSelectedIndex() == -1){
+                showMessageDialog(this, "Debe seleccionar una entidad financiera", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(txtNroDocumento.getText().equals("")){
+                showMessageDialog(this, "Ingrese el número de cheque", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            String datos [] = new String [5];
+            datos[0]= JCtipoPago.getSelectedItem().toString(); //forma de pago
+            datos[1]= cboEntidadFinanciera.getSelectedItem().toString(); //entidad Financiera
+            datos[2]= formateador.format(Integer.parseInt(txtNroDocumento.getText()));
+            datos[3]= ""; //Nro nota credito
+            datos[4]= formateador.format(Integer.parseInt(txtValor.getText()));
+            modeloPago.addRow(datos); 
         }
         if (JCtipoPago.getSelectedItem().toString().equals("Nota de Credito")){
-            String datos [] = new String [7];
+             if(txtNotaCredito.getText().equals("")){
+                showMessageDialog(this, "Ingrese el número de nota de crédito", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(txtValorCredito.getText().equals("")){
+                showMessageDialog(this, "Ingrese el valor del crédito", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            String datos [] = new String [5];
             datos[0]=JCtipoPago.getSelectedItem().toString();
-            datos[1]="";
-            datos[2]="";
-            datos[3]=formateador.format(Integer.parseInt(txtValor.getText()));
-            datos[4]=txtValorDelCredito.getText();
-            datos[5]=txtPendienteAplicar.getText();
-            datos[6]="";
+            datos[1]=cboEntidadFinanciera.getSelectedItem().toString(); //entidad Financiera
+            datos[2]=""; //nro tarjeta o cheque
+            datos[3]=formateador.format(Integer.parseInt(txtNroDocumento.getText())); //nro nota credito
+            datos[4]= formateador.format(Integer.parseInt(txtValor.getText()));
             modeloPago.addRow(datos);   
         }
         tbDetallePago.setModel(modeloPago);
         txtValor.setText("");
-        txtNroTarjeta.setText("");
-        txtAutorizacionTarjeta.setText("");
+        txtNotaCredito.setText("");
+        txtNroDocumento.setText("");
+        txtValor.setText("");
+        txtValorCredito.setText("");
+        
         
         
         total=total+Integer.parseInt(tbDetallePago.getValueAt(i, 3).toString().replace(".", "").trim());
@@ -471,7 +636,7 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
         showMessageDialog(this, "Debe ingresar un valor para añadir el pago", "Atención", JOptionPane.WARNING_MESSAGE);
        }
         
-    }//GEN-LAST:event_bNuevoActionPerformed
+    }//GEN-LAST:event_btnAñadirActionPerformed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
 
@@ -484,21 +649,17 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
     private void JCtipoPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCtipoPagoActionPerformed
 
         if (JCtipoPago.getSelectedItem().toString().equals("Tarjeta Debito") || JCtipoPago.getSelectedItem().toString().equals("Tarjeta Credito")){
-             jPanelCheque.setVisible(false);
-             jPanelNotaCredito.setVisible(false);
-             jPanelTarjeta.setVisible(true);
+            jPanelFormaPago.setVisible(true);
+            jPanelNotaCredito.setVisible(false);
         }else if (JCtipoPago.getSelectedItem().toString().equals("Cheque")){ 
-            jPanelTarjeta.setVisible(false);
+            jPanelFormaPago.setVisible(true);
             jPanelNotaCredito.setVisible(false);
-            jPanelCheque.setVisible(true);
         }else if (JCtipoPago.getSelectedItem().toString().equals("Nota de Credito")){ 
-            jPanelTarjeta.setVisible(false);
+            jPanelFormaPago.setVisible(false);
             jPanelNotaCredito.setVisible(true);
-            jPanelCheque.setVisible(false);
         }else if (JCtipoPago.getSelectedItem().toString().equals("Guaranies")){ 
-            jPanelTarjeta.setVisible(false);
-            jPanelNotaCredito.setVisible(false);
-            jPanelCheque.setVisible(false);
+            jPanelFormaPago.setVisible(false);
+            jPanelNotaCredito.setVisible(false);   
         }
     }//GEN-LAST:event_JCtipoPagoActionPerformed
 
@@ -508,17 +669,17 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtNroFactura.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "v.nro_factura, v.precio_total";
-                bf.tabla = "venta v";
+                bf.columnas = "v.nro_factura as \"Nro Factura\", v.precio_total as \"Monto Factura\", c.nombre||' '|| c.apellido as \"Cliente\"";
+                bf.tabla = "venta v, cliente c";
                 bf.order = "v.nro_factura";
-                bf.filtroBusqueda = "es_factura = 'S' and estado != 'BORRADOR'"; 
+                bf.filtroBusqueda = "v.es_factura = 'S' and v.estado != 'BORRADOR' and v.cliente_id = c.cliente_id"; 
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
 
                 for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
                     System.out.println("modelo row count "+modeloNroFactura.getRowCount());
-                    if (modeloNroFactura.getValueAt(c, 1).toString().equals(bf.retorno)){
+                    if (modeloNroFactura.getValueAt(c, 0).toString().equals(bf.retorno)){
                         //System.out.println("MODELO "+modeloNroFactura.getValueAt(c, 1).toString());
                         k2 = c;
                         datosActualesNroFactura();
@@ -530,7 +691,7 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
             
             System.out.println(modeloNroFactura.getRowCount());
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtNroFactura.getText())){
+                if (modeloNroFactura.getValueAt(c, 0).toString().equals(txtNroFactura.getText())){
                     k2 = c;                   
                     datosActualesNroFactura();
                    return;
@@ -539,41 +700,95 @@ public class DetallePagoVentaForm extends javax.swing.JInternalFrame {
         }
       }
     }//GEN-LAST:event_txtNroFacturaKeyPressed
+
+    private void txtNotaCreditoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNotaCreditoKeyPressed
+       
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if ("*".equals(txtNotaCredito.getText())) {
+                //TBdetalleCuenta2.setRowSelectionInterval(0,0);
+                BuscarForm bf = new BuscarForm( null, true);
+                bf.columnas = "v.nro_factura as \"Nro Nota Credito\", v.precio_total as \"Monto Nota de Crédito\"";
+                bf.tabla = "venta v, cliente c";
+                bf.order = "v.nro_factura";
+                bf.filtroBusqueda = "v.es_factura = 'N' and v.estado != 'BORRADOR' and v.cliente_id =  "; 
+                bf.setLocationRelativeTo(this);
+                bf.setVisible(true);
+                
+
+                for(int c=0; c<modeloNroNotaCredito.getRowCount(); c ++){
+                    //System.out.println("modelo row count "+modeloNroFactura.getRowCount());
+                    if (modeloNroNotaCredito.getValueAt(c, 0).toString().equals(bf.retorno)){
+                        //System.out.println("MODELO "+modeloNroFactura.getValueAt(c, 1).toString());
+                        k2 = c;
+                        //datosActualesNroNotaCredito();
+                    return;
+                    }
+                }
+                
+            getNroNotaCredito();
+            
+            //System.out.println(modeloNroFactura.getRowCount());
+            for(int c=0; c<modeloNroNotaCredito.getRowCount(); c ++){
+                if (modeloNroNotaCredito.getValueAt(c, 0).toString().equals(txtNroFactura.getText())){
+                    k2 = c;                   
+                    //datosActualesNroNotaCredito();
+                   return;
+                }
+            }
+        }
+      }
+    }//GEN-LAST:event_txtNotaCreditoKeyPressed
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox JCtipoPago;
     private javax.swing.JPanel JpanelVent;
-    private org.edisoncor.gui.button.ButtonTask bNuevo;
-    private org.edisoncor.gui.button.ButtonTask jBCancelar;
-    private org.edisoncor.gui.button.ButtonTask jBGuardar1;
+    private org.edisoncor.gui.button.ButtonTask btnAñadir;
+    private org.edisoncor.gui.button.ButtonTask btnEliminarRegistro;
+    private org.edisoncor.gui.button.ButtonTask btnGuardar;
+    private javax.swing.JComboBox cboEntidadFinanciera;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanelFormaPago;
+    private javax.swing.JPanel jPanelNotaCredito;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelCantidadTotal2;
+    private javax.swing.JLabel lbCliente;
+    private javax.swing.JLabel lbEntidadFinanciera;
+    private javax.swing.JLabel lbNotaCredito;
     private javax.swing.JLabel lbNroFactura;
+    private javax.swing.JLabel lbNumeroDocumento;
     private javax.swing.JLabel lbTipoPago;
     private javax.swing.JLabel lbValor;
+    private javax.swing.JLabel lbValorCredito;
     private javax.swing.JTable tbDetallePago;
     public static javax.swing.JTextField txtCambio;
+    private javax.swing.JTextField txtCliente;
+    private javax.swing.JTextField txtNotaCredito;
+    private javax.swing.JTextField txtNroDocumento;
     private javax.swing.JTextField txtNroFactura;
     public static javax.swing.JTextField txtPagado;
     public static javax.swing.JTextField txtPendiente;
     private javax.swing.JTextField txtValor;
+    private javax.swing.JTextField txtValorCredito;
     // End of variables declaration//GEN-END:variables
 
     private void datosActualesNroFactura() {
+  
         DecimalFormat forma = new DecimalFormat("###,###.##"); 
-        String nroFactura =forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 1).toString().trim().replace(".", "")));
+        String nroFactura =forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 0).toString().trim().replace(".", "")));
         txtNroFactura.setText(nroFactura);
-        String montoPendiente = forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString().trim().replace(".", "")));
+        String montoPendiente = forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 1).toString().trim().replace(".", "")));
         txtPendiente.setText(montoPendiente);
+        txtCliente.setText(modeloNroFactura.getValueAt(k2, 2).toString());
+        clienteid = Integer.parseInt(modeloNroFactura.getValueAt(k2, 3).toString());
     }
 }
