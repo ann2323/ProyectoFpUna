@@ -431,6 +431,20 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al devolver nro de factura de venta: \n" + e.getMessage());
         } 
     }
+     
+     public Integer devuelveClienteId(String nombreCliente) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT cliente_id from Cliente where nombre ||' '|| apellido = '" + nombreCliente + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver nro de factura de venta: \n" + e.getMessage());
+        } 
+    }
 
     public Long verificarEstadoFactura(int nroFactura) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
@@ -443,6 +457,35 @@ public class FacturaCabeceraVentaControlador {
 
 
    } 
+
+    //devuelve nro de factura en la ventana detalle de pago de venta
+     public ResultSet getNroFacturaDetallePagoVenta() throws SQLException, Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+         
+          String query = "Select v.nro_factura, v.precio_total, c.nombre ||' '|| c.apellido as \"Nombre\", c.cliente_id from venta v, cliente c where c.cliente_id = v.cliente_id";
+         
+         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+        }
+    }
+
+    public ResultSet getNroNotaCreditoPagoVenta() throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+         
+          String query = "Select v.nro_factura, v.precio_total from venta v";
+         
+         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+        }
+    }
       
 }
  
