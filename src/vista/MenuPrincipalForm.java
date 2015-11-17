@@ -66,6 +66,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mFacturaVenta = new javax.swing.JMenuItem();
         mNotaCreditoVenta = new javax.swing.JMenuItem();
         mCuentasClientes = new javax.swing.JMenuItem();
+        mDetallePago = new javax.swing.JMenuItem();
         mAdministracion = new javax.swing.JMenu();
         mRol = new javax.swing.JMenuItem();
         mVentana = new javax.swing.JMenuItem();
@@ -284,6 +285,15 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mVenta.add(mCuentasClientes);
+
+        mDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
+        mDetallePago.setText("Detalle de Pago");
+        mDetallePago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDetallePagoActionPerformed(evt);
+            }
+        });
+        mVenta.add(mDetallePago);
 
         jMenuBar1.add(mVenta);
 
@@ -973,6 +983,24 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mNotaCreditoVentaActionPerformed
 
+    private void mDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDetallePagoActionPerformed
+         try {
+             DetallePagoVentaForm tf2 = new DetallePagoVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mDetallePagoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1039,6 +1067,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem mCuentasClientes;
     private javax.swing.JMenuItem mCuentasProveedores;
     private javax.swing.JMenuItem mDeposito;
+    private javax.swing.JMenuItem mDetallePago;
     private javax.swing.JMenuItem mEntrada;
     private javax.swing.JMenuItem mFacturaCompra;
     private javax.swing.JMenuItem mFacturaVenta;
