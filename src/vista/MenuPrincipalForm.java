@@ -67,6 +67,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mNotaCreditoVenta = new javax.swing.JMenuItem();
         mCuentasClientes = new javax.swing.JMenuItem();
         mDetallePago = new javax.swing.JMenuItem();
+        mReciboPago = new javax.swing.JMenuItem();
         mAdministracion = new javax.swing.JMenu();
         mRol = new javax.swing.JMenuItem();
         mVentana = new javax.swing.JMenuItem();
@@ -294,6 +295,14 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mVenta.add(mDetallePago);
+
+        mReciboPago.setText("Recibo de Pago");
+        mReciboPago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mReciboPagoActionPerformed(evt);
+            }
+        });
+        mVenta.add(mReciboPago);
 
         jMenuBar1.add(mVenta);
 
@@ -1001,6 +1010,24 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mDetallePagoActionPerformed
 
+    private void mReciboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReciboPagoActionPerformed
+        try {
+             ReciboForm tf2 = new ReciboForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mReciboPagoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1077,6 +1104,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem mPrefijo;
     private javax.swing.JMenuItem mProveedor;
     private javax.swing.JMenu mProyecto;
+    private javax.swing.JMenuItem mReciboPago;
     private javax.swing.JMenuItem mRol;
     private javax.swing.JMenuItem mSalida;
     private javax.swing.JMenu mSalir;
