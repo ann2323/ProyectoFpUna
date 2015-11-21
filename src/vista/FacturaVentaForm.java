@@ -7,8 +7,10 @@ import controlador.DepositoControlador;
 import controlador.DetalleCuentaControlador;
 import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
+import controlador.FacturaPendienteControlador;
 import controlador.PrefijoFacturaControlador;
 import controlador.ProyectoControlador;
+import controlador.ReciboControlador;
 import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.Color;
@@ -48,9 +50,11 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import javax.swing.table.DefaultTableModel;
+import modelo.CabeceraRecibo;
 import modelo.Deposito;
 import modelo.DetalleCuenta;
 import modelo.DetalleVenta;
+import modelo.FacturaPendiente;
 import modelo.PrefijoFactura;
 import modelo.SaldoVenta;
 import modelo.Stock;
@@ -101,6 +105,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloDetallePago = new DefaultTableModel();
     SaldoVenta saldoModel = new SaldoVenta();
+    DefaultTableModel modeloDetalleRecibo = new DefaultTableModel();
     
     /**
      *
@@ -128,12 +133,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     ComponentesControlador cmpCont = new ComponentesControlador();
     SaldoVentaControlador saldoV = new SaldoVentaControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
+    ReciboControlador reciboControlador = new ReciboControlador();
+    FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
     
  
     
     Deposito depModel = new  Deposito();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta ();
+   
     
     public String totalLetras(int precio_total) throws SQLException, Exception
     {
@@ -402,13 +410,35 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setPagoContado(comboPago.getSelectedItem().toString());
             ventaC.setVencimiento(date);
             
-            
+            String dateVenc;
+          
             if ("CREDITO".equals(comboPago.getSelectedItem().toString())){
+                int cantidadCuotas = 0;
                 ventaC.setPagoEn(Integer.parseInt(comboCuota.getSelectedItem().toString()));  
-                String dateVenc = (ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));  
+                dateVenc = (ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));  
                 ventaC.setEstado("PENDIENTE");
                 ventaC.setVencimiento(formateador.parse(dateVenc));
+                cantidadCuotas = Integer.parseInt(comboCuota.getSelectedItem().toString());
+                
+                 for (int i = 1; i <= Integer.parseInt(comboCuota.getSelectedItem().toString()); i++) {
+                    FacturaPendiente facturaPendiente =  new FacturaPendiente();
+                    facturaPendiente.setCuota(i);
+                    facturaPendiente.setClienteId(idCliente);
+                    facturaPendiente.setEstado("Pendiente");
+                    facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                    facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                    facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                    facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", ""))/cantidadCuotas);
+                     //facturaPendiente.setPlazo(date);
+                    facturaPendiente.setFechaVencimiento(date);
+                    facturaPendienteControlador.insert(facturaPendiente);
+               
+                
+                }
             }
+            
+               
+              
             
             ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText()));
         
@@ -746,6 +776,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         lbCliente = new javax.swing.JLabel();
         txtPrefijoVenta = new javax.swing.JTextField();
         txtFacturaVenta = new javax.swing.JTextField();
+        txtCliente = new javax.swing.JFormattedTextField();
         labelPrefijoVenta = new javax.swing.JLabel();
         labelFacturaVenta = new javax.swing.JLabel();
         txtFechaVenta = new javax.swing.JTextField();
@@ -755,6 +786,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         labelPagoen = new javax.swing.JLabel();
         comboPago = new javax.swing.JComboBox();
         labelPago = new javax.swing.JLabel();
+        btnDetallePago = new javax.swing.JButton();
         labelCantidadTotal = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bNuevo = new org.edisoncor.gui.button.ButtonTask();
@@ -769,7 +801,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         txtIva5 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbDetallePagoVenta = new javax.swing.JTable();
-        txtCliente = new javax.swing.JFormattedTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
 
@@ -908,6 +939,14 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel1.add(txtFacturaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 80, -1));
 
+        txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClienteKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
+
         labelPrefijoVenta.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPrefijoVenta.setText("Nro. Prefijo");
         jPanel1.add(labelPrefijoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, 76, -1));
@@ -948,6 +987,15 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         labelPago.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPago.setText("Pago");
         jPanel1.add(labelPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 35, 20));
+
+        btnDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
+        btnDetallePago.setText("Detalle de Pago");
+        btnDetallePago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetallePagoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 140, 150, 40));
 
         labelCantidadTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal.setText("Cantidad Total");
@@ -1067,14 +1115,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 327, 120, 100));
 
-        txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtClienteKeyPressed(evt);
-            }
-        });
-        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
-
         jPanel5.setBackground(new java.awt.Color(51, 94, 137));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel5.setPreferredSize(new java.awt.Dimension(101, 25));
@@ -1105,7 +1145,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1259, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1633,6 +1673,17 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         }
     }//GEN-LAST:event_txtClienteKeyPressed
 
+    private void btnDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallePagoActionPerformed
+         try {
+            DetallePagoVentaForm detallePago = new DetallePagoVentaForm();
+            MenuPrincipalForm.jDesktopPane1.add(detallePago);
+            detallePago.toFront();
+            detallePago.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDetallePagoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bBuscar;
@@ -1640,6 +1691,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
     private org.edisoncor.gui.button.ButtonTask bSuspender;
+    private javax.swing.JButton btnDetallePago;
     private javax.swing.JComboBox comboCuota;
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
