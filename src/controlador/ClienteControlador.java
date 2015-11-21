@@ -100,6 +100,22 @@ public class ClienteControlador {
             throw new Exception("Error al consultar la tabla Cliente: \n" + e.getMessage());
         }
     }
+ 
+    public ResultSet datosCliente() throws Exception  {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        
+        String query = "SELECT cliente_id, cedula as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Cliente: \n" + e.getMessage());
+        }
+    }
+ 
+    
 
      public int devuelveId(String ci) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
