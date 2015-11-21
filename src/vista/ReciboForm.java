@@ -2,27 +2,10 @@
 package vista;
 
 import controlador.ClienteControlador;
-import controlador.ComponentesControlador;
-import controlador.DepositoControlador;
-import controlador.DetalleCuentaControlador;
-import controlador.DetalleFacturaVenta;
-import controlador.FacturaCabeceraVentaControlador;
-import controlador.PrefijoFacturaControlador;
-import controlador.ProyectoControlador;
-import controlador.SaldoVentaControlador;
-import controlador.StockControlador;
-import java.awt.Color;
-import java.awt.Graphics;
+import controlador.FacturaPendienteControlador;
+import controlador.ReciboControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.awt.Graphics; 
-import java.awt.Graphics2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -34,11 +17,8 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -48,19 +28,6 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import javax.swing.table.DefaultTableModel;
-import modelo.Deposito;
-import modelo.DetalleCuenta;
-import modelo.DetalleVenta;
-import modelo.PrefijoFactura;
-import modelo.SaldoVenta;
-import modelo.Stock;
-import modelo.Venta;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
@@ -73,12 +40,27 @@ import util.HibernateUtil;
 public class ReciboForm extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form facturaVenta
+     * Creates new form Recibo
      * @throws java.lang.Exception
      */
+    
+    
+    DecimalFormat formateador = new DecimalFormat("###,###.##");
+    DefaultTableModel modeloBusqueda = new DefaultTableModel();
+    DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
+    
+    Formatter formato = new Formatter();
+    int k2;
+
+    FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
+    ClienteControlador cliC = new ClienteControlador();
+    ReciboControlador reciboC = new ReciboControlador();
+    
+    
     public ReciboForm() throws Exception {
         initComponents();
         getClientes();
+       
             
     }
     
@@ -87,163 +69,8 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
         return formateador.format(ahora); 
     }
-    
-    DecimalFormat formateador = new DecimalFormat("###,###.##");
-    DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
-    DefaultTableModel modeloBusqueda = new DefaultTableModel();
-    DefaultTableModel modeloD = new DefaultTableModel();
-    DefaultTableModel modeloComponente = new DefaultTableModel();
-    DefaultTableModel modeloNroFactura;
-    DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
-    DefaultTableModel modeloDetallePago = new DefaultTableModel();
-    SaldoVenta saldoModel = new SaldoVenta();
-    
-    /**
-     *
-     */
+        
     public String totalLetras;
-    
-    Stock stock = new Stock();
-    PrefijoFactura prefijo = new PrefijoFactura();
-    private boolean esPrimero = true;
-    Formatter formato = new Formatter();
-    
-     int contadorLote = 0;
-     Integer subTotal= 0, totaldesc=0;
-     Integer  cantProducto=0;
-     int k, k2;
-     double iva10=0.0, iva5=0.0; //variables que suman el iva al traer los componentes
-     double iva_10 = 0.0, iva_5 = 0.0;
-
-    StockControlador stockCont = new StockControlador();
-    DepositoControlador depBD = new DepositoControlador();
-    DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
-    FacturaCabeceraVentaControlador ventaControlador = new  FacturaCabeceraVentaControlador();
-    ClienteControlador cliC = new ClienteControlador();
-    DetalleCuenta cuentaDetalle = new DetalleCuenta();
-    ComponentesControlador cmpCont = new ComponentesControlador();
-    SaldoVentaControlador saldoV = new SaldoVentaControlador();
-    PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
-    
- 
-    
-    Deposito depModel = new  Deposito();
-    DetalleVenta ventaD = new DetalleVenta();
-    Venta ventaC = new Venta ();
-    
-    public String totalLetras(int precio_total) throws SQLException, Exception
-    {
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        
-        String res="";
-        try {
-        String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
-        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()){
-       res=rs.getString(1);
-        }
-           
-        } catch(HibernateException e){
-            throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
-        }
-         return res;
-    }
-    
-    
-     private void nuevo() throws Exception {
-        limpiar();
-        establecerBotones("Nuevo");
-        txtFecha.setText(getFechaActual());
-       
-        
-    }
-      
-     private void limpiarBusqueda(){
-        tbDetalleVenta.removeAll();
-        txtNroRecibo.setText("");
-        txtCliente.setText("");
-        txtCliente1.setText("");
-        txtFecha.setText("");
-        //nuevoDetalle();
-     }
-     
-     
-     private void limpiar() {
-        //txtPrefijoVenta.setText("");
-        tbDetalleVenta.removeAll();
-        txtCliente.setText("");
-        txtCliente1.setText("");
-        txtTotal.setText("");
-        subTotal= 0;
-        totaldesc=0;
-        iva10=0.0;
-        iva5=0.0;
-        cantProducto=0;
-        
-        
-        
-    }
-     
-      private void establecerBotones(String modo) {
-        switch (modo) {
-            case "Nuevo":
-                bNuevo.setEnabled(false);
-                bCancelar.setEnabled(true);
-                bSuspender.setEnabled(true);
-                bImprimir.setEnabled(true);
-                break;
-            case "Edicion":
-                bNuevo.setEnabled(true);
-                bCancelar.setEnabled(false);
-                bSuspender.setEnabled(true);
-                bImprimir.setEnabled(true);
-                break;
-            case "Vacio":
-                bNuevo.setEnabled(true);
-                bCancelar.setEnabled(false);
-                bSuspender.setEnabled(false);
-                bImprimir.setEnabled(false);
-                break;
-            case "Buscar":
-                bNuevo.setEnabled(false);
-                bCancelar.setEnabled(true);
-                bSuspender.setEnabled(false);
-                bImprimir.setEnabled(false);
-                break;
-        }
-    }
-  
-        private void guardar() throws ParseException, Exception{
-        if ("".equals(txtFecha.getText())) {
-            showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
-            txtFecha.requestFocusInWindow();
-            return;
-        } else if ("".equals(txtFecha.getText())) {
-            showMessageDialog(null, "Debe ingresar la fecha de venta", "Atención", INFORMATION_MESSAGE);
-            txtFecha.requestFocusInWindow();
-            return;
-        } else if ("".equals(txtCliente.getText())) {
-            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
-            txtCliente.requestFocusInWindow();
-            return;
-        }else if ("".equals(txtCliente1.getText())) {
-            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
-            txtCliente1.requestFocusInWindow();
-            return;
-        }
-        else {
-           if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-            int id= ventaControlador.nuevoCodigo(); 
-            System.out.println("EL ID ES"+id);
-           }
-        }
-       }
-            
-            
-            //datos cabecera de venta
-           
-       
     
     private void getClientes() {
         try {
@@ -251,7 +78,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
             modeloBusqueda.setColumnCount(0);
             modeloBusqueda.setRowCount(0);
            
-            try (ResultSet rs = cliC.datosBusqueda()) {
+            try (ResultSet rs = cliC.datosCliente()) {
            
                 ResultSetMetaData rsMd = rs.getMetaData();
                 
@@ -275,14 +102,166 @@ public class ReciboForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }
-     private void datosActuales(){
-       if (bNuevo.isEnabled() == true) {
-            txtCliente.setText(modeloBusqueda.getValueAt(k, 0).toString());
-            txtCliente1.setText(modeloBusqueda.getValueAt(k, 1).toString());  
-       }
-       establecerBotones("Nuevo");
+    
+    public String totalLetras(int precio_total) throws SQLException, Exception
+    {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        String res="";
+        try {
+        String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+       res=rs.getString(1);
+        }
+           
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
+        }
+         return res;
     }
     
+    
+     private void nuevo() {
+        limpiar();
+        establecerBotones("Nuevo");
+        txtFecha.setText(getFechaActual());      
+    }
+      
+    
+     
+     private void limpiar() {
+        //txtPrefijoVenta.setText("");
+        tbDetalleRecibo.removeAll();
+        txtCliente.setText("");
+        txtCliente1.setText("");
+        txtTotal.setText("");
+   
+    }
+     
+      private void establecerBotones(String modo) {
+        switch (modo) {
+            case "Nuevo":
+                bNuevo.setEnabled(false);
+                bCancelar.setEnabled(true);
+                btnGuardar.setEnabled(true);
+                bImprimir.setEnabled(true);
+                break;
+            case "Edicion":
+                bNuevo.setEnabled(true);
+                bCancelar.setEnabled(false);
+                btnGuardar.setEnabled(true);
+                bImprimir.setEnabled(true);
+                break;
+            case "Vacio":
+                bNuevo.setEnabled(true);
+                bCancelar.setEnabled(false);
+                btnGuardar.setEnabled(false);
+                bImprimir.setEnabled(false);
+                break;
+        }
+    }
+  
+        private void guardar() throws ParseException, Exception{
+        if ("".equals(txtFecha.getText())) {
+            showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
+            txtFecha.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtNroRecibo.getText())) {
+            showMessageDialog(null, "Debe ingresar el número del recibo", "Atención", INFORMATION_MESSAGE);
+            txtFecha.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtCliente.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtCliente1.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente1.requestFocusInWindow();
+            return;
+        }
+        else {
+           if(showConfirmDialog (null, "Está seguro de guardar el recibo?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+            int id= reciboC.nuevoCodigo(); 
+           }
+        }
+       }
+            
+      //retorna el numero de cedula y nombre de cliente
+     private void datosActuales(){
+            DecimalFormat forma = new DecimalFormat("###,###.##"); 
+             try {
+                String cedula=forma.format(Integer.parseInt((modeloBusqueda.getValueAt(k2, 1).toString())));
+                txtCliente.setText(cedula);
+                txtCliente1.setText(modeloBusqueda.getValueAt(k2, 2).toString());
+             } catch (Exception ex) {
+                Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+             } 
+       
+        cargarFacturasPendientes(Integer.parseInt(modeloBusqueda.getValueAt(k2, 0).toString()));
+        datosActualesFacturaPendiente();
+        establecerBotones("Nuevo");
+    }
+    
+     //carga las facturas pendientes de un cliente determinado
+     private void datosActualesFacturaPendiente(){
+           DecimalFormat forma = new DecimalFormat("###,###.##");  
+           int i=0;
+           while (!"".equals(modeloDetalleBusqueda.getValueAt(i, 0).toString())){
+            tbDetalleRecibo.setValueAt(modeloDetalleBusqueda.getValueAt(i, 0), i, 0);
+            String numeroFactura=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 1).toString()));
+            tbDetalleRecibo.setValueAt(numeroFactura, i, 1);
+            tbDetalleRecibo.setValueAt(modeloDetalleBusqueda.getValueAt(i, 2), i, 2);
+            tbDetalleRecibo.setValueAt(modeloDetalleBusqueda.getValueAt(i, 3), i, 3);
+            String total=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
+            tbDetalleRecibo.setValueAt(total, i, 4);
+            tbDetalleRecibo.setValueAt(modeloDetalleBusqueda.getValueAt(i, 5), i, 5);
+            i++;
+           }
+     }
+
+     //retorna los datos de la tabla factura_pendiente para cargar las facturas pendientes de un cliente especifico
+    private void cargarFacturasPendientes(int idCliente) {
+        tbDetalleRecibo.removeAll();
+        try {
+            
+            try (ResultSet rs =facturaPendienteControlador.getFacturasPendientes(idCliente)) {
+                 modeloDetalleBusqueda.setColumnCount(0);
+                 modeloDetalleBusqueda.setRowCount(0);
+                 ResultSetMetaData rsMd = rs.getMetaData();
+                
+               //int cantidadColumnas = rsMd.getColumnCount();
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                   modeloDetalleBusqueda.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloDetalleBusqueda.addRow(fila);
+                }
+                //Factura en suspension. una vez que devuelve las filas de la factura se agregan hasta completar las 12
+                for (int i = 0; i < 11; i++) {
+                        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+                 }
+                   
+                 tbDetalleRecibo.setModel(modeloDetalleBusqueda);
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    
+    }
+    
+     
+     
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -297,7 +276,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         txtTotal = new javax.swing.JFormattedTextField();
         labelTotal = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbDetalleVenta = new javax.swing.JTable();
+        tbDetalleRecibo = new javax.swing.JTable();
         txtCliente1 = new javax.swing.JTextField();
         lbCliente = new javax.swing.JLabel();
         txtNroRecibo = new javax.swing.JTextField();
@@ -308,7 +287,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         btnDetallePago = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         bNuevo = new org.edisoncor.gui.button.ButtonTask();
-        bSuspender = new org.edisoncor.gui.button.ButtonTask();
+        btnGuardar = new org.edisoncor.gui.button.ButtonTask();
         bCancelar = new org.edisoncor.gui.button.ButtonTask();
         bImprimir = new org.edisoncor.gui.button.ButtonTask();
         lbDatosGenerales = new javax.swing.JLabel();
@@ -355,26 +334,21 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         labelTotal.setText("Total a pagar");
         jPanel1.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 510, 80, 20));
 
-        tbDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
+        tbDetalleRecibo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nro. Prefijo", "Nro. Factura", "Fecha Vencimiento", "Plazo", "Cuota", "Total"
+                "Nro. Prefijo", "Nro. Factura", "Fecha Vencimiento", "Cuota", "Total", "Estado"
             }
         ));
-        tbDetalleVenta.getTableHeader().setReorderingAllowed(false);
-        tbDetalleVenta.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                tbDetalleVentaFocusLost(evt);
-            }
-        });
-        tbDetalleVenta.addKeyListener(new java.awt.event.KeyAdapter() {
+        tbDetalleRecibo.getTableHeader().setReorderingAllowed(false);
+        tbDetalleRecibo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbDetalleVentaKeyPressed(evt);
+                tbDetalleReciboKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(tbDetalleVenta);
+        jScrollPane1.setViewportView(tbDetalleRecibo);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 990, 220));
         jPanel1.add(txtCliente1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 190, -1));
@@ -382,12 +356,6 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         lbCliente.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbCliente.setText("Cliente");
         jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 40, -1));
-
-        txtNroRecibo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNroReciboActionPerformed(evt);
-            }
-        });
         jPanel1.add(txtNroRecibo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
 
         txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
@@ -415,7 +383,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
                 btnDetallePagoActionPerformed(evt);
             }
         });
-        jPanel1.add(btnDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 130, 150, 40));
+        jPanel1.add(btnDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 120, 160, 50));
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -424,19 +392,24 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         bNuevo.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
         bNuevo.setCategorySmallFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         bNuevo.setDescription(" ");
-        jPanel2.add(bNuevo);
-
-        bSuspender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        bSuspender.setText("Guardar");
-        bSuspender.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
-        bSuspender.setCategorySmallFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        bSuspender.setDescription(" ");
-        bSuspender.addActionListener(new java.awt.event.ActionListener() {
+        bNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bSuspenderActionPerformed(evt);
+                bNuevoActionPerformed(evt);
             }
         });
-        jPanel2.add(bSuspender);
+        jPanel2.add(bNuevo);
+
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
+        btnGuardar.setText("Guardar");
+        btnGuardar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        btnGuardar.setCategorySmallFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        btnGuardar.setDescription(" ");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnGuardar);
 
         bCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cancelar.png"))); // NOI18N
         bCancelar.setText("Cancelar");
@@ -464,7 +437,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         });
         jPanel2.add(bImprimir);
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, -1));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, -1));
 
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
         lbDatosGenerales.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)), "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
@@ -537,8 +510,8 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1259, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1166, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1166, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -552,92 +525,36 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNroReciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroReciboActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNroReciboActionPerformed
-
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        try {
-            nuevo();
-        } catch (Exception ex) {
-            Logger.getLogger(ReciboForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        
-       try {
-            txtNroRecibo.setText(prefijoControlador.prefijoFactura());
-            } catch (Exception ex) {
-            Logger.getLogger(ReciboForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        getClientes();
+        nuevo();
     }//GEN-LAST:event_formInternalFrameOpened
 
-    private void tbDetalleVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDetalleVentaKeyPressed
-       //establecerBotones("Ed");
+    private void tbDetalleReciboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDetalleReciboKeyPressed
       
-    }//GEN-LAST:event_tbDetalleVentaKeyPressed
+      
+    }//GEN-LAST:event_tbDetalleReciboKeyPressed
 
-    private void bSuspenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSuspenderActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         try {
             guardar();
         } catch (Exception ex) {
             Logger.getLogger(ReciboForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_bSuspenderActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
-       
-        subTotal = 0;
-        iva10 = 0.0;
-        iva5 = 0.0;  
-        cantProducto = 0;
-        totaldesc = 0;   
+        if(showConfirmDialog (null, "Está seguro de cancelar la operación?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+            establecerBotones("Edicion");
+            limpiar();
+        }
     }//GEN-LAST:event_bCancelarActionPerformed
-
-    private void tbDetalleVentaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tbDetalleVentaFocusLost
-         
-       
-    }//GEN-LAST:event_tbDetalleVentaFocusLost
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
       if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-          String nroFactura = "";
-          //nroFactura = txtFacturaVenta.getText();
-          //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
-          //dos veces
-          
-          
-      int i = 0;
-      
-         try {
-             ventaControlador.updateEstado(Integer.parseInt(nroFactura));
-         } catch (Exception ex) {
-             Logger.getLogger(ReciboForm.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         try {	
-                		                       
-             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
-             		             
-             Map parametro = new HashMap ();        		               
-             		             
-             parametro.put("factura", ventaC.getNroFactura());		     
-             parametro.put("letras", monto);		          
-             parametro.put("prefijo", txtNroRecibo.getText());		  
-            		            	  
-             //JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
-  		  
-            // JasperViewer.viewReport(print);		      
-  		  
-            } catch (JRException jRException) {		           
-  		  
-             System.out.println(jRException.getMessage());
-  		  
-            } catch (Exception ex) {		            
-              Logger.getLogger(ReciboForm.class.getName()).log(Level.SEVERE, null, ex);
-          }		            
-           
-      }
+       
+      }  
     }//GEN-LAST:event_bImprimirActionPerformed
 
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
@@ -653,9 +570,9 @@ public class ReciboForm extends javax.swing.JInternalFrame {
                 bf.setVisible(true);
 
                 for(int c=0; c<modeloBusqueda.getRowCount(); c ++){
-                    if (modeloBusqueda.getValueAt(c, 0).toString().equals(bf.retorno)){
+                    if (modeloBusqueda.getValueAt(c, 1).toString().equals(bf.retorno)){
                         establecerBotones("Edicion");
-                        k = c;
+                        k2 = c;
                         datosActuales();
                         return;
                     }
@@ -675,13 +592,17 @@ public class ReciboForm extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnDetallePagoActionPerformed
 
+    private void bNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_bNuevoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bCancelar;
     private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
-    private org.edisoncor.gui.button.ButtonTask bSuspender;
     private javax.swing.JButton btnDetallePago;
+    private org.edisoncor.gui.button.ButtonTask btnGuardar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
@@ -696,7 +617,7 @@ public class ReciboForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbFecha;
     private javax.swing.JLabel lbNroRecibo;
     public static javax.swing.JTable tbDetallePagoVenta;
-    private javax.swing.JTable tbDetalleVenta;
+    private javax.swing.JTable tbDetalleRecibo;
     private javax.swing.JFormattedTextField txtCliente;
     private javax.swing.JTextField txtCliente1;
     private javax.swing.JTextField txtFecha;
