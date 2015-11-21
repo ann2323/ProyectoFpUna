@@ -126,6 +126,7 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
         }
     }
+   
     public ResultSet datoCombo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         //SELECT codigo || ' - ' || nombre as dato, codigo from Deposito
