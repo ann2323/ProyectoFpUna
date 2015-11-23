@@ -60,6 +60,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mFacturaCompra = new javax.swing.JMenuItem();
         mNotaCreditoCompra = new javax.swing.JMenuItem();
         mCuentasProveedores = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         mVenta = new javax.swing.JMenu();
         mCliente = new javax.swing.JMenuItem();
         mPrefijo = new javax.swing.JMenuItem();
@@ -231,6 +232,10 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mCompra.add(mCuentasProveedores);
 
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboCompra.png"))); // NOI18N
+        jMenuItem2.setText("Recibo de Pago");
+        mCompra.add(jMenuItem2);
+
         jMenuBar1.add(mCompra);
 
         mVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
@@ -296,6 +301,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mVenta.add(mDetallePago);
 
+        mReciboPago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboVenta.png"))); // NOI18N
         mReciboPago.setText("Recibo de Pago");
         mReciboPago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1071,6 +1077,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JTextField jTextField1;
     private org.jdesktop.swingx.JXMonthView jXMonthView1;
     private javax.swing.JLabel lbRol;
