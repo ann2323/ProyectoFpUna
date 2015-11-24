@@ -55,6 +55,21 @@ public class FacturaCabeceraVentaControlador {
         }
      }*/
      
+     public ResultSet getNroFacturaPagadas() throws SQLException, Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+         
+          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha,'dd/mm/yyyy'), v.fact_referenciada from venta v where v.estado = 'PAGADO'";
+         
+         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+        }
+    }
+     
+     
      public void update(Venta venta) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
@@ -330,7 +345,19 @@ public class FacturaCabeceraVentaControlador {
         }
     }
     
-
+     public ResultSet getNroFactura1() throws SQLException, Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+         
+          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), v.fact_referenciada from venta v where v.estado != 'PAGADO'";
+         
+         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+         ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
     
 
     public String getTipoPago(String idMoneda) throws SQLException, Exception {
