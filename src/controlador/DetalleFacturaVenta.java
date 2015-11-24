@@ -93,10 +93,33 @@ public class DetalleFacturaVenta {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+            throw new Exception("Error al consultar la tabla Venta \n" + e.getMessage());
         }
     }
      
-      
+   public ResultSet getDetalleFactura(int idventa) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unitario as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", sub_total as \"Subtotal\" from detalle_venta where venta_id='"+idventa+"' and nota_credito is null";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+        }
+    }
+   
+    public void updateFactura(int idVenta, String cmp) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try {
+            baseDatos.createQuery("update DetalleVenta set "
+                   +" nota_credito = 'S' where venta_id = '" +idVenta+ "' and codigo = '" +cmp+ "'").executeUpdate();
+            baseDatos.beginTransaction().commit();
+        } catch(HibernateException e){
+            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+        }
+    }
   
 }
