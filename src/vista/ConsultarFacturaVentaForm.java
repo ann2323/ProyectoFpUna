@@ -11,6 +11,7 @@ import controlador.FacturaCabeceraVentaControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -30,6 +31,7 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
     public ConsultarFacturaVentaForm() {
         initComponents();
         getCliente();
+        
        
     }
 
@@ -124,8 +126,26 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Consultar Factura de Venta");
+        setResizable(true);
+        setTitle("Consultar Factura Venta");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarFacturaVenta.png"))); // NOI18N
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
         jPanel2.setPreferredSize(new java.awt.Dimension(801, 58));
@@ -194,15 +214,25 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
         tbFact.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tbFact.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Cantidad Total", "Total"
+                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Vencimiento", "Total", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tbFact.setEditingRow(0);
         jScrollPane1.setViewportView(tbFact);
 
@@ -269,12 +299,17 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
          try {
             codigoCliente = clienteControlador.getCodigo((String) comboCliente.getSelectedItem());
             getFactura(codigoCliente);
+            cargarTabla();
             //System.out.println(codigoCliente);
             
         } catch (Exception ex) {
             //Logger.getLogger(PruebaCombo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_comboClienteActionPerformed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+       comboCliente.setSelectedIndex(-1);
+    }//GEN-LAST:event_formInternalFrameOpened
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -291,4 +326,22 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
     private javax.swing.JTable tbFact;
     private org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI windowsStatusBarUI1;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarTabla() {
+        
+        DecimalFormat forma = new DecimalFormat("###,###.##");
+        int i=0;
+        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
+            String nroFact = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
+            tbFact.setValueAt(nroFact, i, 1);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 2), i, 2);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 4), i, 4);
+            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
+            tbFact.setValueAt(total, i, 5);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 6), i, 6);
+            i++;
+        }
+    }
 }
