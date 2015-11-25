@@ -393,7 +393,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formateador.parse(txtFechaVenta.getText());
             ventaC.setFecha(date);
-            ventaC.setEsFactura('S');
+            ventaC.setEsFactura("S");
             //ventaC.setProyectoId(setearProyecto());
             ventaC.setEstado("BORRADOR");
             int idSaldo = saldoV.nuevoCodigo();
