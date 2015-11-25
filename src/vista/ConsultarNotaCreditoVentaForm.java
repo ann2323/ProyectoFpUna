@@ -11,6 +11,7 @@ import controlador.FacturaCabeceraVentaControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -124,11 +125,28 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
-        setTitle("Consultar Nota de Crédito de Venta");
+        setTitle("Consultar Nota Credito Venta");
+        setToolTipText("");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscarNotaCreditoVenta.png"))); // NOI18N
         setMinimumSize(new java.awt.Dimension(200, 33));
         setPreferredSize(new java.awt.Dimension(971, 486));
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
         jPanel2.setPreferredSize(new java.awt.Dimension(801, 58));
@@ -197,13 +215,13 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
         tbFact.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tbFact.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nro Prefijo", "Nro. Nota de Crédito", "Factura Referenciada", "Fecha", "Tipo de Pago", "Cantidad Total", "Total", "Estado"
+                "Nro Prefijo", "Nro. Nota de Crédito", "Factura Referenciada", "Fecha", "Total", "Estado"
             }
         ));
         tbFact.setEditingRow(0);
@@ -222,7 +240,7 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -276,6 +294,7 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
          try {
             codigoCliente = clienteControlador.getCodigo((String) comboCliente.getSelectedItem());
             getNotaCredito(codigoCliente);
+            cargarTabla();
             //System.out.println(codigoCliente);
             
         } catch (Exception ex) {
@@ -283,6 +302,27 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboClienteActionPerformed
 
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        comboCliente.setSelectedIndex(-1);
+    }//GEN-LAST:event_formInternalFrameOpened
+
+    private void cargarTabla() {
+        
+        DecimalFormat forma = new DecimalFormat("###,###.##");
+        int i=0;
+        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
+            String nroNotaC = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
+            tbFact.setValueAt(nroNotaC, i, 1);
+            String facturaRef = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 2).toString()));
+            tbFact.setValueAt(facturaRef, i, 2);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
+            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 4).toString()));
+            tbFact.setValueAt(total, i, 4);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 5), i, 5);
+            i++;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox comboCliente;
