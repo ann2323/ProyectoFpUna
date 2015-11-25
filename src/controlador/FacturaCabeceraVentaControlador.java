@@ -101,9 +101,10 @@ public class FacturaCabeceraVentaControlador {
          return res;
     }
       
+      //Para la consula de factura
       public ResultSet datosTablaBusqueda(int codigo) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", cantidad_total as \"Cantidad Total\", precio_total as \"Total\", estado as \"Estado\" from Venta where es_factura = 'S' and cliente_id = '" + codigo + "'";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", to_char(vencimiento,'dd/mm/yyyy') as \"Fecha Vencimiento\", precio_total as \"Total\", estado as \"Estado\" from Venta where es_factura = 'S' and cliente_id = '" + codigo + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
@@ -345,6 +346,7 @@ public class FacturaCabeceraVentaControlador {
         }
     }
     
+    //para nota de credito
      public ResultSet getNroFactura1() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
@@ -355,7 +357,7 @@ public class FacturaCabeceraVentaControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+            throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
         }
     }
     
@@ -397,10 +399,10 @@ public class FacturaCabeceraVentaControlador {
                 throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
             }
     }
-        
+        //consulta nota de credito
      public ResultSet busquedaNotaCredito(int codigoCliente) throws SQLException, Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT v.nro_prefijo as \"Nro Prefijo\", v.nro_factura as \"Nro Nota de Crédito\", v.fact_referenciada as \"Factura Referenciada\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", m.nombre as \"Tipo de pago\", v.cantidad_total as \"Cantidad Total\", v.precio_total as \"Total\", v.estado as \"Estado\" from Venta v, Moneda m where m.moneda_id = v.moneda_id and es_factura = 'N' and cliente_id = '" + codigoCliente + "'";
+            String query = "SELECT v.nro_prefijo as \"Nro Prefijo\", v.nro_factura as \"Nro Nota de Crédito\", v.fact_referenciada as \"Factura Referenciada\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", v.precio_total as \"Total\", v.estado as \"Estado\" from Venta v where es_factura = 'N' and cliente_id = '" + codigoCliente + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
