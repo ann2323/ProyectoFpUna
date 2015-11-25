@@ -447,7 +447,7 @@ public class VentanaInternalForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_TbVentanasMouseClicked
 
     private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
-         if (txtNombre.getText().length() > 19) {
+         if (txtNombre.getText().length() > 29) {
             evt.consume();
         }
     }//GEN-LAST:event_txtNombreKeyTyped
