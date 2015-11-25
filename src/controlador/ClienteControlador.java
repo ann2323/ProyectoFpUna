@@ -73,7 +73,7 @@ public class ClienteControlador {
         try {
             return rs;
         } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla Componentes: \n" + e.getMessage());
+            throw new Exception("Error al consultar la tabla Clientes: \n" + e.getMessage());
         }
     }
     
