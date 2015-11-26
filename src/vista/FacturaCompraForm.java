@@ -12,6 +12,7 @@ import controlador.DepositoControlador;
 import controlador.DetalleFacturaCompra;
 import java.awt.Color;
 import controlador.FacturaCabeceraCompraControlador;
+import controlador.FacturaPendienteControlador;
 import controlador.ProveedorControlador;
 import controlador.ProyectoControlador;
 import controlador.SaldoCompraControlador;
@@ -41,6 +42,7 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Compra;
 import modelo.Deposito;
 import modelo.DetalleCompra;
+import modelo.FacturaPendiente;
 import modelo.Proyectos;
 import modelo.SaldoCompra;
 import modelo.Stock;
@@ -85,7 +87,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
  
     Stock stock = new Stock();
     
-     Integer subTotal= 0, totaldesc=0;
+     Integer subTotal= 0, totaldesc=0,  montoCuota=0;;
      double iva10=0.0, iva5=0.0;
      Integer  cantProducto=0;
      int k, k2;
@@ -98,6 +100,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     FacturaCabeceraCompraControlador compraControlador = new  FacturaCabeceraCompraControlador();
     ProveedorControlador provC = new ProveedorControlador();
     ComponentesControlador componentesControl = new ComponentesControlador();
+    FacturaPendiente facturaPendiente = new FacturaPendiente();
+     FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
     
     Deposito depModel = new  Deposito();
     SaldoCompra saldoModel = new SaldoCompra();
@@ -375,6 +379,38 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                        System.out.println("Entro en el insert de cabecera");
                         compraC.setEstado("CONFIRMADO");
                         compraControlador.insert(compraC);
+                                           if (JCpago.getSelectedItem().equals("CREDITO")){
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(JCpagoEn.getSelectedItem().toString());
+                           String cuota = JCpagoEn.getSelectedItem().toString();
+                           for (int j = 1; j <= Integer.parseInt(JCpagoEn.getSelectedItem().toString()); j++) {
+                           facturaPendiente.setPlazo(j+" de "+cuota);
+                           facturaPendiente.setProveedorId(idProveedor);
+                           facturaPendiente.setEstado("Pendiente");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           facturaPendiente.setFechaVencimiento(compraControlador.Vencimiento(compraC.getFecha(), compraC.getPagoEn()));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setClienteId(null);
+                           facturaPendienteControlador.insert(facturaPendiente);
+                           facturaPendiente =  new FacturaPendiente();
+                        }
+
+                       }else{
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                           facturaPendiente.setProveedorId(idProveedor);
+                           facturaPendiente.setEstado("Pendiente");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+                           facturaPendiente.setFechaVencimiento(formateador.format(ahora));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setClienteId(null);
+                           facturaPendienteControlador.insert(facturaPendiente);
+                       }
                         txtFacturaCompra.setText("");
                         nuevo();
                    }else{
