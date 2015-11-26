@@ -154,6 +154,18 @@ public class FacturaCabeceraCompraControlador {
             }
     }
     
+     public ResultSet datosTablaBusquedaFacturasPendientes() throws Exception {
+            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from compra where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO')";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+            }
+        }
     public Integer nuevoCodigo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
