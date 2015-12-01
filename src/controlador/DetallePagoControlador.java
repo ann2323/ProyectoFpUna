@@ -6,7 +6,7 @@
 
 package controlador;
 
-import modelo.DetallePagoCompra;
+import modelo.DetallePago;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
@@ -18,7 +18,7 @@ import util.HibernateUtil;
  * @author Any
  */
 public class DetallePagoControlador {
-     public void insert(DetallePagoCompra pagos) throws Exception {
+     public void insert(DetallePago pagos) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
         
@@ -28,15 +28,19 @@ public class DetallePagoControlador {
         } catch(HibernateException e){
             throw new Exception("Error al guardar detalle de pago: \n" + e.getMessage());
         }
+        baseDatos.close();
     }
-    public Integer nuevaLinea() throws Exception {
+    public Integer nuevaCodigo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(detallePagoId), 0) + 1 from DetallePago").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(detalle_pago_id), 0) + 1 from DetallePago").uniqueResult();
+            
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código detalle de pago: \n" + e.getMessage());
         }
+        
+   
     }
     
 }
