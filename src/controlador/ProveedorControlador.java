@@ -37,7 +37,7 @@ public class ProveedorControlador {
         }catch(HibernateException e){
             e.getMessage();
         }
-         
+         baseDatos.close();
     }
     
    
@@ -71,6 +71,7 @@ public class ProveedorControlador {
         } catch(HibernateException e){
             throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
         }
+        baseDatos.close();
     }
     
      public ResultSet datosCombo() throws Exception {
@@ -96,6 +97,7 @@ public class ProveedorControlador {
         } catch(HibernateException e){
             throw new Exception("Error al eliminar proveedor: \n" + e.getMessage());
         }
+        baseDatos.close();
     }
    
     
@@ -113,16 +115,19 @@ public class ProveedorControlador {
         }
     }
     
-    public int devuelveId(String ci) throws Exception {
+    public Integer devuelveId(String ci) throws Exception {
+          
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        baseDatos.beginTransaction();
-        
+        String cad = "SELECT proveedor_id from Proveedor where ci = '" +ci+ "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
-           return (Integer) baseDatos.createQuery("Select proveedorId from Proveedor where ci='"+ci+"'").uniqueResult();
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (Integer) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al devolver id del proveedor: \n" + e.getMessage());
-        }
-    }
+            throw new Exception("Error al devolver el id proveedor: \n" + e.getMessage());
+        } 
+     }
     
     public int devuelveId(String ci, String nombre) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
@@ -204,6 +209,7 @@ public class ProveedorControlador {
         }catch(HibernateException e){
             e.getMessage();
         }
+        baseDatos.close();
     }
     
     public String getProyectoAFacturar() throws Exception {
