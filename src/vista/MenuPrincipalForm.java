@@ -59,7 +59,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mProveedor = new javax.swing.JMenuItem();
         mFacturaCompra = new javax.swing.JMenuItem();
         mNotaCreditoCompra = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        ReciboPagoProv = new javax.swing.JMenuItem();
         mVenta = new javax.swing.JMenu();
         mCliente = new javax.swing.JMenuItem();
         mPrefijo = new javax.swing.JMenuItem();
@@ -221,9 +221,14 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mCompra.add(mNotaCreditoCompra);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboCompra.png"))); // NOI18N
-        jMenuItem2.setText("Recibo de Pago");
-        mCompra.add(jMenuItem2);
+        ReciboPagoProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboCompra.png"))); // NOI18N
+        ReciboPagoProv.setText("Recibo de Pago");
+        ReciboPagoProv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReciboPagoProvActionPerformed(evt);
+            }
+        });
+        mCompra.add(ReciboPagoProv);
 
         jMenuBar1.add(mCompra);
 
@@ -978,6 +983,24 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mReciboPagoActionPerformed
 
+    private void ReciboPagoProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReciboPagoProvActionPerformed
+        try {
+             ReciboProveedorForm tf2 = new ReciboProveedorForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ReciboPagoProvActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1014,6 +1037,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem ReciboPagoProv;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
     private javax.swing.JMenuItem consultarCuentaCliente;
     private javax.swing.JMenuItem consultarCuentaProveedor;
@@ -1021,7 +1045,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JTextField jTextField1;
     private org.jdesktop.swingx.JXMonthView jXMonthView1;
     private javax.swing.JLabel lbRol;
