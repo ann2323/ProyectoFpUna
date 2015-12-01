@@ -385,7 +385,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                            for (int j = 1; j <= Integer.parseInt(JCpagoEn.getSelectedItem().toString()); j++) {
                            facturaPendiente.setPlazo(j+" de "+cuota);
                            facturaPendiente.setProveedorId(idProveedor);
-                           facturaPendiente.setEstado("Pendiente");
+                           facturaPendiente.setEstado("PENDIENTE");
                            facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
                            facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
                            facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
