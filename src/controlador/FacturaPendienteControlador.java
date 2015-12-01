@@ -24,9 +24,11 @@ public class FacturaPendienteControlador {
         
         try {
             return (Integer) baseDatos.createQuery("select coalesce (max(factura_pendiente_id), 0) + 1 from FacturaPendiente").uniqueResult();
+            
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código de factura pendiente: \n" + e.getMessage());
         }
+        
     }
 
     public ResultSet getFacturasPendientes(int idCliente) throws SQLException, Exception {
@@ -51,5 +53,36 @@ public class FacturaPendienteControlador {
             } catch(HibernateException e){
                 throw new Exception("Error al guardar factura pendiente: \n" + e.getMessage());
             }
+            baseDatos.close();
         } 
+        
+        public void updateFacturaPendiente(Integer pagado, Integer pendiente, Integer cambio, Integer reciboid, Integer factura, String plazo) throws Exception {
+            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+        try {
+            baseDatos.createQuery("update FacturaPendiente set "
+                   +" pagado = '" + pagado + "', pendiente = '" + pendiente + "'"
+                    + ", cambio = '" +  cambio + "', recibo_id = '" +reciboid+  "'"
+                    +", estado = 'PAGADO' where nro_factura='" +factura+"' and plazo = '" +plazo+"'").executeUpdate();
+            baseDatos.beginTransaction().commit();
+        } catch(HibernateException e){
+            throw new Exception("Error al modificar factura pendiente: \n" + e.getMessage());
+        }
+        baseDatos.close();
+    }
+        
+      public Integer devuelveIdProv(Integer nroFactura, String plazo, Integer provId) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT factura_pendiente_id from factura_pendiente where nro_factura = '" + nroFactura + "' and plazo = '" + plazo + "' and proveedor_id = '" + provId + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver nro de factura de compra: \n" + e.getMessage());
+        } 
+     }
 }
