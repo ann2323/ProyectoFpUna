@@ -117,16 +117,19 @@ public class ClienteControlador {
  
     
 
-     public int devuelveId(String ci) throws Exception {
+     public Integer devuelveId(String nroCI) throws SQLException, Exception {
+          
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        baseDatos.beginTransaction();
-        
+        String cad = "SELECT cliente_id from cliente where cedula = '" + nroCI + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
-           return (Integer) baseDatos.createQuery("Select clienteId from Cliente where cedula='"+ci+"'").uniqueResult();
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al traer id cliente: \n" + e.getMessage());
-        }
-    }  
+            throw new Exception("Error al devolver id cliente: \n" + e.getMessage());
+        } 
+    }
     
     public ResultSet datos() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
