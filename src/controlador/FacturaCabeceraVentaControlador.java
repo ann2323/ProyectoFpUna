@@ -60,7 +60,7 @@ public class FacturaCabeceraVentaControlador {
      public ResultSet getNroFacturaPagadas() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha,'dd/mm/yyyy'), v.fact_referenciada from venta v where v.estado = 'PAGADO'";
+          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), to_char(v.fecha,'dd/mm/yyyy'), v.fact_referenciada from venta v where v.estado = 'CONFIRMADO'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -84,9 +84,9 @@ public class FacturaCabeceraVentaControlador {
         }
     }
     
-     public ResultSet datosTablaBusquedaFacturasPendientes() throws Exception {
+     public ResultSet datosTablaBusquedaFacturasPendientes(Integer idCli) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from venta where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'PAGADO')";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from venta where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO') and cliente_id='" + idCli + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
@@ -206,7 +206,19 @@ public class FacturaCabeceraVentaControlador {
         baseDatos.beginTransaction();
         
         try {
-            baseDatos.createQuery("update Venta set estado = 'PAGADO' where nro_factura = '" +nro_factura+ "'").executeUpdate();
+            baseDatos.createQuery("update Venta set estado = 'CONFIRMADO' where nro_factura = '" +nro_factura+ "'").executeUpdate();
+            baseDatos.beginTransaction().commit();
+        } catch(HibernateException e){
+            throw new Exception("Error al actualizar estado factura: \n" + e.getMessage());
+        }
+    }
+    
+    public void updateEstadoPendiente(Integer nro_factura) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try {
+            baseDatos.createQuery("update Venta set estado = 'PENDIENTE' where nro_factura = '" +nro_factura+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
             throw new Exception("Error al actualizar estado factura: \n" + e.getMessage());
@@ -350,7 +362,7 @@ public class FacturaCabeceraVentaControlador {
     public ResultSet getNroFactura() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.moneda_id, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0) from venta v where v.estado != 'PAGADO'";
+          String query = "Select v.nro_prefijo,trim(to_char(v.nro_factura,'9G999G999')), v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.moneda_id, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0) from venta v where v.estado = 'BORRADOR'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -365,7 +377,7 @@ public class FacturaCabeceraVentaControlador {
      public ResultSet getNroFactura1() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), v.fact_referenciada from venta v where v.estado != 'PAGADO'";
+          String query = "Select v.nro_prefijo, v.nro_factura, v.cliente_id, to_char(v.fecha,'dd/mm/yyyy'), v.pago_contado, v.cod_deposito, v.cantidad_total, v.precio_total, v.descuento, v.venta_id, coalesce(v.iva10, 0), coalesce(v.iva5, 0), coalesce(v.pago_en, 0), v.fact_referenciada from venta v where (v.estado = 'PENDIENTE' or v.estado = 'CONFIRMADO')";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
