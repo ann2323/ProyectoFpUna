@@ -796,7 +796,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         labelPagoen = new javax.swing.JLabel();
         comboPago = new javax.swing.JComboBox();
         labelPago = new javax.swing.JLabel();
-        btnDetallePago = new javax.swing.JButton();
         labelCantidadTotal = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         bNuevo = new org.edisoncor.gui.button.ButtonTask();
@@ -997,15 +996,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         labelPago.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPago.setText("Pago");
         jPanel1.add(labelPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 35, 20));
-
-        btnDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
-        btnDetallePago.setText("Detalle de Pago");
-        btnDetallePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDetallePagoActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 140, 150, 40));
 
         labelCantidadTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal.setText("Cantidad Total");
@@ -1683,17 +1673,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         }
     }//GEN-LAST:event_txtClienteKeyPressed
 
-    private void btnDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallePagoActionPerformed
-         try {
-            DetallePagoVentaForm detallePago = new DetallePagoVentaForm();
-            MenuPrincipalForm.jDesktopPane1.add(detallePago);
-            detallePago.toFront();
-            detallePago.setVisible(true);
-        } catch (Exception ex) {
-            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnDetallePagoActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bBuscar;
@@ -1701,7 +1680,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
     private org.edisoncor.gui.button.ButtonTask bSuspender;
-    private javax.swing.JButton btnDetallePago;
     private javax.swing.JComboBox comboCuota;
     private javax.swing.JComboBox comboDeposito;
     private javax.swing.JComboBox comboPago;
