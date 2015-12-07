@@ -948,39 +948,39 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mNotaCreditoVentaActionPerformed
 
     private void mDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDetallePagoActionPerformed
-         try {
-             DetallePagoVentaForm tf2 = new DetallePagoVentaForm();
-            try {
-                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            this.jDesktopPane1.add(tf2);
-            tf2.show();
-        } catch (Exception ex) {
-            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//         try {
+//             DetallePagoVentaForm tf2 = new DetallePagoVentaForm();
+//            try {
+//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//            } catch (Exception ex) {
+//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            this.jDesktopPane1.add(tf2);
+//            tf2.show();
+//        } catch (Exception ex) {
+//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_mDetallePagoActionPerformed
 
     private void mReciboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReciboPagoActionPerformed
-        try {
-             ReciboForm tf2 = new ReciboForm();
-            try {
-                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            this.jDesktopPane1.add(tf2);
-            tf2.show();
-        } catch (Exception ex) {
-            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//             ReciboForm tf2 = new ReciboForm();
+//            try {
+//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//            } catch (Exception ex) {
+//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            this.jDesktopPane1.add(tf2);
+//            tf2.show();
+//        } catch (Exception ex) {
+//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_mReciboPagoActionPerformed
 
     private void ReciboPagoProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReciboPagoProvActionPerformed
