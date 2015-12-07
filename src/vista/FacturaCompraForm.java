@@ -87,10 +87,11 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
  
     Stock stock = new Stock();
     
-     Integer subTotal= 0, totaldesc=0,  montoCuota=0;;
+     Integer subTotal= 0, totaldesc=0,  montoCuota=0, nroFacturaAux=0;
      double iva10=0.0, iva5=0.0;
      Integer  cantProducto=0;
-     int k, k2;
+     String estado="";
+     int k, k2, borrado2=0;
      DecimalFormat formateador = new DecimalFormat("###,###.##");
      
     StockControlador stockCont = new StockControlador();
@@ -264,9 +265,11 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             }
             compraC.setNroPrefijo(txtPrefijoCompra.getText());
             compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+            nroFacturaAux=Integer.parseInt(txtFacturaCompra.getText());
             Date ahora = new Date();
             compraC.setFechaRecepcion(ahora);
             SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat formato2 = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formato.parse(txtFechaCompra.getText());
             compraC.setFecha(date);
             compraC.setEsFactura("S");
@@ -276,18 +279,12 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
             compraC.setCodDeposito(dep.getCodigo());
             compraC.setPagoContado(JCpago.getSelectedItem().toString());
-            int idSaldo = saldoC.nuevoCodigo();
-            saldoModel.setSaldoCompraId(idSaldo);
-            saldoModel.setEstado("PENDIENTE");
-            saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt(txtFacturaCompra.getText()));
-            saldoModel.setEsFactura("S");
-            saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
+            estado = JCpago.getSelectedItem().toString();
             if ("CREDITO".equals(JCpago.getSelectedItem().toString())){
             compraC.setPagoEn(Integer.parseInt(JCpagoEn.getSelectedItem().toString()));  
             String dateVenc = (compraControlador.Vencimiento(compraC.getFecha(), compraC.getPagoEn()));  
-            compraC.setEstado("PENDIENTE");
-            compraC.setVencimiento(formato.parse(dateVenc)); 
+            compraC.setEstado("BORRADOR");
+            compraC.setVencimiento(formato2.parse(dateVenc)); 
             }
             
             compraC.setVencimiento(date); 
@@ -301,6 +298,59 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             
             Proyectos pro = (Proyectos) this.JCproyecto1.getSelectedItem();
             compraC.setProyectoId(pro.getId());
+                     
+            
+                         if (JCpago.getSelectedItem().equals("CREDITO")){
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(JCpagoEn.getSelectedItem().toString());
+                           String cuota = JCpagoEn.getSelectedItem().toString();
+                           for (int j = 1; j <= Integer.parseInt(JCpagoEn.getSelectedItem().toString()); j++) {
+                           facturaPendiente.setPlazo(j+" de "+cuota);
+                           facturaPendiente.setProveedorId(idProveedor);
+                           facturaPendiente.setEstado("PENDIENTE");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           facturaPendiente.setFechaVencimiento(compraControlador.Vencimiento(compraC.getFecha(),j));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setClienteId(null);
+                           if (bNuevo.isEnabled() == false){                           
+                                facturaPendienteControlador.insert(facturaPendiente);
+                               
+                            }else{
+                                if (borrado2 == 0){
+                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText()));
+                                }
+                                facturaPendienteControlador.insert(facturaPendiente);
+                                 borrado2=1;
+                                 
+                                
+                            }
+                        }
+
+                       }else{
+                           facturaPendiente=  new FacturaPendiente();
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                           facturaPendiente.setProveedorId(idProveedor);
+                           facturaPendiente.setEstado("PENDIENTE");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+                           facturaPendiente.setFechaVencimiento(formateador.format(ahora));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setClienteId(null);
+                           if (bNuevo.isEnabled() == false){                           
+                                facturaPendienteControlador.insert(facturaPendiente);
+                               
+                            }else{                   
+                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText()));
+                            
+                                facturaPendienteControlador.insert(facturaPendiente);                             
+                               
+                           }
+                       }
            
                     try {
                     int i = 0;
@@ -377,40 +427,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                     
                    if (bNuevo.isEnabled() == false){ 
                        System.out.println("Entro en el insert de cabecera");
-                        compraC.setEstado("CONFIRMADO");
+                        compraC.setEstado("BORRADOR");
                         compraControlador.insert(compraC);
-                                           if (JCpago.getSelectedItem().equals("CREDITO")){
-                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(JCpagoEn.getSelectedItem().toString());
-                           String cuota = JCpagoEn.getSelectedItem().toString();
-                           for (int j = 1; j <= Integer.parseInt(JCpagoEn.getSelectedItem().toString()); j++) {
-                           facturaPendiente.setPlazo(j+" de "+cuota);
-                           facturaPendiente.setProveedorId(idProveedor);
-                           facturaPendiente.setEstado("PENDIENTE");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
-                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                           facturaPendiente.setFechaVencimiento(compraControlador.Vencimiento(compraC.getFecha(), compraC.getPagoEn()));
-                           facturaPendiente.setMontoPendiente(montoCuota);
-                           facturaPendiente.setClienteId(null);
-                           facturaPendienteControlador.insert(facturaPendiente);
-                           facturaPendiente =  new FacturaPendiente();
-                        }
-
-                       }else{
-                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
-                           facturaPendiente.setProveedorId(idProveedor);
-                           facturaPendiente.setEstado("Pendiente");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-                           facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
-                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
-                           facturaPendiente.setFechaVencimiento(formateador.format(ahora));
-                           facturaPendiente.setMontoPendiente(montoCuota);
-                           facturaPendiente.setClienteId(null);
-                           facturaPendienteControlador.insert(facturaPendiente);
-                       }
                         txtFacturaCompra.setText("");
                         nuevo();
                    }else{
@@ -418,7 +436,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                             compraControlador.borrarCabecera(compraC.getNroFactura());
                             compraControlador.insert(compraC);
                             compraControlador.cambiarAEnProceso(pro.getCodigo());
-                            saldoC.insert(saldoModel);
                             limpiar();
                             nuevo();
                             //showMessageDialog(null, "Venta actualizada correctamente");
@@ -872,6 +889,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Factura Compra");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -883,9 +903,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
             }
         });
 
@@ -1262,6 +1279,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 (datechooser.view.BackRenderer)null,
                 false,
                 true)));
+    txtFechaCompra.setFormat(2);
     txtFechaCompra.setLocale(new java.util.Locale("es", "BO", ""));
     JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 140, -1));
 
@@ -1528,8 +1546,22 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtProveedorKeyPressed
 
     private void jBGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardar1ActionPerformed
-     try {
+       
+        try {
          guardar();
+         if (estado.equals("CREDITO")){
+             try{
+                   compraControlador.updateEstadoPendiente(nroFacturaAux);
+             }catch(Exception ex){
+                       Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }else{
+                try {
+                    compraControlador.updateEstado(nroFacturaAux);
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+         }
      } catch (Exception ex) {
          Logger.getLogger(FacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
      }
