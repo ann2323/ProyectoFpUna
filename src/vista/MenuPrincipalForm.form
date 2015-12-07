@@ -322,7 +322,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mConsultarNotaCreditoVentaActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="consultarCuentaCliente">
+            <MenuItem class="javax.swing.JMenuItem" name="consultarSaldoFacturaCompra">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/consultaCuentaCliente.png"/>
@@ -330,10 +330,10 @@
                 <Property name="text" type="java.lang.String" value="Consultar Saldo Factura de Compra"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarCuentaClienteActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarSaldoFacturaCompraActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="consultarCuentaProveedor">
+            <MenuItem class="javax.swing.JMenuItem" name="consultarSaldoNotaCreditoCompra">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/consultarCuentaProveedor.png"/>
@@ -341,7 +341,7 @@
                 <Property name="text" type="java.lang.String" value="Consultar Saldo Nota de Credito Compra"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarCuentaProveedorActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consultarSaldoNotaCreditoCompraActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

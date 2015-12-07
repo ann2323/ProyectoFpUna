@@ -77,8 +77,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mConsultarFacturaCompra = new javax.swing.JMenuItem();
         mConsultarNotaCreditoCompra = new javax.swing.JMenuItem();
         mConsultarNotaCreditoVenta = new javax.swing.JMenuItem();
-        consultarCuentaCliente = new javax.swing.JMenuItem();
-        consultarCuentaProveedor = new javax.swing.JMenuItem();
+        consultarSaldoFacturaCompra = new javax.swing.JMenuItem();
+        consultarSaldoNotaCreditoCompra = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
@@ -377,23 +377,23 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(mConsultarNotaCreditoVenta);
 
-        consultarCuentaCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
-        consultarCuentaCliente.setText("Consultar Saldo Factura de Compra");
-        consultarCuentaCliente.addActionListener(new java.awt.event.ActionListener() {
+        consultarSaldoFacturaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
+        consultarSaldoFacturaCompra.setText("Consultar Saldo Factura de Compra");
+        consultarSaldoFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultarCuentaClienteActionPerformed(evt);
+                consultarSaldoFacturaCompraActionPerformed(evt);
             }
         });
-        mConsultar.add(consultarCuentaCliente);
+        mConsultar.add(consultarSaldoFacturaCompra);
 
-        consultarCuentaProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
-        consultarCuentaProveedor.setText("Consultar Saldo Nota de Credito Compra");
-        consultarCuentaProveedor.addActionListener(new java.awt.event.ActionListener() {
+        consultarSaldoNotaCreditoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        consultarSaldoNotaCreditoCompra.setText("Consultar Saldo Nota de Credito Compra");
+        consultarSaldoNotaCreditoCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultarCuentaProveedorActionPerformed(evt);
+                consultarSaldoNotaCreditoCompraActionPerformed(evt);
             }
         });
-        mConsultar.add(consultarCuentaProveedor);
+        mConsultar.add(consultarSaldoNotaCreditoCompra);
 
         jMenuBar1.add(mConsultar);
 
@@ -833,13 +833,13 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 //       
     }//GEN-LAST:event_mAnularNotaCreditoCompraActionPerformed
 
-    private void consultarCuentaProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaProveedorActionPerformed
+    private void consultarSaldoNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarSaldoNotaCreditoCompraActionPerformed
        ConsultarSaldoNotaCreditoForm saldoNotaCredito = new ConsultarSaldoNotaCreditoForm();
        this.jDesktopPane1.add(saldoNotaCredito);
        saldoNotaCredito.show();
-    }//GEN-LAST:event_consultarCuentaProveedorActionPerformed
+    }//GEN-LAST:event_consultarSaldoNotaCreditoCompraActionPerformed
 
-    private void consultarCuentaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarCuentaClienteActionPerformed
+    private void consultarSaldoFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarSaldoFacturaCompraActionPerformed
         /*try {
             ConsultarCuentaClienteForm tf2 = new ConsultarCuentaClienteForm();
             try {
@@ -855,7 +855,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-    }//GEN-LAST:event_consultarCuentaClienteActionPerformed
+    }//GEN-LAST:event_consultarSaldoFacturaCompraActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         try {
@@ -1039,8 +1039,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem ReciboPagoProv;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
-    private javax.swing.JMenuItem consultarCuentaCliente;
-    private javax.swing.JMenuItem consultarCuentaProveedor;
+    private javax.swing.JMenuItem consultarSaldoFacturaCompra;
+    private javax.swing.JMenuItem consultarSaldoNotaCreditoCompra;
     public static javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
