@@ -731,8 +731,11 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 System.out.println("Entro en credito");
                 guardar();
                 Long cuotas = (long) compraControlador.getCuota(nroFactura);
+                System.out.println("cuotas compra"+cuotas);
                 Long cuotasCant = facturaPendienteControl.verificarEstadoFacturaPendientes(nroFactura);
+                System.out.println("cuotas fact pendiente"+cuotasCant);
                     if (cuotas==cuotasCant){
+                        System.out.println("cuotas pagadas total");
                         compraControlador.updateEstadoPagado(nroFactura);
                     } 
                 }else{
