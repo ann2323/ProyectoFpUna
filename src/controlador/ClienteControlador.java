@@ -120,7 +120,7 @@ public class ClienteControlador {
      public Integer devuelveId(String nroCI) throws SQLException, Exception {
           
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT cliente_id from cliente where cedula = '" + nroCI + "'";
+        String cad = "SELECT cliente_id from Cliente where cedula = '" + nroCI + "'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
             ResultSet rs = ps.executeQuery();
