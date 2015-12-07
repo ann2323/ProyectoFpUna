@@ -46,18 +46,18 @@ public class ConsultarSaldoFacturaForm extends javax.swing.JInternalFrame {
         Vector<Compra> comVec = new Vector<Compra>();
         try {
           
-            try (ResultSet rs = facturaCabeceraControlador.datosComboSaldo()) {
-                while(rs.next()){
-                    facturaCompra=new Compra();
-                    facturaCompra.setNroPrefijo(rs.getString(1));
-                    facturaCompra.setNroFactura(Integer.parseInt(rs.getString(2)));
-                    comVec.add(facturaCompra);
-                }
-                rs.close();
-                                    
-            } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
-            }
+//            try (ResultSet rs = facturaCabeceraControlador.datosComboSaldo()) {
+//                while(rs.next()){
+//                    facturaCompra=new Compra();
+//                    facturaCompra.setNroPrefijo(rs.getString(1));
+//                    facturaCompra.setNroFactura(Integer.parseInt(rs.getString(2)));
+//                    comVec.add(facturaCompra);
+//                }
+//                rs.close();
+//                                    
+//            } catch (Exception ex) {
+//                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+//            }
         } catch (HeadlessException ex) {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
