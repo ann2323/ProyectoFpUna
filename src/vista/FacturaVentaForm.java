@@ -4,7 +4,6 @@ package vista;
 import controlador.ClienteControlador;
 import controlador.ComponentesControlador;
 import controlador.DepositoControlador;
-import controlador.DetalleCuentaControlador;
 import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
 import controlador.FacturaPendienteControlador;
@@ -14,7 +13,6 @@ import controlador.ReciboControlador;
 import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics; 
@@ -22,7 +20,6 @@ import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -48,11 +45,9 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-
 import javax.swing.table.DefaultTableModel;
 import modelo.CabeceraRecibo;
 import modelo.Deposito;
-import modelo.DetalleCuenta;
 import modelo.DetalleVenta;
 import modelo.FacturaPendiente;
 import modelo.PrefijoFactura;
@@ -117,7 +112,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private boolean esPrimero = true;
     Formatter formato = new Formatter();
     
-     int contadorLote = 0;
+     int contadorLote = 0, montoCuota = 0;
      Integer subTotal= 0, totaldesc=0;
      Integer  cantProducto=0;
      int k, k2;
@@ -129,7 +124,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
     FacturaCabeceraVentaControlador ventaControlador = new  FacturaCabeceraVentaControlador();
     ClienteControlador cliC = new ClienteControlador();
-    DetalleCuenta cuentaDetalle = new DetalleCuenta();
     ComponentesControlador cmpCont = new ComponentesControlador();
     SaldoVentaControlador saldoV = new SaldoVentaControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
@@ -141,6 +135,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     Deposito depModel = new  Deposito();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta ();
+    FacturaPendiente facturaPendiente = new FacturaPendiente();
    
     
     public String totalLetras(int precio_total) throws SQLException, Exception
@@ -413,28 +408,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             String dateVenc;
           
             if ("CREDITO".equals(comboPago.getSelectedItem().toString())){
-                int cantidadCuotas = 0;
                 ventaC.setPagoEn(Integer.parseInt(comboCuota.getSelectedItem().toString()));  
                 dateVenc = (ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));  
                 ventaC.setEstado("PENDIENTE");
-                ventaC.setVencimiento(formateador.parse(dateVenc));
-                cantidadCuotas = Integer.parseInt(comboCuota.getSelectedItem().toString());
-                
-                 for (int i = 1; i <= Integer.parseInt(comboCuota.getSelectedItem().toString()); i++) {
-                    FacturaPendiente facturaPendiente =  new FacturaPendiente();
-                    facturaPendiente.setCuota(i);
-                    facturaPendiente.setClienteId(idCliente);
-                    facturaPendiente.setEstado("Pendiente");
-                    facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
-                    facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
-                    facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                    facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", ""))/cantidadCuotas);
-                     //facturaPendiente.setPlazo(date);
-                    facturaPendiente.setFechaVencimiento(date);
-                    facturaPendienteControlador.insert(facturaPendiente);
-               
-                
-                }
+                ventaC.setVencimiento(formateador.parse(dateVenc));           
             }
             
                
@@ -542,6 +519,39 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                    
                    if (bNuevo.isEnabled() == false){ 
                        System.out.println("Entro en el insert de cabecera");
+                       
+                        if (comboPago.getSelectedItem().equals("CREDITO")){
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
+                           String cuota = comboCuota.getSelectedItem().toString();
+                           for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
+                                facturaPendiente.setPlazo(j+" de "+cuota);
+                                facturaPendiente.setClienteId(idCliente);
+                                facturaPendiente.setEstado("Pendiente");
+                                facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                                facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                                facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                                facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                                facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));
+                                facturaPendiente.setMontoPendiente(montoCuota);
+                                facturaPendiente.setClienteId(null);
+                                facturaPendienteControlador.insert(facturaPendiente);
+                                facturaPendiente =  new FacturaPendiente();
+                            }
+                        }else{
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                           facturaPendiente.setClienteId(idCliente);
+                           facturaPendiente.setEstado("Pendiente");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                           facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
+                           Date ahora = new Date();
+                           facturaPendiente.setFechaVencimiento(forma.format(ahora));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setClienteId(null);
+                           facturaPendienteControlador.insert(facturaPendiente);
+                       }
                         ventaControlador.insert(ventaC);
                         txtFacturaVenta.setText("");
                         nuevo();
