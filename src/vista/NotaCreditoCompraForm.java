@@ -1710,7 +1710,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 bf.columnas = "v.nro_factura";
                 bf.tabla = "compra v";
                 bf.order = "v.nro_factura";
-                bf.filtroBusqueda = "es_factura = 'S' and estado = 'PAGADO'"; //factura en suspension. Solo los que esten en estado Borrador
+                bf.filtroBusqueda = "es_factura = 'S' and estado = 'PENDIENTE' or estado = 'CONFIRMADO'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
