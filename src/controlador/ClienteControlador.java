@@ -91,7 +91,7 @@ public class ClienteControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT cedula as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
+        String query = "SELECT trim(to_char(cast(cedula as integer),'9G999G999')) as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -120,7 +120,7 @@ public class ClienteControlador {
      public Integer devuelveId(String nroCI) throws SQLException, Exception {
           
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT cliente_id from Cliente where cedula = '" + nroCI + "'";
+        String cad = "SELECT cliente_id from cliente where cedula = '" + nroCI + "'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
             ResultSet rs = ps.executeQuery();
