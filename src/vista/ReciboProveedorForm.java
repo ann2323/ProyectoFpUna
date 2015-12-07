@@ -67,7 +67,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     public ReciboProveedorForm() throws Exception {
         initComponents();
         getProveedores();
-        getFacturasProveedor();
         txtTotal.setEditable(false);
         txtpendiente.setVisible(false);
         txtcambio.setVisible(false);
@@ -105,12 +104,12 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     }
      
     
-     private void getFacturasProveedor() {
+     private void getFacturasProveedor(Integer idProv) {
         try {
             modeloBusquedaFacturas.setColumnCount(0);
             modeloBusquedaFacturas.setRowCount(0);
            
-            try (ResultSet rs = compraControlador.datosTablaBusquedaFacturasPendientes()) {
+            try (ResultSet rs = compraControlador.datosTablaBusquedaFacturasPendientes(idProv)) {
            
                 ResultSetMetaData rsMd = rs.getMetaData();
                 
@@ -172,21 +171,14 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
        
         
     }
-      
-     private void limpiarBusqueda(){
-        tbVistaFacturasPendientes.removeAll();
-        txtNroRecibo.setText("");
-        txtFactura.setText("");
-        txtProveedor1.setText("");
-        txtProveedor.setText("");
-        //nuevoDetalle();
-     }
-     
+
      
      private void limpiar() {
         //txtPrefijoVenta.setText("");
         modeloDetalleBusqueda= new DefaultTableModel();
-        tbVistaFacturasPendientes.removeAll();
+        modeloDetalleBusqueda.setRowCount(0);
+        tbVistaFacturasPendientes.setModel(modeloDetalleBusqueda);
+        tbDetallePago.removeAll();
         txtFactura.setText("");
         txtProveedor.setText("");
         txtProveedor1.setText("");
@@ -258,10 +250,18 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 int f=0;
                 while (f<tbVistaFacturasPendientes.getRowCount()){
                     if(tbVistaFacturasPendientes.isRowSelected(f)) {
+                        int f1=0, idFacturaPendiente=0; 
                         System.out.println("filas de fact pendiente "+f +"cantidad total "+tbVistaFacturasPendientes.getRowCount());
-                        facturaPendienteControl.updateFacturaPendiente(Integer.parseInt(txtpagado.getText().replace(".", "").trim()), Integer.parseInt(txtpendiente.getText().replace(".", "").trim()), Integer.parseInt(txtcambio.getText().replace(".", "").trim()), reciboId,Integer.parseInt(txtFactura.getText().replace(".", "").trim()),tbVistaFacturasPendientes.getValueAt(f, 3).toString());
-                        Integer idFacturaPendiente = facturaPendienteControl.devuelveIdProv(Integer.parseInt(txtFactura.getText().replace(".", "").trim()), tbVistaFacturasPendientes.getValueAt(f, 3).toString(), provId);
-                        int f1=0;
+                        if (compraControlador.esContado(Integer.parseInt(txtFactura.getText().replace(".", ""))).equals("CONTADO")){
+                            facturaPendienteControl.updateFacturaPendienteContado(Integer.parseInt(txtpagado.getText().replace(".", "").trim()), Integer.parseInt(txtpendiente.getText().replace(".", "").trim()), Integer.parseInt(txtcambio.getText().replace(".", "").trim()), reciboId, Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
+                            Integer idFactura = facturaPendienteControl.devuelveIdProvContado(Integer.parseInt(txtFactura.getText().replace(".", "").trim()),provId);
+                            idFacturaPendiente=idFactura;
+                        }else{
+                            facturaPendienteControl.updateFacturaPendiente(Integer.parseInt(txtpagado.getText().replace(".", "").trim()), Integer.parseInt(txtpendiente.getText().replace(".", "").trim()), Integer.parseInt(txtcambio.getText().replace(".", "").trim()), reciboId,Integer.parseInt(txtFactura.getText().replace(".", "").trim()),tbVistaFacturasPendientes.getValueAt(f, 3).toString());
+                            Integer idFactura = facturaPendienteControl.devuelveIdProv(Integer.parseInt(txtFactura.getText().replace(".", "").trim()), tbVistaFacturasPendientes.getValueAt(f, 3).toString(), provId);
+                            idFacturaPendiente=idFactura;
+                        }
+                        
                         while(f1<tbDetallePago.getRowCount()){
                             System.out.println("filas de detalle pago "+f1 +"cantidad total "+tbDetallePago.getRowCount());
                             int detalleId=detallePagoControl.nuevaCodigo();
@@ -312,10 +312,15 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     
      public void datosActuales() throws Exception{
        if (bNuevo.isEnabled() == true) {
-            txtProveedor.setText(modeloBusqueda.getValueAt(k, 0).toString());
+                   
+
+           txtProveedor.setText(modeloBusqueda.getValueAt(k,0).toString());
+                       
             txtProveedor1.setText(modeloBusqueda.getValueAt(k, 1).toString());
        }
        establecerBotones("Nuevo");
+       Integer idProv = provC.devuelveId(txtProveedor.getText().replace(".","").trim());
+       getFacturasProveedor(idProv);
     }
      
       private void datosActuales2(){
@@ -328,8 +333,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
      private void datosActualesFacturaPendiente(){
        int f=0, c=0, total_apagar=0;
        int filas = modeloDetalleBusqueda.getRowCount();
-       tbVistaFacturasPendientes.setModel(modeloDetalleBusqueda);
- 
+       tbVistaFacturasPendientes.setModel(modeloDetalleBusqueda); 
      
        while(f<filas) //recorro las filas
        {
@@ -441,6 +445,9 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(1275, 680));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -453,19 +460,19 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
-            }
         });
 
         jPanel1.setToolTipText("");
         jPanel1.setMinimumSize(new java.awt.Dimension(780, 700));
         jPanel1.setPreferredSize(new java.awt.Dimension(785, 700));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jPanel1.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(485, 488, 85, -1));
 
         labelTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelTotal.setText("Total a pagar");
+        jPanel1.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(385, 488, 80, 20));
 
         tbVistaFacturasPendientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -475,6 +482,11 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 "Nro. Prefijo", "Nro. Factura", "Fecha Vencimiento", "Plazo", "Total", "Monto Pendiente", "Estado"
             }
         ));
+        tbVistaFacturasPendientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbVistaFacturasPendientesMouseClicked(evt);
+            }
+        });
         tbVistaFacturasPendientes.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 tbVistaFacturasPendientesFocusLost(evt);
@@ -490,14 +502,19 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             tbVistaFacturasPendientes.getColumnModel().getColumn(3).setResizable(false);
         }
 
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 252, 1234, 220));
+        jPanel1.add(txtProveedor1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 150, 210, -1));
+
         lbCliente.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbCliente.setText("Proveedor");
+        jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 70, -1));
 
         txtNroRecibo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNroReciboActionPerformed(evt);
             }
         });
+        jPanel1.add(txtNroRecibo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 80, -1));
 
         txtFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtFactura.addActionListener(new java.awt.event.ActionListener() {
@@ -510,13 +527,16 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 txtFacturaKeyPressed(evt);
             }
         });
+        jPanel1.add(txtFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 80, -1));
 
         lbNroRecibo.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbNroRecibo.setText("Nro. Recibo");
+        jPanel1.add(lbNroRecibo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 76, -1));
 
         lbFecha.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbFecha.setText("Factura");
         lbFecha.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jPanel1.add(lbFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 120, 50, 20));
 
         btnDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
         btnDetallePago.setText("Detalle de Pago");
@@ -525,6 +545,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 btnDetallePagoActionPerformed(evt);
             }
         });
+        jPanel1.add(btnDetallePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 110, 150, 40));
 
         bNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo.png"))); // NOI18N
         bNuevo.setText("Nuevo");
@@ -576,8 +597,11 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         });
         jPanel2.add(bImprimir);
 
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 1234, 80));
+
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
         lbDatosGenerales.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)), "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
+        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 82, 1234, 130));
 
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -600,6 +624,8 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
         );
 
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 222, 1234, -1));
+
         tbDetallePago.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -613,9 +639,12 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         ));
         jScrollPane2.setViewportView(tbDetallePago);
 
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 309, 0, 0));
+
         lbFecha1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbFecha1.setText("Fecha ");
         lbFecha1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jPanel1.add(lbFecha1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, -1, 20));
 
         txtProveedor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtProveedor.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -623,134 +652,19 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 txtProveedorKeyPressed(evt);
             }
         });
+        jPanel1.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 80, -1));
 
         txtFecha.setLocale(new java.util.Locale("es", "BO", ""));
+        jPanel1.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, -1, -1));
 
         txtpendiente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jPanel1.add(txtpendiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(54, 488, 85, -1));
 
         txtpagado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jPanel1.add(txtpagado, new org.netbeans.lib.awtextra.AbsoluteConstraints(189, 488, 85, -1));
 
         txtcambio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(txtNroRecibo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lbNroRecibo, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtProveedor1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addComponent(lbFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(txtFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(btnDetallePago, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(200, 200, 200)
-                        .addComponent(lbFecha1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(lbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
-                        .addComponent(txtProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1234, Short.MAX_VALUE)
-                            .addComponent(lbDatosGenerales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(txtpendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtcambio, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtpagado, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(111, 111, 111)
-                        .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNroRecibo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbNroRecibo)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(txtProveedor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(lbFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(txtFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(btnDetallePago, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(lbFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(lbCliente))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(txtProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbDatosGenerales, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtpendiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtpagado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtcambio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel1.add(txtcambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(189, 523, 85, -1));
 
         jPanel5.setBackground(new java.awt.Color(51, 94, 137));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -804,12 +718,33 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void tbVistaFacturasPendientesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbVistaFacturasPendientesKeyPressed
-       //establecerBotones("Ed");
-      
+            
     }//GEN-LAST:event_tbVistaFacturasPendientesKeyPressed
 
     private void bSuspenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSuspenderActionPerformed
-   
+      try {
+            if (txtpagado.getText().equals("")){
+              showMessageDialog(null, "Debe realizar el detalle de pago para generar el recibo", "Atención", INFORMATION_MESSAGE);
+            }else{
+               Integer nroFactura = Integer.parseInt(txtFactura.getText().replace(".", "").trim());
+               if (compraControlador.esContado(Integer.parseInt(txtFactura.getText().replace(".", "").trim())).equals("CREDITO")){
+                System.out.println("Entro en credito");
+                guardar();
+                Long cuotas = (long) compraControlador.getCuota(nroFactura);
+                Long cuotasCant = facturaPendienteControl.verificarEstadoFacturaPendientes(nroFactura);
+                    if (cuotas==cuotasCant){
+                        compraControlador.updateEstadoPagado(nroFactura);
+                    } 
+                }else{
+                System.out.println("Entro en contado");
+                guardar();
+                compraControlador.updateEstadoPagado(nroFactura);
+               
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
+        }   
     }//GEN-LAST:event_bSuspenderActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
@@ -823,10 +758,26 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
         try {
-            guardar();
+            if (txtpagado.getText().equals("")){
+              showMessageDialog(null, "Debe realizar el detalle de pago para generar el recibo", "Atención", INFORMATION_MESSAGE);
+            }else{
+               Integer nroFactura = Integer.parseInt(txtFactura.getText().replace(".", "").trim());
+               if (compraControlador.esContado(Integer.parseInt(txtFactura.getText().replace(".", "").trim())).equals("CREDITO")){
+                Long cuotas = (long) compraControlador.getCuota(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
+                Long cuotasCant = facturaPendienteControl.verificarEstadoFacturaPendientes(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
+                guardar();
+                    if (cuotas==cuotasCant){
+                        compraControlador.updateEstadoPagado(nroFactura);
+                    } 
+                }else{
+                guardar();
+                compraControlador.updateEstadoPagado(nroFactura);
+               
+                }
+            }
         } catch (Exception ex) {
             Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   
     }//GEN-LAST:event_bImprimirActionPerformed
 
     private void txtFacturaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyPressed
@@ -841,9 +792,8 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 BuscarForm bf = new BuscarForm( null, true);
                 bf.columnas = "nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\"";
                 bf.tabla = "compra";
-                bf.order = "nro_factura";
-  
-                bf.filtroBusqueda = "estado='PENDIENTE' or estado='CONFIRMADO' and es_factura='S' and proveedor_id= "+ prov+ "";
+                bf.order = "vencimiento DESC";
+                bf.filtroBusqueda = "(estado='PENDIENTE' or estado='CONFIRMADO') and es_factura='S' and proveedor_id= "+ prov+ "";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
 
@@ -865,7 +815,8 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtFacturaKeyPressed
 
     private void btnDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallePagoActionPerformed
-       if (tbVistaFacturasPendientes.isRowSelected(0)||tbVistaFacturasPendientes.isRowSelected(1)||tbVistaFacturasPendientes.isRowSelected(2)){
+           
+        if (tbVistaFacturasPendientes.isRowSelected(0)||tbVistaFacturasPendientes.isRowSelected(1)||tbVistaFacturasPendientes.isRowSelected(2)){
         try {
             DetallePagoProveedorForm detallePago = new DetallePagoProveedorForm();
             MenuPrincipalForm.jDesktopPane1.add(detallePago);
@@ -921,6 +872,10 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
        
     }//GEN-LAST:event_txtFacturaActionPerformed
 
+    private void tbVistaFacturasPendientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVistaFacturasPendientesMouseClicked
+
+    }//GEN-LAST:event_tbVistaFacturasPendientesMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bCancelar;
@@ -943,12 +898,12 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbFecha1;
     private javax.swing.JLabel lbNroRecibo;
     public static javax.swing.JTable tbDetallePago;
-    private javax.swing.JTable tbVistaFacturasPendientes;
+    public static javax.swing.JTable tbVistaFacturasPendientes;
     private javax.swing.JFormattedTextField txtFactura;
     private datechooser.beans.DateChooserCombo txtFecha;
     private javax.swing.JTextField txtNroRecibo;
-    private javax.swing.JFormattedTextField txtProveedor;
-    private javax.swing.JTextField txtProveedor1;
+    public static javax.swing.JFormattedTextField txtProveedor;
+    public static javax.swing.JTextField txtProveedor1;
     public static javax.swing.JFormattedTextField txtTotal;
     public static javax.swing.JFormattedTextField txtcambio;
     public static javax.swing.JFormattedTextField txtpagado;
