@@ -5,11 +5,15 @@
  */
 
 package vista;
+import controlador.DetallePagoControlador;
 import controlador.FacturaCabeceraCompraControlador;
+import controlador.ProveedorControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -29,9 +33,11 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
   
     DefaultTableModel modeloPago = new DefaultTableModel();
     FacturaCabeceraCompraControlador facturaCabeceraControlador = new FacturaCabeceraCompraControlador();
+    DetallePagoControlador detalleControl = new DetallePagoControlador();
+    ProveedorControlador provC = new ProveedorControlador();
     Compra facturaCompra = new Compra();
     DecimalFormat formateador = new DecimalFormat("###,###.##");
-    int total=0, i=0, pendiente=0, cambio=0;
+    int total=0, i=0, pendiente=0, cambio=0,pendiente2=0, pendienteAplicar=0;
    
     
  public DetallePagoProveedorForm() throws Exception {
@@ -44,6 +50,8 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         jPanelCheque.setVisible(false);
         jPanelNotaCredito.setVisible(false);
         jPanelTarjeta.setVisible(false);
+        txtValorDelCredito.setEditable(false);
+        txtPendienteAplicar.setEditable(false);
         
         modeloPago.addColumn("Forma de Pago");
         modeloPago.addColumn("Tarjeta/Cheque nro.");
@@ -54,18 +62,30 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         modeloPago.isCellEditable(0,0);
         tbDetallePago.setModel(modeloPago);
         
-        txtPendiente.setText(ReciboProveedorForm.txtTotal.getText());
+        int i=0;
+        while (i<ReciboProveedorForm.tbVistaFacturasPendientes.getRowCount()){
+                    if(ReciboProveedorForm.tbVistaFacturasPendientes.isRowSelected(i)) {
+                        pendiente2 = pendiente2 + Integer.parseInt(ReciboProveedorForm.tbVistaFacturasPendientes.getValueAt(i, 5).toString().replace(".","").trim());
+                    }
+               i++;     
+        }
+        
+        formateador = new DecimalFormat("###,###.##");
+        txtPendiente.setText(formateador.format(pendiente2));
+        
         txtPagado.setText("0");
         txtCambio.setText("0");
         
     }
  
-  private void getFacturaCompra() {
+  private void getFacturaCompra() throws Exception {
         JCfactura.removeAll();
         Vector<Compra> comVec = new Vector<Compra>();
+        String provCi = ReciboProveedorForm.txtProveedor.getText().replace(".", "").trim();
+        Integer provId = provC.devuelveId(provCi);
         try {
           
-            try (ResultSet rs = facturaCabeceraControlador.datosComboSaldo()) {
+            try (ResultSet rs = facturaCabeceraControlador.datosComboSaldo(provId)) {
                 while(rs.next()){
                     facturaCompra=new Compra();
                     facturaCompra.setNroPrefijo(rs.getString(1));
@@ -155,6 +175,9 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Detalle de Pago");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -166,9 +189,6 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
             }
         });
 
@@ -355,6 +375,11 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         jLabel11.setText("Pendiente a aplicar:");
 
         JCfactura.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        JCfactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JCfacturaActionPerformed(evt);
+            }
+        });
 
         jLabel12.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel12.setText("Nro. Nota Credito");
@@ -431,7 +456,9 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tbDetallePagoKeyPressed
 
     private void jBGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardar1ActionPerformed
-        if(showConfirmDialog (null, "Está seguro de confirmar los cambios?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
+       if (Integer.parseInt(txtPendiente.getText().replace(".", "").trim())!=0){
+          showMessageDialog(this, "Debe ingresar la totalidad del pago pendiente", "Atención", JOptionPane.WARNING_MESSAGE);
+       }else{ if(showConfirmDialog (null, "Está seguro de confirmar los cambios?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
         ReciboProveedorForm.tbDetallePago.setModel(modeloPago);
         ReciboProveedorForm.txtpagado.setText(txtPagado.getText());
         ReciboProveedorForm.txtpendiente.setText(txtPendiente.getText());
@@ -439,6 +466,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         limpiar();
         this.dispose();
         }
+       }
     }//GEN-LAST:event_jBGuardar1ActionPerformed
 
     private void jBeliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBeliminarActionPerformed
@@ -451,24 +479,24 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             String TotalFormat=formateadorDelet.format(total);
             txtPagado.setText(TotalFormat);
              
-            if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))<Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim()) && pendiente!=0){
+            if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))<pendiente2 && pendiente!=0){
             pendiente=pendiente+Integer.parseInt(tbDetallePago.getValueAt(tbDetallePago.getSelectedRow(), 2).toString().trim().replace(".", ""));
             String PendienteFormat=formateadorDelet.format(pendiente);
             txtPendiente.setText(PendienteFormat);
-            }else if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))==Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim())){
+            }else if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))==pendiente2){
             pendiente=0;
             String PendienteFormat=formateadorDelet.format(pendiente);
             txtPendiente.setText(PendienteFormat);
-            }else if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))<Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim()) && pendiente==0){
-            pendiente=Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim())-Integer.parseInt(txtPagado.getText().trim().replace(".", ""));
+            }else if (Integer.parseInt(txtPagado.getText().trim().replace(".", ""))<pendiente2 && pendiente==0){
+            pendiente=pendiente2-Integer.parseInt(txtPagado.getText().trim().replace(".", ""));
             String PendienteFormat=formateadorDelet.format(pendiente);
             txtPendiente.setText(PendienteFormat);
             }
            
            
             
-            if (Integer.parseInt(ReciboProveedorForm.txtTotal.getText().trim().replace(".", ""))<=Integer.parseInt(txtPagado.getText().replace(".", "").trim())){
-            cambio=Integer.parseInt(txtPagado.getText().replace(".", "").trim())-Integer.parseInt(ReciboProveedorForm.txtTotal.getText().trim().replace(".", ""));
+            if (pendiente2<=Integer.parseInt(txtPagado.getText().replace(".", "").trim())){
+            cambio=Integer.parseInt(txtPagado.getText().replace(".", "").trim())-pendiente2;
             String CambioFormat=formateadorDelet.format(cambio);
             txtCambio.setText(CambioFormat);
             }else{
@@ -479,7 +507,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             
             if (Integer.parseInt(txtPagado.getText().replace(".", "").trim())== 0 && Integer.parseInt(txtCambio.getText().replace(".", "").trim())==0){
             total=0; cambio=0;
-            pendiente=Integer.parseInt(ReciboProveedorForm.txtTotal.getText().trim().replace(".", ""));
+            pendiente=pendiente2;
             String PendienteFormat=formateadorDelet.format(pendiente);
             txtPendiente.setText(PendienteFormat);
             }
@@ -527,17 +555,26 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             modeloPago.addRow(datos);   
         }
         if (JCtipoPago.getSelectedItem().toString().equals("Nota de Credito")){
+            if (0==Integer.parseInt(txtPendienteAplicar.getText().replace(".", "").trim())){
+                showMessageDialog(this, "El valor del credito ya se ha utilizado en su totalidad", "Atención", JOptionPane.WARNING_MESSAGE);
+            }else{
             String datos [] = new String [6];
             datos[0]=JCtipoPago.getSelectedItem().toString();
             datos[1]="";
             datos[2]=formateador.format(Integer.parseInt(txtValor.getText()));
             datos[3]=txtValorDelCredito.getText();
+            pendienteAplicar = Integer.parseInt(txtPendienteAplicar.getText().replace(".", "").trim()) - Integer.parseInt(txtValor.getText());
+            formateador = new DecimalFormat("###,###.##");
+            txtPendienteAplicar.setText(formateador.format(pendienteAplicar));
             datos[4]=txtPendienteAplicar.getText();
             String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
             String notaCredito = nroPrefijoNotaCredito.substring(4);
             datos[5]=notaCredito;
-            modeloPago.addRow(datos);   
+            modeloPago.addRow(datos);  
+            }
         }
+        
+     
         tbDetallePago.setModel(modeloPago);
         txtValor.setText("");
         txtNroTarjeta.setText("");
@@ -551,14 +588,14 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         pendiente=Integer.parseInt(txtPendiente.getText().replace(".", "").trim());
         
         if (Integer.parseInt(txtPagado.getText().replace(".", "").trim())==0){
-        pendiente=Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim());
+        pendiente=pendiente2;
         }
-        if (total< Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim())){
-        pendiente=Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim())- total;
+        if (total< pendiente2){
+        pendiente=pendiente2- total;
         String PendienteFormat=formateador.format(pendiente);
         txtPendiente.setText(PendienteFormat);
         }else{
-        cambio=total-Integer.parseInt(ReciboProveedorForm.txtTotal.getText().replace(".", "").trim());
+        cambio=total-pendiente2;
         String cambioFormat=formateador.format(cambio);
         txtCambio.setText(cambioFormat);
         
@@ -567,6 +604,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         txtPendiente.setText(PendienteFormat);
 
         }
+                    
        }else{
         showMessageDialog(this, "Debe ingresar un valor para añadir el pago", "Atención", JOptionPane.WARNING_MESSAGE);
        }
@@ -605,6 +643,34 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
     private void txtNroTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNroTarjetaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNroTarjetaActionPerformed
+
+    private void JCfacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCfacturaActionPerformed
+    String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
+    String notaCredito = nroPrefijoNotaCredito.substring(4);
+        try {
+            if(detalleControl.verificarEstadoFactura(Integer.parseInt(notaCredito.trim()))==0) {
+                try {
+                    Integer montoCredito  = facturaCabeceraControlador.getMonto(Integer.parseInt(notaCredito));
+                    formateador = new DecimalFormat("###,###.##");
+                    txtValorDelCredito.setText(formateador.format(montoCredito));
+                    formateador = new DecimalFormat("###,###.##");
+                    txtPendienteAplicar.setText(formateador.format(montoCredito));
+                } catch (Exception ex) {
+                    Logger.getLogger(DetallePagoProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }else{
+                    Integer montoCredito  = facturaCabeceraControlador.getMonto(Integer.parseInt(notaCredito));
+                    formateador = new DecimalFormat("###,###.##");
+                    txtValorDelCredito.setText(formateador.format(montoCredito));
+                    Integer montoActualAplicar = detalleControl.getPendienteAplicar(Integer.parseInt(notaCredito.trim()));
+                    formateador = new DecimalFormat("###,###.##");
+                    txtPendienteAplicar.setText(formateador.format(montoActualAplicar));          
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DetallePagoProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_JCfacturaActionPerformed
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
