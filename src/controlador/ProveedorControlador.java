@@ -105,7 +105,7 @@ public class ProveedorControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT cod_proveedor as \"Código\",  case when dv='' then substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) else substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7)||'-'||dv end as \"RUC/CI\", nombre as \"Nombre\", apellido as \"Apellido\", direccion as \"Direccion\", telefono as \"Telefono\", estado as \"Estado\" from Proveedor";
+        String query = "SELECT cod_proveedor as \"Código\",  case when dv='' then substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) else substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7)||'-'||dv end as \"RUC/CI\", nombre as \"Nombre\", apellido as \"Apellido\", direccion as \"Direccion\", telefono as \"Telefono\", estado as \"Estado\" from Proveedor order by cod_proveedor ";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -118,7 +118,7 @@ public class ProveedorControlador {
     public Integer devuelveId(String ci) throws Exception {
           
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT proveedor_id from Proveedor where ci = '" +ci+ "'";
+        String cad = "SELECT proveedor_id from proveedor where ci = '" +ci+ "'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
             ResultSet rs = ps.executeQuery();
