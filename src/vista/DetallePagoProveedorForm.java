@@ -62,13 +62,14 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         modeloPago.isCellEditable(0,0);
         tbDetallePago.setModel(modeloPago);
         
-        int i=0;
-        while (i<ReciboProveedorForm.tbVistaFacturasPendientes.getRowCount()){
+        int k=0;
+        while (k<ReciboProveedorForm.tbVistaFacturasPendientes.getRowCount()){
                     if(ReciboProveedorForm.tbVistaFacturasPendientes.isRowSelected(i)) {
                         pendiente2 = pendiente2 + Integer.parseInt(ReciboProveedorForm.tbVistaFacturasPendientes.getValueAt(i, 5).toString().replace(".","").trim());
                     }
-               i++;     
+               k++;     
         }
+        
         
         formateador = new DecimalFormat("###,###.##");
         txtPendiente.setText(formateador.format(pendiente2));
