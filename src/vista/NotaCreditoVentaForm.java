@@ -12,7 +12,6 @@ import controlador.DepositoControlador;
 import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
 import controlador.ProyectoControlador;
-import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -38,7 +37,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
 import modelo.Deposito;
 import modelo.DetalleVenta;
-import modelo.SaldoVenta;
 import modelo.Stock;
 import modelo.Venta;
 
@@ -85,13 +83,12 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     FacturaCabeceraVentaControlador ventaControlador = new FacturaCabeceraVentaControlador();
     ClienteControlador cliC = new ClienteControlador();
     ComponentesControlador componentesControl = new ComponentesControlador();
-    SaldoVentaControlador saldoC = new SaldoVentaControlador();
-    
+   
     Deposito depModel = new  Deposito();
     ProyectoControlador proControl = new ProyectoControlador ();
     DetalleVenta ventaD = new DetalleVenta();
     Venta ventaC = new Venta();
-    SaldoVenta saldoModel = new SaldoVenta();
+   
    
   
     private void getDepositosVector() {
@@ -323,13 +320,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                factRef=ventaControlador.devuelveId(Integer.parseInt(txtFacturaReferenciada.getText()));
             }
             
-            int idSaldo = saldoC.nuevoCodigo();
-            saldoModel.setSaldoVentaId(idSaldo);
-            saldoModel.setEstado("PENDIENTE");
-            saldoModel.setPrefijo(Integer.parseInt(txtPrefijo.getText()));
-            saldoModel.setNumero(Integer.parseInt((txtNroNotaCredito.getText())));
-            saldoModel.setEsFactura("N");
-            saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
+          
           
                     try {
                     int i = 0;
@@ -411,7 +402,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                         try {  
                             ventaControlador.borrarCabecera(ventaC.getNroFactura());
                             ventaControlador.insert(ventaC);
-                            saldoC.insert(saldoModel);
+                       
                             limpiar();
                             nuevo();
                             //showMessageDialog(null, "Venta actualizada correctamente");
