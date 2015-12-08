@@ -6,9 +6,10 @@
 
 package vista;
 
-import controlador.CuentaCabeceraControlador;
-import controlador.DetalleCuentaControlador;
+
+import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
+import controlador.StockControlador;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -26,7 +27,6 @@ import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.table.DefaultTableModel;
-import modelo.Venta;
 
 /**
  *
@@ -49,8 +49,9 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     
     FacturaCabeceraVentaControlador ventaControlador = new FacturaCabeceraVentaControlador();
-    CuentaCabeceraControlador cuentaCabeceraControlador = new CuentaCabeceraControlador();
-    DetalleCuentaControlador detalleCuentaControlador = new DetalleCuentaControlador();
+    DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
+    DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
+    StockControlador stockCont = new StockControlador();
     
     Date dato = null;
     int k;
@@ -118,7 +119,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Anular Factura Venta");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anular_factura2.png"))); // NOI18N
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularFacturaCompra.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(520, 400));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
@@ -145,6 +146,11 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, 20));
         jPanel1.add(txtFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 160, -1));
 
+        txtPrefijo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrefijoActionPerformed(evt);
+            }
+        });
         txtPrefijo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPrefijoKeyPressed(evt);
@@ -221,16 +227,16 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(123, Short.MAX_VALUE)
+                .addContainerGap(129, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(98, 98, 98))
+                .addGap(92, 92, 92))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 510, 40));
@@ -254,7 +260,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtPrefijo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", precio_total as \"Total\", estado as \"Estado\"";
+                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\"";
                 bf.tabla = "Venta";
                 bf.order = "venta_id";
                 bf.filtroBusqueda = "estado != 'ANULADO' and es_factura = 'S'";
@@ -290,7 +296,15 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void bAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAnularActionPerformed
-       anular();
+        Integer IdVenta=0;
+        try {
+            IdVenta = ventaControlador.devuelveId(Integer.parseInt(txtNroFactura.getText().replace(".", "").trim()));
+            cargarDetalleFactura(IdVenta);
+        } catch (Exception ex) {
+            Logger.getLogger(AnularFacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+  
+        anular();
     }//GEN-LAST:event_bAnularActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
@@ -299,6 +313,10 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             txtPrefijo.setBackground(Color.yellow);
         }
     }//GEN-LAST:event_bCancelarActionPerformed
+
+    private void txtPrefijoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrefijoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrefijoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -328,14 +346,26 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
                 showMessageDialog(this, "Campo número de factura vacío, por favor ingrese el número de factura ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
          }
-        if(showConfirmDialog (null, "Está seguro de anular la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){ 
+        if(showConfirmDialog (null, "Está seguro de anular la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
+             int f=0; String dep="";
+             try {                      
+                 dep = ventaControlador.getDeposito(Integer.parseInt(txtNroFactura.getText().replace(".", "").trim()),(txtPrefijo.getText().replace(".", "").trim()));
+             } catch (Exception ex) {
+                 Logger.getLogger(AnularFacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             while (!"".equals(modeloDetalleBusqueda.getValueAt(f, 0).toString())){     
+                  try {
+                      stockCont.update(modeloDetalleBusqueda.getValueAt(f, 0).toString(), dep, Integer.parseInt(modeloDetalleBusqueda.getValueAt(f, 3).toString()));
+                  } catch (Exception ex) {
+                      Logger.getLogger(AnularFacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                  f++;
+                  
+              }
            
             try {
-                ventaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
-                System.out.println("Nro factura "+txtNroFactura.getText());
-                cuentaCabeceraControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
-                System.out.println("Nro factura "+txtNroFactura.getText());
-                detalleCuentaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
+                ventaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText().replace(".", "")));
+                //detalleCuentaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
                 
                 showMessageDialog(null, "Factura venta anulada correctamente");
             } catch (Exception ex) {
@@ -344,6 +374,43 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             limpiar();
             txtPrefijo.setBackground(Color.yellow);
         }   
+    }
+    
+        
+       private void cargarDetalleFactura(int idVenta) {
+        try {
+            
+            try (ResultSet rs = facturaDetalleCont.getDetalle(idVenta)) {
+                 modeloDetalleBusqueda.setColumnCount(0);
+                 modeloDetalleBusqueda.setRowCount(0);
+                 ResultSetMetaData rsMd = rs.getMetaData();
+                
+               //int cantidadColumnas = rsMd.getColumnCount();
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                   modeloDetalleBusqueda.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloDetalleBusqueda.addRow(fila);
+                }
+                //Factura en suspension. una vez que devuelve las filas de la factura se agregan hasta completar las 12
+                for (int i = 0; i < 11; i++) {
+                        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+                 }
+                   
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    
     }
 
     private void limpiar() {
