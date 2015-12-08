@@ -65,7 +65,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mPrefijo = new javax.swing.JMenuItem();
         mFacturaVenta = new javax.swing.JMenuItem();
         mNotaCreditoVenta = new javax.swing.JMenuItem();
-        mDetallePago = new javax.swing.JMenuItem();
         mReciboPago = new javax.swing.JMenuItem();
         mAdministracion = new javax.swing.JMenu();
         mRol = new javax.swing.JMenuItem();
@@ -276,15 +275,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mVenta.add(mNotaCreditoVenta);
-
-        mDetallePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430364091_my-invoices.png"))); // NOI18N
-        mDetallePago.setText("Detalle de Pago");
-        mDetallePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mDetallePagoActionPerformed(evt);
-            }
-        });
-        mVenta.add(mDetallePago);
 
         mReciboPago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboVenta.png"))); // NOI18N
         mReciboPago.setText("Recibo de Pago");
@@ -947,40 +937,22 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mNotaCreditoVentaActionPerformed
 
-    private void mDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDetallePagoActionPerformed
-//         try {
-//             DetallePagoVentaForm tf2 = new DetallePagoVentaForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }//GEN-LAST:event_mDetallePagoActionPerformed
-
     private void mReciboPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReciboPagoActionPerformed
-//        try {
-//             ReciboForm tf2 = new ReciboForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+             ReciboClienteForm tf2 = new ReciboClienteForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mReciboPagoActionPerformed
 
     private void ReciboPagoProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReciboPagoProvActionPerformed
@@ -1066,7 +1038,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem mConsultarNotaCreditoCompra;
     private javax.swing.JMenuItem mConsultarNotaCreditoVenta;
     private javax.swing.JMenuItem mDeposito;
-    private javax.swing.JMenuItem mDetallePago;
     private javax.swing.JMenuItem mEntrada;
     private javax.swing.JMenuItem mFacturaCompra;
     private javax.swing.JMenuItem mFacturaVenta;
