@@ -9,7 +9,6 @@ import controlador.FacturaCabeceraVentaControlador;
 import controlador.FacturaPendienteControlador;
 import controlador.PrefijoFacturaControlador;
 import controlador.ProyectoControlador;
-import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.Color;
 import java.awt.HeadlessException;
@@ -52,7 +51,6 @@ import modelo.Deposito;
 import modelo.DetalleVenta;
 import modelo.FacturaPendiente;
 import modelo.PrefijoFactura;
-import modelo.SaldoVenta;
 import modelo.Stock;
 import modelo.Venta;
 import net.sf.jasperreports.engine.JRException;
@@ -100,7 +98,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DefaultTableModel modeloNroFactura;
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloDetallePago = new DefaultTableModel();
-    SaldoVenta saldoModel = new SaldoVenta();
     DefaultTableModel modeloDetalleRecibo = new DefaultTableModel();
     
     /**
@@ -126,7 +123,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     FacturaCabeceraVentaControlador ventaControlador = new  FacturaCabeceraVentaControlador();
     ClienteControlador cliC = new ClienteControlador();
     ComponentesControlador cmpCont = new ComponentesControlador();
-    SaldoVentaControlador saldoV = new SaldoVentaControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
     FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
     
@@ -1557,7 +1553,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             if ("*".equals(txtFacturaVenta.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(nro_factura,'9G999G999')) as \"Nro. Factura\"";
+                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\"";
                 bf.tabla = "venta";
                 bf.order = "nro_factura";
                 bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
