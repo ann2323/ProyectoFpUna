@@ -6,9 +6,11 @@
 
 package vista;
 
-import controlador.CuentaCabeceraControlador;
+//import controlador.CuentaCabeceraControlador;
 import controlador.DetalleCuentaControlador;
+import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
+import controlador.StockControlador;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -29,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Pathy
+ * @author ana
  */
 public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
 
@@ -48,8 +50,10 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     
     FacturaCabeceraCompraControlador compraControlador = new FacturaCabeceraCompraControlador();
-    CuentaCabeceraControlador cuentaCabeceraControlador = new CuentaCabeceraControlador();
+    DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
+    DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DetalleCuentaControlador detalleCuentaControlador = new DetalleCuentaControlador();
+    StockControlador stockCont = new StockControlador();
     
     Date dato = null;
     int k;
@@ -144,6 +148,11 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, 20));
         jPanel1.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 160, -1));
 
+        txtPrefijo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrefijoActionPerformed(evt);
+            }
+        });
         txtPrefijo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPrefijoKeyPressed(evt);
@@ -253,7 +262,7 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtPrefijo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", precio_total as \"Total\", estado as \"Estado\"";
+                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\"";
                 bf.tabla = "Compra";
                 bf.order = "compra_id";
                 bf.filtroBusqueda = "estado != 'ANULADO' and es_factura = 'S'";
@@ -289,7 +298,15 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void bAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAnularActionPerformed
-       anular();
+        Integer IdCompra=0;
+        try {
+            IdCompra = compraControlador.devuelveId(Integer.parseInt(txtNroFactura.getText().replace(".", "").trim()));
+            cargarDetalleFactura(IdCompra);
+        } catch (Exception ex) {
+            Logger.getLogger(AnularFacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+  
+        anular();
     }//GEN-LAST:event_bAnularActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
@@ -298,6 +315,10 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
             txtPrefijo.setBackground(Color.yellow);
         }
     }//GEN-LAST:event_bCancelarActionPerformed
+
+    private void txtPrefijoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrefijoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrefijoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -327,12 +348,26 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
                 showMessageDialog(this, "Campo número de factura vacío, por favor ingrese el número de factura ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
          }
-        if(showConfirmDialog (null, "Está seguro de anular la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){ 
+        if(showConfirmDialog (null, "Está seguro de anular la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
+             int f=0; String dep="";
+             try {                      
+                 dep = compraControlador.getDeposito(Integer.parseInt(txtNroFactura.getText().replace(".", "").trim()),(txtPrefijo.getText().replace(".", "").trim()));
+             } catch (Exception ex) {
+                 Logger.getLogger(AnularFacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             while (!"".equals(modeloDetalleBusqueda.getValueAt(f, 0).toString())){     
+                  try {
+                      stockCont.update2(modeloDetalleBusqueda.getValueAt(f, 0).toString(), dep, Integer.parseInt(modeloDetalleBusqueda.getValueAt(f, 3).toString()));
+                  } catch (Exception ex) {
+                      Logger.getLogger(AnularFacturaCompraForm.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                  f++;
+                  
+              }
            
             try {
-                compraControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
-                cuentaCabeceraControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
-                detalleCuentaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
+                compraControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText().replace(".", "")));
+                //detalleCuentaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
                 
                 showMessageDialog(null, "Factura compra anulada correctamente");
             } catch (Exception ex) {
@@ -341,6 +376,43 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
             limpiar();
             txtPrefijo.setBackground(Color.yellow);
         }   
+    }
+    
+        
+       private void cargarDetalleFactura(int idCompra) {
+        try {
+            
+            try (ResultSet rs = facturaDetalleCont.getDetalle(idCompra)) {
+                 modeloDetalleBusqueda.setColumnCount(0);
+                 modeloDetalleBusqueda.setRowCount(0);
+                 ResultSetMetaData rsMd = rs.getMetaData();
+                
+               //int cantidadColumnas = rsMd.getColumnCount();
+                int cantidadColumnas = rsMd.getColumnCount();
+                
+                for (int i = 1; i <= cantidadColumnas; i++) {
+                   modeloDetalleBusqueda.addColumn(rsMd.getColumnLabel(i));
+                }
+
+                while (rs.next()) {
+                    Object[] fila = new Object[cantidadColumnas];
+                    for (int i = 0; i < cantidadColumnas; i++) {
+                        fila[i]=rs.getObject(i+1);
+                    }
+                    modeloDetalleBusqueda.addRow(fila);
+                }
+                //Factura en suspension. una vez que devuelve las filas de la factura se agregan hasta completar las 12
+                for (int i = 0; i < 11; i++) {
+                        modeloDetalleBusqueda.addRow(new Object[]{"","","","","",""});
+                 }
+                   
+            } catch (Exception ex) {
+                showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (HeadlessException ex) {
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
+        }
+    
     }
 
     private void limpiar() {
