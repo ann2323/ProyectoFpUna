@@ -1023,7 +1023,7 @@ private void modoBusqueda(boolean v){
             if ("*".equals(txtCodigo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "cod_proveedor,nombre, apellido,estado";
+                bf.columnas = "cod_proveedor as \"Cod. Proveedor\" ,nombre as \"Nombre\", apellido as  \"Apellido\",trim(to_char(cast(ci as integer),'9G999G999')) as  \"CI\"";
                 bf.tabla = "Proveedor";
                 bf.order = "proveedor_id";
                 bf.filtroBusqueda = "";
