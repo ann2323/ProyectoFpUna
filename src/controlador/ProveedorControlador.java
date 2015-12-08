@@ -105,7 +105,7 @@ public class ProveedorControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT cod_proveedor as \"Código\",  case when dv='' then substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) else substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7)||'-'||dv end as \"RUC/CI\", nombre as \"Nombre\", apellido as \"Apellido\", direccion as \"Direccion\", telefono as \"Telefono\", estado as \"Estado\" from Proveedor order by cod_proveedor ";
+        String query = "SELECT cod_proveedor as \"Cod. Proveedor\" , case when dv='' then ci else ci ||'-'|| dv end as \"RUC O CI Nº\", nombre as \"Nombre\", apellido as  \"Apellido\", direccion as \"Dirección\", telefono as \"Teléfono\", estado as \"Estado\" from Proveedor order by cod_proveedor";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -157,7 +157,7 @@ public class ProveedorControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Proveedor";
+        String query = "SELECT trim(to_char(cast(ci as integer),'9G999G999')) as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Proveedor";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
