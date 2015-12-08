@@ -696,7 +696,7 @@ public class ClienteForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtCodigo.getText())) {
                 
                 BuscarForm bf = new BuscarForm(null, true);
-                bf.columnas = "codigocliente, nombre, apellido, cedula, estado";
+                bf.columnas = "codigocliente as \"Cód. Cliente\", nombre as \"Nombre\", apellido as \"Apellido\", to_char(cast(cedula as integer),'9G999G999') as \"Cedula\", estado as \"Estado\"";
                 bf.tabla = "Cliente";
                 bf.order = "codigocliente";
                 bf.filtroBusqueda = "";
