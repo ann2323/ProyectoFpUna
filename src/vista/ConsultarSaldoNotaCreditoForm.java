@@ -8,7 +8,6 @@ package vista;
 
 
 import controlador.FacturaCabeceraCompraControlador;
-import controlador.SaldoCompraControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
@@ -36,7 +35,7 @@ public class ConsultarSaldoNotaCreditoForm extends javax.swing.JInternalFrame {
 
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     FacturaCabeceraCompraControlador facturaCabeceraControlador = new FacturaCabeceraCompraControlador();
-    SaldoCompraControlador saldoC = new SaldoCompraControlador();
+    
     Compra facturaCompra = new Compra();
     DecimalFormat formateador = new DecimalFormat("###,###.##");
     
@@ -64,12 +63,7 @@ public class ConsultarSaldoNotaCreditoForm extends javax.swing.JInternalFrame {
         DefaultComboBoxModel md1 = new DefaultComboBoxModel(comVec); 
         comboFacturaCompra.setModel(md1);
     }
- public void getDatos(Compra compra) throws Exception{
-       String total=formateador.format(saldoC.getSaldo(compra.getNroPrefijo(),compra.getNroFactura()));
-       txtSaldoTotalFactura.setText(total);
-       txtEstadoSaldo.setText(saldoC.getEstado(compra.getNroPrefijo(), compra.getNroFactura()));
-       System.out.println("hi:" + compra.getNroPrefijo());
- }
+ 
  
     
     
@@ -262,8 +256,7 @@ public class ConsultarSaldoNotaCreditoForm extends javax.swing.JInternalFrame {
     private void comboFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboFacturaCompraActionPerformed
          try {
              Compra compra = (Compra) this.comboFacturaCompra.getSelectedItem();
-             getDatos(compra);
-            
+             
         } catch (Exception ex) {
             //Logger.getLogger(PruebaCombo.class.getName()).log(Level.SEVERE, null, ex);
         }
