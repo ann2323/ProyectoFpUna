@@ -9,7 +9,6 @@ import controlador.FacturaCabeceraVentaControlador;
 import controlador.FacturaPendienteControlador;
 import controlador.PrefijoFacturaControlador;
 import controlador.ProyectoControlador;
-import controlador.ReciboControlador;
 import controlador.SaldoVentaControlador;
 import controlador.StockControlador;
 import java.awt.Color;
@@ -115,7 +114,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     Formatter formato = new Formatter();
     
      int contadorLote = 0, montoCuota = 0;
-     Integer subTotal= 0, totaldesc=0;
+     Integer subTotal= 0, totaldesc=0, borrado2 = 0;
      Integer  cantProducto=0;
      int k, k2;
      double iva10=0.0, iva5=0.0; //variables que suman el iva al traer los componentes
@@ -129,7 +128,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     ComponentesControlador cmpCont = new ComponentesControlador();
     SaldoVentaControlador saldoV = new SaldoVentaControlador();
     PrefijoFacturaControlador prefijoControlador = new PrefijoFacturaControlador();
-    ReciboControlador reciboControlador = new ReciboControlador();
     FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
     
  
@@ -235,7 +233,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
          
-       if(Integer.parseInt(txtFacturaVenta.getText()) > prefijoControlador.finfactura()){
+       if(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")) > prefijoControlador.finfactura()){
            showMessageDialog(this, "Fin de lote de factura. Ingrese un nuevo lote ", "Error en el número de factura", JOptionPane.ERROR_MESSAGE);
            this.dispose();
            PrefijoFacturaInternalForm prefijoFactura = new PrefijoFacturaInternalForm();
@@ -386,7 +384,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
            
             
-            ventaC.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+            ventaC.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
             SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formateador.parse(txtFechaVenta.getText());
             ventaC.setFecha(date);
@@ -428,6 +426,58 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setPrecioTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
             
 
+             if (comboPago.getSelectedItem().equals("CREDITO")){
+                   montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
+                   String cuota = comboCuota.getSelectedItem().toString();
+                   for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
+                        facturaPendiente.setPlazo(j+" de "+cuota);
+                        facturaPendiente.setClienteId(idCliente);
+                        facturaPendiente.setEstado("PENDIENTE");
+                        facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                        facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                        facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                        facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                        facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), j));
+                        facturaPendiente.setMontoPendiente(montoCuota);
+                        facturaPendiente.setProveedorId(null);
+                        if (bNuevo.isEnabled() == false){                           
+                            facturaPendienteControlador.insert(facturaPendiente);
+                               
+                        }else{
+                            if (borrado2 == 0){
+                               facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+                             }
+                                    facturaPendienteControlador.insert(facturaPendiente);
+                                    borrado2=1; 
+                                }
+                            }
+                        }else if(comboPago.getSelectedItem().equals("CONTADO")){
+                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                           facturaPendiente.setClienteId(idCliente);
+                           facturaPendiente.setEstado("PENDIENTE");
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+                           facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                           SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
+                           Date ahora = new Date();
+                           facturaPendiente.setFechaVencimiento(forma.format(ahora));
+                           facturaPendiente.setMontoPendiente(montoCuota);
+                           facturaPendiente.setProveedorId(null);
+                           
+                           if (bNuevo.isEnabled() == false){                           
+                                facturaPendienteControlador.insert(facturaPendiente);
+                               
+                            }else{                   
+                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+                            
+                                facturaPendienteControlador.insert(facturaPendiente);                             
+                               
+                           }
+                       }
+            
+            
+            
             //if (bNuevo.isEnabled() == false) {
                     try {
                     int i = 0;
@@ -520,40 +570,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                     }
                    
                    if (bNuevo.isEnabled() == false){ 
-                       System.out.println("Entro en el insert de cabecera");
-                       
-                        if (comboPago.getSelectedItem().equals("CREDITO")){
-                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
-                           String cuota = comboCuota.getSelectedItem().toString();
-                           for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
-                                facturaPendiente.setPlazo(j+" de "+cuota);
-                                facturaPendiente.setClienteId(idCliente);
-                                facturaPendiente.setEstado("PENDIENTE");
-                                facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
-                                facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
-                                facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                                facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                                facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));
-                                facturaPendiente.setMontoPendiente(montoCuota);
-                                facturaPendiente.setClienteId(null);
-                                facturaPendienteControlador.insert(facturaPendiente);
-                                
-                            }
-                        }else{
-                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
-                           facturaPendiente.setClienteId(idCliente);
-                           facturaPendiente.setEstado("PENDIENTE");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
-                           facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
-                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                           SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
-                           Date ahora = new Date();
-                           facturaPendiente.setFechaVencimiento(forma.format(ahora));
-                           facturaPendiente.setMontoPendiente(montoCuota);
-                           facturaPendiente.setClienteId(null);
-                          
-                       }
+                       System.out.println("Entro en el insert de cabecera");         
                         ventaControlador.insert(ventaC);
                         txtFacturaVenta.setText("");
                         nuevo();
@@ -564,7 +581,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                             //ventaControlador.update(ventaC);
                             //borra la cabecera para actualizar en caso que sea necesario
                             ventaControlador.borrarCabecera(ventaC.getNroFactura());
-                            facturaPendienteControlador.insert(facturaPendiente);
                             System.out.println("\n NRO FACTURA CABECERA "+ventaC.getNroFactura());
                             //saldoV.insert(saldoModel);
                             ventaControlador.insert(ventaC);
@@ -1541,9 +1557,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             if ("*".equals(txtFacturaVenta.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "trim(to_char(v.nro_factura,'9G999G999')) as \"Nro. Factura\"";
-                bf.tabla = "venta v";
-                bf.order = "v.nro_factura";
+                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(nro_factura,'9G999G999')) as \"Nro. Factura\"";
+                bf.tabla = "venta";
+                bf.order = "nro_factura";
                 bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
@@ -1583,7 +1599,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
       
       if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
           String nroFactura = "";
-          nroFactura = txtFacturaVenta.getText();
+          nroFactura = txtFacturaVenta.getText().trim().replace(".", "");
           String prefijo = txtPrefijoVenta.getText();
           String precioTotal = txtTotal.getText().replace(".", "");
           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
@@ -1605,7 +1621,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
           //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
           //dos veces
           try { 
-              if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText())) == 0) {
+              if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".",""))) == 0) {
                  guardar();  
               }
           } catch (Exception ex) {
