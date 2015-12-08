@@ -64,7 +64,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         
         int k=0;
         while (k<ReciboProveedorForm.tbVistaFacturasPendientes.getRowCount()){
-                    if(ReciboProveedorForm.tbVistaFacturasPendientes.isRowSelected(i)) {
+                    if(ReciboProveedorForm.tbVistaFacturasPendientes.isRowSelected(k)) {
                         pendiente2 = pendiente2 + Integer.parseInt(ReciboProveedorForm.tbVistaFacturasPendientes.getValueAt(i, 5).toString().replace(".","").trim());
                     }
                k++;     
@@ -176,9 +176,6 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Detalle de Pago");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
-            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -190,6 +187,9 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
             }
         });
 
