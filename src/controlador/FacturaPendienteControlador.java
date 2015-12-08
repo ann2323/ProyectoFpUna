@@ -124,7 +124,7 @@ public class FacturaPendienteControlador {
             rs.next();
             return (int) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al devolver nro de factura de compra: \n" + e.getMessage());
+            throw new Exception("Error al devolver nro de factura de venta: \n" + e.getMessage());
         } 
      }
      
@@ -132,6 +132,20 @@ public class FacturaPendienteControlador {
           
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         String cad = "SELECT factura_pendiente_id from factura_pendiente where nro_factura = '" + nroFactura + "' and proveedor_id = '" + provId + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver id factura pendiente: \n" + e.getMessage());
+        } 
+     }
+      
+      public Integer devuelveIdCliContado(Integer nroFactura, Integer cliId) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT factura_pendiente_id from factura_pendiente where nro_factura = '" + nroFactura + "' and cliente_id = '" + cliId + "'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
             ResultSet rs = ps.executeQuery();
