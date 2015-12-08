@@ -889,9 +889,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Factura Compra");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
-            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -903,6 +900,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
             }
         });
 
@@ -1525,7 +1525,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtProveedor.getText())) {
 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) as \"CI\", nombre||' '||apellido as \"Proveedor\"";
+                bf.columnas = "trim(to_char(cast(ci as integer),'9G999G999')) as \"CI\", nombre||' '||apellido as \"Proveedor\"";
                 bf.tabla = "proveedor";
                 bf.order = "proveedor_id";
                 bf.filtroBusqueda = "estado!='INACTIVO'";
@@ -1638,16 +1638,16 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtFacturaCompra.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "v.nro_factura";
-                bf.tabla = "compra v";
-                bf.order = "v.nro_factura";
+                bf.columnas = "nro_prefijo as \"Nro. Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\"";
+                bf.tabla = "Compra";
+                bf.order = "nro_factura";
                 bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
 
                 for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                    if (modeloNroFactura.getValueAt(c, 1).toString().equals(bf.retorno)){
+                    if (modeloNroFactura.getValueAt(c, 0).toString().equals(bf.retorno)){
                         modoBusqueda(false);
                         establecerBotones("Edicion");
                         k2 = c;
@@ -1660,7 +1660,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             }
             getNroFactura();
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtFacturaCompra.getText())){
+                if (modeloNroFactura.getValueAt(c, 0).toString().equals(txtFacturaCompra.getText())){
                     modoBusqueda(false);
                     establecerBotones("Edicion");
                     k2 = c;                   
