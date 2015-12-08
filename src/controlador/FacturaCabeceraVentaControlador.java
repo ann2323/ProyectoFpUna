@@ -86,7 +86,7 @@ public class FacturaCabeceraVentaControlador {
     
      public ResultSet datosTablaBusquedaFacturasPendientes(Integer idCli) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from venta where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO') and cliente_id='" + idCli + "'";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from Venta where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO') and cliente_id='" + idCli + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
@@ -97,24 +97,36 @@ public class FacturaCabeceraVentaControlador {
             }
         }
      
-      public String totalLetras(int precio_total) throws SQLException, Exception
-    {
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+      public String totalLetras(int precio_total) throws SQLException, Exception{
         
-        String res="";
-        try {
-        String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
-        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()){
-        res=rs.getString(1);
-        }
-           
-        } catch(HibernateException e){
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+          String res="";
+          try {
+            String query = "SELECT (f_convnl(CAST("+precio_total+ " as numeric)));";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                res=rs.getString(1);
+            }  
+          } catch(HibernateException e){
             throw new Exception("Error al consultar el vencimiento de pago: \n" + e.getMessage());
         }
          return res;
     }
+      
+      public String esContado(Integer nroFactura) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT pago_contado from Venta where nro_factura = '" + nroFactura + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (String) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver pago contado: \n" + e.getMessage());
+        } 
+      }
       
       //Para la consula de factura
       public ResultSet datosTablaBusqueda(int codigo) throws Exception {
@@ -191,6 +203,19 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al traer precio total: \n" + e.getMessage());
         }
     }
+    
+     public void updateEstadoPagado(int nroFactura) throws Exception {
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update Venta set estado = 'PAGADO' where nro_factura = '" +nroFactura+ "'").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al cambiar estado de factura venta: \n" + e.getMessage());
+            }
+    }
+    
      public Integer getCuota(Integer nro_factura) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
@@ -228,6 +253,19 @@ public class FacturaCabeceraVentaControlador {
      public ResultSet datosComboSaldo() throws SQLException, Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Venta where es_factura='S'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Venta: \n" + e.getMessage());
+            }
+    }
+     
+     public ResultSet datosComboSaldo(Integer cliId) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo, nro_factura as \"NroFactura\" from Venta where es_factura='N' and cliente_id= '" +cliId+ "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
