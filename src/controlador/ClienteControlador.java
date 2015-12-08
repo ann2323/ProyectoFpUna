@@ -67,7 +67,7 @@ public class ClienteControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT substring(cedula from 1 for 1)||'.'||substring(cedula from 2 for 3)||'.'||substring(cedula from 5 for 7) as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
+        String query = "SELECT cedula as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
