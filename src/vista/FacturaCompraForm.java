@@ -15,7 +15,6 @@ import controlador.FacturaCabeceraCompraControlador;
 import controlador.FacturaPendienteControlador;
 import controlador.ProveedorControlador;
 import controlador.ProyectoControlador;
-import controlador.SaldoCompraControlador;
 import controlador.StockControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -44,7 +43,6 @@ import modelo.Deposito;
 import modelo.DetalleCompra;
 import modelo.FacturaPendiente;
 import modelo.Proyectos;
-import modelo.SaldoCompra;
 import modelo.Stock;
 
 /**
@@ -96,7 +94,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
      
     StockControlador stockCont = new StockControlador();
     DepositoControlador depBD = new DepositoControlador();
-    SaldoCompraControlador saldoC = new SaldoCompraControlador();
     DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
     FacturaCabeceraCompraControlador compraControlador = new  FacturaCabeceraCompraControlador();
     ProveedorControlador provC = new ProveedorControlador();
@@ -105,7 +102,6 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
      FacturaPendienteControlador facturaPendienteControlador = new FacturaPendienteControlador();
     
     Deposito depModel = new  Deposito();
-    SaldoCompra saldoModel = new SaldoCompra();
     DetalleCompra compraD = new DetalleCompra();
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
