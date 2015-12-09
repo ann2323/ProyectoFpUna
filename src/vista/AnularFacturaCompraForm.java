@@ -6,8 +6,7 @@
 
 package vista;
 
-//import controlador.CuentaCabeceraControlador;
-import controlador.DetalleCuentaControlador;
+
 import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.StockControlador;
@@ -52,7 +51,6 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
     FacturaCabeceraCompraControlador compraControlador = new FacturaCabeceraCompraControlador();
     DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
-    DetalleCuentaControlador detalleCuentaControlador = new DetalleCuentaControlador();
     StockControlador stockCont = new StockControlador();
     
     Date dato = null;
@@ -265,7 +263,7 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
                 bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\"";
                 bf.tabla = "Compra";
                 bf.order = "compra_id";
-                bf.filtroBusqueda = "estado != 'ANULADO' and es_factura = 'S'";
+                bf.filtroBusqueda = "estado != 'ANULADO' and estado != 'BORRADOR' and es_factura = 'S'";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
