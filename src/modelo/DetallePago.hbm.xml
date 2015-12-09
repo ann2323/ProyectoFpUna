@@ -1,39 +1,36 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.DetallePago" table="detalle_pago" schema="public">
         <id name="detallePagoId" type="int">
             <column name="detalle_pago_id" />
             <generator class="assigned" />
         </id>
-        <property name="tipoPagoId" type="java.lang.Integer">
-            <column name="tipo_pago_id" />
+        <property name="nroTarjetaCheque" type="java.lang.Integer">
+            <column name="nro_tarjeta_cheque" />
         </property>
-        <property name="compraId" type="java.lang.Integer">
-            <column name="compra_id" />
-        </property>
-        <property name="ventaId" type="java.lang.Integer">
-            <column name="venta_id" />
-        </property>
-        <property name="monto" type="java.lang.Integer">
-            <column name="monto" />
-        </property>
-        <property name="nroTarjeta" type="java.lang.Integer">
-            <column name="nro_tarjeta" />
-        </property>
-        <property name="autorizacion" type="java.lang.Integer">
-            <column name="autorizacion" />
-        </property>
-        <property name="nroCheque" type="java.lang.Integer">
-            <column name="nro_cheque" />
-        </property>
-        <property name="valorCredito" type="java.lang.Integer">
-            <column name="valor_credito" />
+        <property name="montoCredito" type="java.lang.Integer">
+            <column name="monto_credito" />
         </property>
         <property name="pendienteAAplicar" type="java.lang.Integer">
             <column name="pendiente_a_aplicar" />
+        </property>
+        <property name="nombrePago" type="string">
+            <column name="nombre_pago" />
+        </property>
+        <property name="montoAbonado" type="java.lang.Integer">
+            <column name="monto_abonado" />
+        </property>
+        <property name="nroNotaCredito" type="java.lang.Integer">
+            <column name="nro_nota_credito" />
+        </property>
+        <property name="facturaPendienteId" type="java.lang.Integer">
+            <column name="factura_pendiente_id" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" />
         </property>
     </class>
 </hibernate-mapping>

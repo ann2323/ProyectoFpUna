@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Componentes" table="componentes" schema="public">
         <id name="codigoInterno" type="int">
             <column name="codigo_interno" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="descripcion" type="string">
             <column name="descripcion" />

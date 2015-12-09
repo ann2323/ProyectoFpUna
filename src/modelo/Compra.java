@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -21,32 +21,32 @@ public class Compra  implements java.io.Serializable {
      private String pagoContado;
      private String estado;
      private Integer factReferenciada;
-     private char esFactura;
+     private String esFactura;
      private int proveedorId;
-     private Date vencimiento;
      private String codDeposito;
      private Date fechaRecepcion;
      private Integer pagoEn;
-     private Integer monedaId;
      private String nroPrefijo;
+     private Integer iva10;
+     private Integer iva5;
+     private Date vencimiento;
+     private Integer saldo;
 
     public Compra() {
     }
 
 	
-    public Compra(int compraId, int nroFactura, Date fecha, int precioTotal, int cantidadTotal, String pagoContado, String estado, char esFactura, int proveedorId, Date vencimiento) {
+    public Compra(int compraId, int nroFactura, Date fecha, int precioTotal, int cantidadTotal, String estado, String esFactura, int proveedorId) {
         this.compraId = compraId;
         this.nroFactura = nroFactura;
         this.fecha = fecha;
         this.precioTotal = precioTotal;
         this.cantidadTotal = cantidadTotal;
-        this.pagoContado = pagoContado;
         this.estado = estado;
         this.esFactura = esFactura;
         this.proveedorId = proveedorId;
-        this.vencimiento = vencimiento;
     }
-    public Compra(int compraId, int nroFactura, Date fecha, Integer proyectoId, int precioTotal, int cantidadTotal, Integer descuento, Integer iva, String pagoContado, String estado, Integer factReferenciada, char esFactura, int proveedorId, Date vencimiento, String codDeposito, Date fechaRecepcion, Integer pagoEn, Integer monedaId, String nroPrefijo) {
+    public Compra(int compraId, int nroFactura, Date fecha, Integer proyectoId, int precioTotal, int cantidadTotal, Integer descuento, Integer iva, String pagoContado, String estado, Integer factReferenciada, String esFactura, int proveedorId, String codDeposito, Date fechaRecepcion, Integer pagoEn, String nroPrefijo, Integer iva10, Integer iva5, Date vencimiento, Integer saldo) {
        this.compraId = compraId;
        this.nroFactura = nroFactura;
        this.fecha = fecha;
@@ -60,12 +60,14 @@ public class Compra  implements java.io.Serializable {
        this.factReferenciada = factReferenciada;
        this.esFactura = esFactura;
        this.proveedorId = proveedorId;
-       this.vencimiento = vencimiento;
        this.codDeposito = codDeposito;
        this.fechaRecepcion = fechaRecepcion;
        this.pagoEn = pagoEn;
-       this.monedaId = monedaId;
        this.nroPrefijo = nroPrefijo;
+       this.iva10 = iva10;
+       this.iva5 = iva5;
+       this.vencimiento = vencimiento;
+       this.saldo = saldo;
     }
    
     public int getCompraId() {
@@ -145,11 +147,11 @@ public class Compra  implements java.io.Serializable {
     public void setFactReferenciada(Integer factReferenciada) {
         this.factReferenciada = factReferenciada;
     }
-    public char getEsFactura() {
+    public String getEsFactura() {
         return this.esFactura;
     }
     
-    public void setEsFactura(char esFactura) {
+    public void setEsFactura(String esFactura) {
         this.esFactura = esFactura;
     }
     public int getProveedorId() {
@@ -158,13 +160,6 @@ public class Compra  implements java.io.Serializable {
     
     public void setProveedorId(int proveedorId) {
         this.proveedorId = proveedorId;
-    }
-    public Date getVencimiento() {
-        return this.vencimiento;
-    }
-    
-    public void setVencimiento(Date vencimiento) {
-        this.vencimiento = vencimiento;
     }
     public String getCodDeposito() {
         return this.codDeposito;
@@ -187,19 +182,40 @@ public class Compra  implements java.io.Serializable {
     public void setPagoEn(Integer pagoEn) {
         this.pagoEn = pagoEn;
     }
-    public Integer getMonedaId() {
-        return this.monedaId;
-    }
-    
-    public void setMonedaId(Integer monedaId) {
-        this.monedaId = monedaId;
-    }
     public String getNroPrefijo() {
         return this.nroPrefijo;
     }
     
     public void setNroPrefijo(String nroPrefijo) {
         this.nroPrefijo = nroPrefijo;
+    }
+    public Integer getIva10() {
+        return this.iva10;
+    }
+    
+    public void setIva10(Integer iva10) {
+        this.iva10 = iva10;
+    }
+    public Integer getIva5() {
+        return this.iva5;
+    }
+    
+    public void setIva5(Integer iva5) {
+        this.iva5 = iva5;
+    }
+    public Date getVencimiento() {
+        return this.vencimiento;
+    }
+    
+    public void setVencimiento(Date vencimiento) {
+        this.vencimiento = vencimiento;
+    }
+    public Integer getSaldo() {
+        return this.saldo;
+    }
+    
+    public void setSaldo(Integer saldo) {
+        this.saldo = saldo;
     }
 
 

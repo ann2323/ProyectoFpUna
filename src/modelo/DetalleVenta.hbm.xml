@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.DetalleVenta" table="detalle_venta" schema="public">
         <id name="detalleFacturaId" type="int">
             <column name="detalle_factura_id" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="cantidad" type="int">
             <column name="cantidad" not-null="true" />
@@ -15,7 +15,7 @@
             <column name="sub_total" not-null="true" />
         </property>
         <property name="descripcion" type="string">
-            <column name="descripcion" length="20" />
+            <column name="descripcion" length="100" />
         </property>
         <property name="ventaId" type="int">
             <column name="venta_id" not-null="true" />

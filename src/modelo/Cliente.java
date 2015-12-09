@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -14,34 +14,37 @@ public class Cliente  implements java.io.Serializable {
      private String apellido;
      private String direccion;
      private String telefono;
+     private String cedula;
      private String estado;
      private String dv;
      private String codigocliente;
      private Integer limitecredito;
      private String tipocliente;
-     private String cedula;
+     private Integer saldo;
 
     public Cliente() {
     }
 
 	
-    public Cliente(int clienteId, String nombre, String estado) {
+    public Cliente(int clienteId, String nombre, String cedula, String estado) {
         this.clienteId = clienteId;
         this.nombre = nombre;
+        this.cedula = cedula;
         this.estado = estado;
     }
-    public Cliente(int clienteId, String nombre, String apellido, String direccion, String telefono, String estado, String dv, String codigocliente, Integer limitecredito, String tipocliente, String cedula) {
+    public Cliente(int clienteId, String nombre, String apellido, String direccion, String telefono, String cedula, String estado, String dv, String codigocliente, Integer limitecredito, String tipocliente, Integer saldo) {
        this.clienteId = clienteId;
        this.nombre = nombre;
        this.apellido = apellido;
        this.direccion = direccion;
        this.telefono = telefono;
+       this.cedula = cedula;
        this.estado = estado;
        this.dv = dv;
        this.codigocliente = codigocliente;
        this.limitecredito = limitecredito;
        this.tipocliente = tipocliente;
-       this.cedula = cedula;
+       this.saldo = saldo;
     }
    
     public int getClienteId() {
@@ -79,6 +82,13 @@ public class Cliente  implements java.io.Serializable {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+    public String getCedula() {
+        return this.cedula;
+    }
+    
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
     public String getEstado() {
         return this.estado;
     }
@@ -114,12 +124,12 @@ public class Cliente  implements java.io.Serializable {
     public void setTipocliente(String tipocliente) {
         this.tipocliente = tipocliente;
     }
-    public String getCedula() {
-        return this.cedula;
+    public Integer getSaldo() {
+        return this.saldo;
     }
     
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
+    public void setSaldo(Integer saldo) {
+        this.saldo = saldo;
     }
 
 

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.FacturaPendiente" table="factura_pendiente" schema="public">
+        <id name="facturaPendienteId" type="int">
+            <column name="factura_pendiente_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="nroFactura" type="java.lang.Integer">
+            <column name="nro_factura" />
+        </property>
+        <property name="nroPrefijo" type="string">
+            <column name="nro_prefijo" />
+        </property>
+        <property name="total" type="java.lang.Integer">
+            <column name="total" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" />
+        </property>
+        <property name="montoPendiente" type="java.lang.Integer">
+            <column name="monto_pendiente" />
+        </property>
+        <property name="fechaVencimiento" type="string">
+            <column name="fecha_vencimiento" />
+        </property>
+        <property name="plazo" type="string">
+            <column name="plazo" />
+        </property>
+        <property name="pagado" type="java.lang.Integer">
+            <column name="pagado" />
+        </property>
+        <property name="pendiente" type="java.lang.Integer">
+            <column name="pendiente" />
+        </property>
+        <property name="cambio" type="java.lang.Integer">
+            <column name="cambio" />
+        </property>
+        <property name="reciboId" type="java.lang.Integer">
+            <column name="recibo_id" />
+        </property>
+        <property name="proveedorId" type="java.lang.Integer">
+            <column name="proveedor_id" />
+        </property>
+        <property name="clienteId" type="java.lang.Integer">
+            <column name="cliente_id" />
+        </property>
+    </class>
+</hibernate-mapping>

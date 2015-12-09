@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -18,6 +18,7 @@ public class DetalleCompra  implements java.io.Serializable {
      private String codigo;
      private Integer precioUnit;
      private Integer exentas;
+     private String notaCredito;
 
     public DetalleCompra() {
     }
@@ -31,7 +32,7 @@ public class DetalleCompra  implements java.io.Serializable {
         this.componenteId = componenteId;
         this.codigo = codigo;
     }
-    public DetalleCompra(int detalleCompraId, int cantidad, int subTotal, String descripcion, int compraId, int componenteId, String codigo, Integer precioUnit, Integer exentas) {
+    public DetalleCompra(int detalleCompraId, int cantidad, int subTotal, String descripcion, int compraId, int componenteId, String codigo, Integer precioUnit, Integer exentas, String notaCredito) {
        this.detalleCompraId = detalleCompraId;
        this.cantidad = cantidad;
        this.subTotal = subTotal;
@@ -41,6 +42,7 @@ public class DetalleCompra  implements java.io.Serializable {
        this.codigo = codigo;
        this.precioUnit = precioUnit;
        this.exentas = exentas;
+       this.notaCredito = notaCredito;
     }
    
     public int getDetalleCompraId() {
@@ -105,6 +107,13 @@ public class DetalleCompra  implements java.io.Serializable {
     
     public void setExentas(Integer exentas) {
         this.exentas = exentas;
+    }
+    public String getNotaCredito() {
+        return this.notaCredito;
+    }
+    
+    public void setNotaCredito(String notaCredito) {
+        this.notaCredito = notaCredito;
     }
 
 

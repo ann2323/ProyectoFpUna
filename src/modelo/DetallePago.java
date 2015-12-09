@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -10,15 +10,14 @@ public class DetallePago  implements java.io.Serializable {
 
 
      private int detallePagoId;
-     private Integer tipoPagoId;
-     private Integer compraId;
-     private Integer ventaId;
-     private Integer monto;
-     private Integer nroTarjeta;
-     private Integer autorizacion;
-     private Integer nroCheque;
-     private Integer valorCredito;
+     private Integer nroTarjetaCheque;
+     private Integer montoCredito;
      private Integer pendienteAAplicar;
+     private String nombrePago;
+     private Integer montoAbonado;
+     private Integer nroNotaCredito;
+     private Integer facturaPendienteId;
+     private String estado;
 
     public DetallePago() {
     }
@@ -27,17 +26,16 @@ public class DetallePago  implements java.io.Serializable {
     public DetallePago(int detallePagoId) {
         this.detallePagoId = detallePagoId;
     }
-    public DetallePago(int detallePagoId, Integer tipoPagoId, Integer compraId, Integer ventaId, Integer monto, Integer nroTarjeta, Integer autorizacion, Integer nroCheque, Integer valorCredito, Integer pendienteAAplicar) {
+    public DetallePago(int detallePagoId, Integer nroTarjetaCheque, Integer montoCredito, Integer pendienteAAplicar, String nombrePago, Integer montoAbonado, Integer nroNotaCredito, Integer facturaPendienteId, String estado) {
        this.detallePagoId = detallePagoId;
-       this.tipoPagoId = tipoPagoId;
-       this.compraId = compraId;
-       this.ventaId = ventaId;
-       this.monto = monto;
-       this.nroTarjeta = nroTarjeta;
-       this.autorizacion = autorizacion;
-       this.nroCheque = nroCheque;
-       this.valorCredito = valorCredito;
+       this.nroTarjetaCheque = nroTarjetaCheque;
+       this.montoCredito = montoCredito;
        this.pendienteAAplicar = pendienteAAplicar;
+       this.nombrePago = nombrePago;
+       this.montoAbonado = montoAbonado;
+       this.nroNotaCredito = nroNotaCredito;
+       this.facturaPendienteId = facturaPendienteId;
+       this.estado = estado;
     }
    
     public int getDetallePagoId() {
@@ -47,61 +45,19 @@ public class DetallePago  implements java.io.Serializable {
     public void setDetallePagoId(int detallePagoId) {
         this.detallePagoId = detallePagoId;
     }
-    public Integer getTipoPagoId() {
-        return this.tipoPagoId;
+    public Integer getNroTarjetaCheque() {
+        return this.nroTarjetaCheque;
     }
     
-    public void setTipoPagoId(Integer tipoPagoId) {
-        this.tipoPagoId = tipoPagoId;
+    public void setNroTarjetaCheque(Integer nroTarjetaCheque) {
+        this.nroTarjetaCheque = nroTarjetaCheque;
     }
-    public Integer getCompraId() {
-        return this.compraId;
-    }
-    
-    public void setCompraId(Integer compraId) {
-        this.compraId = compraId;
-    }
-    public Integer getVentaId() {
-        return this.ventaId;
+    public Integer getMontoCredito() {
+        return this.montoCredito;
     }
     
-    public void setVentaId(Integer ventaId) {
-        this.ventaId = ventaId;
-    }
-    public Integer getMonto() {
-        return this.monto;
-    }
-    
-    public void setMonto(Integer monto) {
-        this.monto = monto;
-    }
-    public Integer getNroTarjeta() {
-        return this.nroTarjeta;
-    }
-    
-    public void setNroTarjeta(Integer nroTarjeta) {
-        this.nroTarjeta = nroTarjeta;
-    }
-    public Integer getAutorizacion() {
-        return this.autorizacion;
-    }
-    
-    public void setAutorizacion(Integer autorizacion) {
-        this.autorizacion = autorizacion;
-    }
-    public Integer getNroCheque() {
-        return this.nroCheque;
-    }
-    
-    public void setNroCheque(Integer nroCheque) {
-        this.nroCheque = nroCheque;
-    }
-    public Integer getValorCredito() {
-        return this.valorCredito;
-    }
-    
-    public void setValorCredito(Integer valorCredito) {
-        this.valorCredito = valorCredito;
+    public void setMontoCredito(Integer montoCredito) {
+        this.montoCredito = montoCredito;
     }
     public Integer getPendienteAAplicar() {
         return this.pendienteAAplicar;
@@ -109,6 +65,41 @@ public class DetallePago  implements java.io.Serializable {
     
     public void setPendienteAAplicar(Integer pendienteAAplicar) {
         this.pendienteAAplicar = pendienteAAplicar;
+    }
+    public String getNombrePago() {
+        return this.nombrePago;
+    }
+    
+    public void setNombrePago(String nombrePago) {
+        this.nombrePago = nombrePago;
+    }
+    public Integer getMontoAbonado() {
+        return this.montoAbonado;
+    }
+    
+    public void setMontoAbonado(Integer montoAbonado) {
+        this.montoAbonado = montoAbonado;
+    }
+    public Integer getNroNotaCredito() {
+        return this.nroNotaCredito;
+    }
+    
+    public void setNroNotaCredito(Integer nroNotaCredito) {
+        this.nroNotaCredito = nroNotaCredito;
+    }
+    public Integer getFacturaPendienteId() {
+        return this.facturaPendienteId;
+    }
+    
+    public void setFacturaPendienteId(Integer facturaPendienteId) {
+        this.facturaPendienteId = facturaPendienteId;
+    }
+    public String getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 

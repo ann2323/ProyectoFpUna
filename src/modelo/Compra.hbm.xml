@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Compra" table="compra" schema="public">
         <id name="compraId" type="int">
             <column name="compra_id" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="nroFactura" type="int">
             <column name="nro_factura" not-null="true" />
@@ -30,7 +30,7 @@
             <column name="iva" />
         </property>
         <property name="pagoContado" type="string">
-            <column name="pago_contado" length="15" not-null="true" />
+            <column name="pago_contado" length="15" />
         </property>
         <property name="estado" type="string">
             <column name="estado" length="10" not-null="true" />
@@ -38,16 +38,13 @@
         <property name="factReferenciada" type="java.lang.Integer">
             <column name="fact_referenciada" />
         </property>
-        <property name="esFactura" type="char">
+        <property name="esFactura" type="string">
             <column name="es_factura" length="1" not-null="true">
                 <comment>es factura puede ser S = factura, N = nota de credito</comment>
             </column>
         </property>
         <property name="proveedorId" type="int">
             <column name="proveedor_id" not-null="true" />
-        </property>
-        <property name="vencimiento" type="timestamp">
-            <column name="vencimiento" length="29" not-null="true" />
         </property>
         <property name="codDeposito" type="string">
             <column name="cod_deposito" />
@@ -58,11 +55,20 @@
         <property name="pagoEn" type="java.lang.Integer">
             <column name="pago_en" />
         </property>
-        <property name="monedaId" type="java.lang.Integer">
-            <column name="moneda_id" />
-        </property>
         <property name="nroPrefijo" type="string">
             <column name="nro_prefijo" length="3" />
+        </property>
+        <property name="iva10" type="java.lang.Integer">
+            <column name="iva10" />
+        </property>
+        <property name="iva5" type="java.lang.Integer">
+            <column name="iva5" />
+        </property>
+        <property name="vencimiento" type="timestamp">
+            <column name="vencimiento" length="29" />
+        </property>
+        <property name="saldo" type="java.lang.Integer">
+            <column name="saldo" />
         </property>
     </class>
 </hibernate-mapping>

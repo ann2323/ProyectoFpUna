@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -48,9 +48,13 @@ public class Deposito  implements java.io.Serializable {
         this.descripcion = descripcion;
     }
 
-    public String toString(){
-        return this.nombre;
+    @Override
+    public String toString() {
+        return this.codigo;
     }
+
+
+
 
 }
 

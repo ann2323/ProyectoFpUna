@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -15,27 +15,27 @@ public class Venta  implements java.io.Serializable {
      private int precioTotal;
      private int cantidadTotal;
      private Integer descuento;
-     private Double iva;
      private Double precioExenta;
      private String pagoContado;
      private String estado;
      private Integer factReferenciada;
-     private char esFactura;
+     private String esFactura;
      private int clienteId;
      private Date vencimiento;
      private Integer pagoEn;
-     private Integer monedaId;
      private String codDeposito;
      private String nroPrefijo;
      private Integer nroFactura;
      private Integer iva10;
      private Integer iva5;
+     private Integer proyectoId;
+     private Integer saldo;
 
     public Venta() {
     }
 
 	
-    public Venta(int ventaId, Date fecha, int precioTotal, int cantidadTotal, String pagoContado, String estado, char esFactura, int clienteId, Date vencimiento) {
+    public Venta(int ventaId, Date fecha, int precioTotal, int cantidadTotal, String pagoContado, String estado, String esFactura, int clienteId, Date vencimiento) {
         this.ventaId = ventaId;
         this.fecha = fecha;
         this.precioTotal = precioTotal;
@@ -46,13 +46,12 @@ public class Venta  implements java.io.Serializable {
         this.clienteId = clienteId;
         this.vencimiento = vencimiento;
     }
-    public Venta(int ventaId, Date fecha, int precioTotal, int cantidadTotal, Integer descuento, Double iva, Double precioExenta, String pagoContado, String estado, Integer factReferenciada, char esFactura, int clienteId, Date vencimiento, Integer pagoEn, Integer monedaId, String codDeposito, String nroPrefijo, Integer nroFactura, Integer iva10, Integer iva5) {
+    public Venta(int ventaId, Date fecha, int precioTotal, int cantidadTotal, Integer descuento, Double precioExenta, String pagoContado, String estado, Integer factReferenciada, String esFactura, int clienteId, Date vencimiento, Integer pagoEn, String codDeposito, String nroPrefijo, Integer nroFactura, Integer iva10, Integer iva5, Integer proyectoId, Integer saldo) {
        this.ventaId = ventaId;
        this.fecha = fecha;
        this.precioTotal = precioTotal;
        this.cantidadTotal = cantidadTotal;
        this.descuento = descuento;
-       this.iva = iva;
        this.precioExenta = precioExenta;
        this.pagoContado = pagoContado;
        this.estado = estado;
@@ -61,12 +60,13 @@ public class Venta  implements java.io.Serializable {
        this.clienteId = clienteId;
        this.vencimiento = vencimiento;
        this.pagoEn = pagoEn;
-       this.monedaId = monedaId;
        this.codDeposito = codDeposito;
        this.nroPrefijo = nroPrefijo;
        this.nroFactura = nroFactura;
        this.iva10 = iva10;
        this.iva5 = iva5;
+       this.proyectoId = proyectoId;
+       this.saldo = saldo;
     }
    
     public int getVentaId() {
@@ -104,13 +104,6 @@ public class Venta  implements java.io.Serializable {
     public void setDescuento(Integer descuento) {
         this.descuento = descuento;
     }
-    public Double getIva() {
-        return this.iva;
-    }
-    
-    public void setIva(Double iva) {
-        this.iva = iva;
-    }
     public Double getPrecioExenta() {
         return this.precioExenta;
     }
@@ -139,11 +132,11 @@ public class Venta  implements java.io.Serializable {
     public void setFactReferenciada(Integer factReferenciada) {
         this.factReferenciada = factReferenciada;
     }
-    public char getEsFactura() {
+    public String getEsFactura() {
         return this.esFactura;
     }
     
-    public void setEsFactura(char esFactura) {
+    public void setEsFactura(String esFactura) {
         this.esFactura = esFactura;
     }
     public int getClienteId() {
@@ -166,13 +159,6 @@ public class Venta  implements java.io.Serializable {
     
     public void setPagoEn(Integer pagoEn) {
         this.pagoEn = pagoEn;
-    }
-    public Integer getMonedaId() {
-        return this.monedaId;
-    }
-    
-    public void setMonedaId(Integer monedaId) {
-        this.monedaId = monedaId;
     }
     public String getCodDeposito() {
         return this.codDeposito;
@@ -208,6 +194,20 @@ public class Venta  implements java.io.Serializable {
     
     public void setIva5(Integer iva5) {
         this.iva5 = iva5;
+    }
+    public Integer getProyectoId() {
+        return this.proyectoId;
+    }
+    
+    public void setProyectoId(Integer proyectoId) {
+        this.proyectoId = proyectoId;
+    }
+    public Integer getSaldo() {
+        return this.saldo;
+    }
+    
+    public void setSaldo(Integer saldo) {
+        this.saldo = saldo;
     }
 
 

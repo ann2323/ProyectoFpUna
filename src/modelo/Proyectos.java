@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -112,10 +112,10 @@ public class Proyectos  implements java.io.Serializable {
         this.presupuesto = presupuesto;
     }
 
-    public String toString(){
-        return this.descripcion;
+    @Override
+    public String toString() {
+        return this.codigo;
     }
-
 
 }
 

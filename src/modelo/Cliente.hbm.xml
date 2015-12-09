@@ -1,24 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Cliente" table="cliente" schema="public">
         <id name="clienteId" type="int">
             <column name="cliente_id" />
-            <generator class="identity" />
+            <generator class="assigned" />
         </id>
         <property name="nombre" type="string">
-            <column name="nombre" length="30" not-null="true" />
+            <column name="nombre" length="15" not-null="true" />
         </property>
         <property name="apellido" type="string">
-            <column name="apellido" length="30" />
+            <column name="apellido" length="15" />
         </property>
         <property name="direccion" type="string">
-            <column name="direccion" length="30" />
+            <column name="direccion" length="20" />
         </property>
         <property name="telefono" type="string">
             <column name="telefono" length="15" />
+        </property>
+        <property name="cedula" type="string">
+            <column name="cedula" length="8" not-null="true" />
         </property>
         <property name="estado" type="string">
             <column name="estado" length="10" not-null="true" />
@@ -35,8 +38,8 @@
         <property name="tipocliente" type="string">
             <column name="tipocliente" />
         </property>
-        <property name="cedula" type="string">
-            <column name="cedula" length="10" />
+        <property name="saldo" type="java.lang.Integer">
+            <column name="saldo" />
         </property>
     </class>
 </hibernate-mapping>

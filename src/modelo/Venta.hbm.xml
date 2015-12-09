@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08-ago-2015 20:27:43 by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Venta" table="venta" schema="public">
         <id name="ventaId" type="int">
@@ -20,9 +20,6 @@
         <property name="descuento" type="java.lang.Integer">
             <column name="descuento" />
         </property>
-        <property name="iva" type="java.lang.Double">
-            <column name="iva" precision="17" scale="17" />
-        </property>
         <property name="precioExenta" type="java.lang.Double">
             <column name="precio_exenta" precision="17" scale="17" />
         </property>
@@ -35,7 +32,7 @@
         <property name="factReferenciada" type="java.lang.Integer">
             <column name="fact_referenciada" />
         </property>
-        <property name="esFactura" type="char">
+        <property name="esFactura" type="string">
             <column name="es_factura" length="1" not-null="true">
                 <comment>es_factura donde S= factura y N = nota de credito</comment>
             </column>
@@ -48,9 +45,6 @@
         </property>
         <property name="pagoEn" type="java.lang.Integer">
             <column name="pago_en" />
-        </property>
-        <property name="monedaId" type="java.lang.Integer">
-            <column name="moneda_id" />
         </property>
         <property name="codDeposito" type="string">
             <column name="cod_deposito" />
@@ -66,6 +60,12 @@
         </property>
         <property name="iva5" type="java.lang.Integer">
             <column name="iva5" />
+        </property>
+        <property name="proyectoId" type="java.lang.Integer">
+            <column name="proyecto_id" />
+        </property>
+        <property name="saldo" type="java.lang.Integer">
+            <column name="saldo" />
         </property>
     </class>
 </hibernate-mapping>

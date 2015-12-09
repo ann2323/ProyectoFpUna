@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="modelo.CabeceraRecibo" table="cabecera_recibo" schema="public">
+        <id name="reciboId" type="int">
+            <column name="recibo_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="clienteId" type="java.lang.Integer">
+            <column name="cliente_id" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="35" />
+        </property>
+        <property name="nroRecibo" type="java.lang.Integer">
+            <column name="nro_recibo" />
+        </property>
+        <property name="totalAPagar" type="java.lang.Integer">
+            <column name="total_a_pagar" />
+        </property>
+        <property name="proveedorId" type="java.lang.Integer">
+            <column name="proveedor_id" />
+        </property>
+        <property name="facturaNro" type="java.lang.Integer">
+            <column name="factura_nro" />
+        </property>
+    </class>
+</hibernate-mapping>

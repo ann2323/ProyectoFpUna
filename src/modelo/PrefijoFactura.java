@@ -1,5 +1,5 @@
 package modelo;
-// Generated 08-ago-2015 20:27:41 by Hibernate Tools 3.6.0
+// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -19,9 +19,8 @@ public class PrefijoFactura  implements java.io.Serializable {
     }
 
 	
-    public PrefijoFactura(int idprefijo, String tipoDocumento) {
+    public PrefijoFactura(int idprefijo) {
         this.idprefijo = idprefijo;
-        this.tipoDocumento = tipoDocumento;
     }
     public PrefijoFactura(int idprefijo, String prefijo, Integer principiofactura, Integer finfactura, String tipoDocumento) {
        this.idprefijo = idprefijo;
