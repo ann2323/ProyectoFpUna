@@ -12,7 +12,6 @@ import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.ProveedorControlador;
 import controlador.ProyectoControlador;
-import controlador.SaldoCompraControlador;
 import controlador.StockControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -40,7 +39,6 @@ import modelo.Compra;
 import modelo.Deposito;
 import modelo.DetalleCompra;
 import modelo.Proyectos;
-import modelo.SaldoCompra;
 import modelo.Stock;
 
 /**
@@ -77,7 +75,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     
     Stock stock = new Stock();
     
-     Integer subTotal= 0, totaldesc=0,nroFacturaAux=0 ;
+     Integer subTotal= 0, totaldesc=0,nroFacturaAux=0, cantAux=0, subTotalAux=0 ;
      double iva10=0.0, iva5=0.0;
      Integer  cantProducto=0;
      int k, k2, factRef;
@@ -90,14 +88,12 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     FacturaCabeceraCompraControlador compraControlador = new  FacturaCabeceraCompraControlador();
     ProveedorControlador provC = new ProveedorControlador();
     ComponentesControlador componentesControl = new ComponentesControlador();
-    SaldoCompraControlador saldoC = new SaldoCompraControlador();
     
     Deposito depModel = new  Deposito();
     Proyectos proyecto = new Proyectos();
     ProyectoControlador proControl = new ProyectoControlador ();
     DetalleCompra compraD = new DetalleCompra();
     Compra compraC = new Compra ();
-    SaldoCompra saldoModel = new SaldoCompra();
    
 
   
@@ -365,13 +361,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                factRef=compraControlador.devuelveId(Integer.parseInt(txtFacturaReferenciada.getText()));
             }
             
-            int idSaldo = saldoC.nuevoCodigo();
-            saldoModel.setSaldoCompraId(idSaldo);
-            saldoModel.setEstado("PENDIENTE");
-            saldoModel.setPrefijo(Integer.parseInt(txtPrefijoCompra.getText()));
-            saldoModel.setNumero(Integer.parseInt((txtFacturaCompra.getText())));
-            saldoModel.setEsFactura("N");
-            saldoModel.setSaldo(Integer.parseInt(txtTotal.getText().replace(".", "")));
           
                     try {
                     int i = 0;
@@ -454,7 +443,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                             compraControlador.borrarCabecera(compraC.getNroFactura());
                             compraControlador.insert(compraC);
                             compraControlador.cambiarAEnProceso(pro.getCodigo());
-                            saldoC.insert(saldoModel);
                             limpiar();
                             nuevo();
                             //showMessageDialog(null, "Venta actualizada correctamente");
@@ -650,6 +638,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     }
      
          private void datosActualesNroFacturaFactura() {
+            
             DecimalFormat forma = new DecimalFormat("###,###.##");   
             txtFacturaReferenciada.setText(modeloNroFactura.getValueAt(k2, 1).toString());
             try {
@@ -661,49 +650,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             
             } catch (Exception ex) {
                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-  
-
-            forma = new DecimalFormat("###,###.##");
-            String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
-            txtCantidadTotal.setText(cantidad);
-            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", ""));
-            String totalFormat=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", "")));
-            txtTotal.setText(totalFormat);
-            txtDescuento.setText(modeloNroFactura.getValueAt(k2, 8).toString());
-            int total = 0;
-            total = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString());
-            int descuento = 0;
-            descuento= Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString());
-            int subtotal = 0;
-            subtotal = total - descuento;
-            //seteo el subTotal para que acumule en la búsqueda
-            subTotal = subtotal;
-            forma = new DecimalFormat("###,###.##");
-            String subTotalFormat=forma.format(subtotal);
-            txtSubTotal.setText(String.valueOf(subTotalFormat));
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()) == 0){
-                txtIva10.setText("");
-                iva10 = 0.0;
-            }else{
-                iva10=0.0;
-                forma = new DecimalFormat("###,###.##");
-                String iva10Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()));
-                txtIva10.setText(iva10Format);
-                iva10 = Integer.parseInt(txtIva10.getText().trim().replace(".",""));
-            }
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString())== 0){
-                iva5=0.0;
-                txtIva5.setText("");
-                iva5 = 0.0;
-            }else{
-                iva5=0.0;
-                forma = new DecimalFormat("###,###.##");
-                String iva5Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()));
-                txtIva5.setText(iva5Format);
-                iva5 = Integer.parseInt(txtIva5.getText().trim().replace(".", ""));
-            }    
-           
+            }      
             cargarDetalleFacturaFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString())); 
             datosActualesDetalleFactura();
             
@@ -711,7 +658,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         
       private void datosActualesDetalleFactura(){
            DecimalFormat forma = new DecimalFormat("###,###.##");  
-          int i=0;
+          int i=0; 
+          //carga los datos de la factura en suspencion
            while (!"".equals(modeloDetalleBusqueda.getValueAt(i, 0).toString())){
             
             tbDetalleCompra.setValueAt(modeloDetalleBusqueda.getValueAt(i, 0), i, 0);
@@ -730,6 +678,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             tbDetalleCompra.setValueAt(subTotalFormat, i, 5);
             i++;
            }
+           DetalleFacturaSuspension();
+         
      }
         
        private void cargarDetalleFactura(int idCompra) {
@@ -867,7 +817,73 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             tbDetalleCompra.setEnabled(true);
         
         }
+       
     }
+           
+    public void DetalleFacturaSuspension(){ //calcula los datos traidos luego de una suspension
+       int j=0;
+       while (!"".equals(tbDetalleCompra.getValueAt(j, 0).toString())){
+        txtDescuento.setText("0");
+        formateador = new DecimalFormat();
+        
+        Integer precio;
+        String codigo = tbDetalleCompra.getValueAt(j,0).toString();
+
+            
+        precio = Integer.parseInt(tbDetalleCompra.getValueAt(j, 2).toString().replace(".", "").trim());
+        
+        Integer Cantidad;
+        
+        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(j, 3).toString().trim().replace(".",""));
+        formateador = new DecimalFormat("###,###.##");
+        String cantidadDet=formateador.format(Cantidad);
+        tbDetalleCompra.setValueAt((cantidadDet), j, 3); 
+        int total=(precio*Cantidad);
+        String totalFormat=(formateador.format(total));
+                          
+         cantProducto=cantProducto+Cantidad;
+         formateador = new DecimalFormat("###,###.##");
+         String cantidad=formateador.format(cantProducto);
+         txtCantidadTotal.setText(cantidad);      
+         if(componentesControl.getTipoIva(codigo)==0){
+             formateador = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 5);      
+
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());      
+             String subTotalFormat=formateador.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
+             iva10=iva10+h;
+             String ivaFormat=formateador.format(Math.round(iva10));
+             txtIva10.setText(ivaFormat);
+             
+         }else if (componentesControl.getTipoIva(codigo)==1){
+             formateador = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 5);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());
+             String subTotalFormat=formateador.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.05; 
+             iva5=iva5+h;
+             String ivaFormat=formateador.format(Math.round(iva5));
+             txtIva5.setText(ivaFormat);
+         }else{
+             formateador = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 4);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 4).toString().replace(".", "").trim());
+             String subTotalFormat=formateador.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             
+            } 
+         
+         j++;
+     }
+    
+    
+   }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1465,16 +1481,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             tbDetalleCompra.setValueAt("", tbDetalleCompra.getSelectedRow(), 5); 
             tbDetalleCompra.setValueAt("", tbDetalleCompra.getSelectedRow(), 4);
          }
-          /* }else{
-            try {
-                subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString().trim());
-            }catch (Exception ex) {
-                subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 5).toString()+"0");
-            }
-            txtSubTotal.setText(Integer.toString(subTotal).trim());
-            txtTotal.setText(txtSubTotal.getText().trim());
-           
-           }*/
+
         }
         if (tbDetalleCompra.getSelectedColumn()==0){
                 if(txtProveedor.getText().equals("")){
