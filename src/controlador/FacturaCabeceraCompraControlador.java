@@ -128,7 +128,7 @@ public class FacturaCabeceraCompraControlador {
      
     public ResultSet datosBusqueda() throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\" from Compra where estado != 'ANULADO'";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\" from Compra where estado != 'ANULADO' and estado != 'BORRADOR'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
@@ -241,7 +241,7 @@ public class FacturaCabeceraCompraControlador {
      
      public ResultSet datosBusquedaNotaCreditoCompra() throws SQLException, Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\", trim(to_char(cast(fact_referenciada as integer),'9G999G999')) as \"Factura Referenciada\" from Compra where es_factura = 'N' and estado != 'ANULADO'";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\", trim(to_char(cast(fact_referenciada as integer),'9G999G999')) as \"Factura Referenciada\" from Compra where es_factura = 'N' and estado != 'ANULADO' and estado != 'BORRADOR'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
