@@ -6,7 +6,7 @@
 
 package vista;
 
-import controlador.DetalleCuentaControlador;
+
 import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.StockControlador;
@@ -49,7 +49,6 @@ public class AnularNotaCreditoCompra extends javax.swing.JInternalFrame {
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     
     FacturaCabeceraCompraControlador compraControlador = new FacturaCabeceraCompraControlador();
-    DetalleCuentaControlador detalleCuentaControlador = new DetalleCuentaControlador();
     DetalleFacturaCompra facturaDetalleCont = new DetalleFacturaCompra();
     StockControlador stockCont = new StockControlador();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
