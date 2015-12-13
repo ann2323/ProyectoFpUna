@@ -12,6 +12,8 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -99,7 +101,7 @@ public class ProveedorInternalForm extends javax.swing.JInternalFrame {
         }
         }
         
-       private void guardar(){
+       private void guardar() throws Exception{
        if (showConfirmDialog(null, "Está seguro de guardar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
             pro.setCodProveedor(txtCodigo.getText());
             pro.setNombre(txtNombre.getText());
@@ -109,6 +111,8 @@ public class ProveedorInternalForm extends javax.swing.JInternalFrame {
             pro.setDv(txtdv.getText());
             pro.setTelefono(txtTelefono.getText());
             pro.setEstado(CBestado.getSelectedItem().toString());
+            int idProv = proBD.nuevoCodigo();
+            pro.setProveedorId(idProv);
             
              if (txtci.getText().trim().isEmpty() == true) {
                 showMessageDialog(this, "Campo cédula/ruc vacío, por favor ingrese su cédula o RUC ", "Atención", JOptionPane.WARNING_MESSAGE);
@@ -801,7 +805,7 @@ private void modoBusqueda(boolean v){
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1258, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -834,7 +838,11 @@ private void modoBusqueda(boolean v){
     }//GEN-LAST:event_bNuevoActionPerformed
 
     private void bGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarActionPerformed
-       guardar();
+         try {
+             guardar();
+         } catch (Exception ex) {
+             Logger.getLogger(ProveedorInternalForm.class.getName()).log(Level.SEVERE, null, ex);
+         }
     }//GEN-LAST:event_bGuardarActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
