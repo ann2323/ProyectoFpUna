@@ -6,7 +6,6 @@
 
 package vista;
 
-
 import controlador.DetalleFacturaCompra;
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.StockControlador;
