@@ -237,7 +237,7 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
             txtProveedor1.requestFocusInWindow();
             return;
         }else{ 
-             if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+             if(showConfirmDialog (null, "Está seguro de anular el pago?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
              int f=0, idRecibo=0;  
              Integer nroFactura = reciboControlador.getNroFactura(Integer.parseInt(txtNroRecib.getText().replace(".", "").trim()));
              String esContado = compraC.esContado(nroFactura);
@@ -258,7 +258,12 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
                         factpendienteModel.setMontoPendiente(Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 5).toString()));
                         factpendienteModel.setNroFactura(Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 1).toString()));
                         factpendienteModel.setNroPrefijo(tbVistaFacturasPendientes.getValueAt(f, 0).toString());
+                        factpendienteModel.setReciboId(null);
+                        if (esContado.equals("CONTADO")){
+                        factpendienteModel.setPlazo(null);
+                        }else{
                         factpendienteModel.setPlazo(tbVistaFacturasPendientes.getValueAt(f, 3).toString());
+                        }
                         factpendienteModel.setProveedorId(provC.devuelveId(txtProveedor.getText().replace(".", "").trim()));
                         factpendienteModel.setTotal(Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 4).toString()));
                         facturaPendienteControl.insert(factpendienteModel);
@@ -267,6 +272,12 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
                     }
                     f++;
                 }
+                 if (esContado.equals("CONTADO")){
+                            compraC.updateEstado(nroFactura);
+                        }else{
+                            compraC.updateEstadoPendiente(nroFactura);
+                 }
+                
                nuevo();
                 
         } 
