@@ -866,21 +866,20 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void mAnularPagoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoProveedorActionPerformed
-//       try {
-//            AnularPagoProveedorForm tf2 = new AnularPagoProveedorForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+       try {
+           AnularPagoProveedorForm tf2 = new AnularPagoProveedorForm();
+           try {
+               if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                   showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                   return;              }
+            } catch (Exception ex) {
+               Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+           this.jDesktopPane1.add(tf2);
+           tf2.show();
+       } catch (Exception ex) {
+        Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+       }
     }//GEN-LAST:event_mAnularPagoProveedorActionPerformed
 
     private void mAnularPagoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoClienteActionPerformed
