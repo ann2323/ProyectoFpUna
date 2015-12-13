@@ -90,7 +90,7 @@ public class FacturaPendienteControlador {
             baseDatos.createQuery("update FacturaPendiente set "
                    +" pagado = '" + pagado + "', pendiente = '" + pendiente + "'"
                     + ", cambio = '" +  cambio + "', recibo_id = '" +reciboid+  "'"
-                    +", estado = 'PAGADO' where nro_factura='" +factura+"' and plazo = '" +plazo+"'").executeUpdate();
+                    +", estado = 'PAGADO' where nro_factura='" +factura+"' and plazo = '" +plazo+"' and estado='PENDIENTE'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
             throw new Exception("Error al modificar factura pendiente: \n" + e.getMessage());
@@ -106,7 +106,7 @@ public class FacturaPendienteControlador {
             baseDatos.createQuery("update FacturaPendiente set "
                    +" pagado = '" + pagado + "', pendiente = '" + pendiente + "'"
                     + ", cambio = '" +  cambio + "', recibo_id = '" +reciboid+  "'"
-                    +", estado = 'PAGADO' where nro_factura='" +factura+"'").executeUpdate();
+                    +", estado = 'PAGADO' where nro_factura='" +factura+"' and estado = 'PENDIENTE'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
             throw new Exception("Error al modificar factura pendiente: \n" + e.getMessage());
