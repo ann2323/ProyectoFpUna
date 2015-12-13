@@ -182,7 +182,8 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         txtFactura.setText("");
         txtProveedor.setText("");
         txtProveedor1.setText("");
-        txtTotal.setText("");            
+        txtTotal.setText(""); 
+        txtNroRecibo.setText("");
     }
      
     private void cancelar(){
@@ -199,25 +200,21 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 bNuevo.setEnabled(false);
                 bCancelar.setEnabled(true);
                 bSuspender.setEnabled(true);
-                bImprimir.setEnabled(true);
                 break;
             case "Edicion":
                 bNuevo.setEnabled(true);
                 bCancelar.setEnabled(false);
                 bSuspender.setEnabled(true);
-                bImprimir.setEnabled(true);
                 break;
             case "Vacio":
                 bNuevo.setEnabled(true);
                 bCancelar.setEnabled(false);
                 bSuspender.setEnabled(false);
-                bImprimir.setEnabled(false);
                 break;
             case "Buscar":
                 bNuevo.setEnabled(false);
                 bCancelar.setEnabled(true);
                 bSuspender.setEnabled(false);
-                bImprimir.setEnabled(false);
                 break;
         }
     }
@@ -325,7 +322,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
      
       private void datosActuales2(){
         txtFactura.setText(modeloBusquedaFacturas.getValueAt(k3, 1).toString());
-        cargarFacturasPendientes(Integer.parseInt(txtFactura.getText()));
+        cargarFacturasPendientes(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
         datosActualesFacturaPendiente();
         establecerBotones("Nuevo");
     }
@@ -421,7 +418,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         bNuevo = new org.edisoncor.gui.button.ButtonTask();
         bSuspender = new org.edisoncor.gui.button.ButtonTask();
         bCancelar = new org.edisoncor.gui.button.ButtonTask();
-        bImprimir = new org.edisoncor.gui.button.ButtonTask();
         lbDatosGenerales = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -445,9 +441,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_venta.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(1275, 680));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
-            }
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
@@ -459,6 +452,9 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
             }
         });
 
@@ -584,19 +580,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         });
         jPanel2.add(bCancelar);
 
-        bImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
-        bImprimir.setText("Generar Recibo");
-        bImprimir.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 16)); // NOI18N
-        bImprimir.setCategorySmallFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        bImprimir.setDescription(" ");
-        bImprimir.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        bImprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bImprimirActionPerformed(evt);
-            }
-        });
-        jPanel2.add(bImprimir);
-
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 1234, 80));
 
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
@@ -608,7 +591,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
 
         jLabel2.setFont(new java.awt.Font("Aharoni", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("LISTA DE FACTURAS PENDIENTES");
+        jLabel2.setText("LISTA DE CUOTAS PENDIENTES");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -759,30 +742,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
        
     }//GEN-LAST:event_tbVistaFacturasPendientesFocusLost
 
-    private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
-        try {
-            if (txtpagado.getText().equals("")){
-              showMessageDialog(null, "Debe realizar el detalle de pago para generar el recibo", "Atención", INFORMATION_MESSAGE);
-            }else{
-               Integer nroFactura = Integer.parseInt(txtFactura.getText().replace(".", "").trim());
-               if (compraControlador.esContado(Integer.parseInt(txtFactura.getText().replace(".", "").trim())).equals("CREDITO")){
-                Long cuotas = (long) compraControlador.getCuota(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
-                Long cuotasCant = facturaPendienteControl.verificarEstadoFacturaPendientes(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
-                guardar();
-                    if (cuotas==cuotasCant){
-                        compraControlador.updateEstadoPagado(nroFactura);
-                    } 
-                }else{
-                guardar();
-                compraControlador.updateEstadoPagado(nroFactura);
-               
-                }
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
-        }   
-    }//GEN-LAST:event_bImprimirActionPerformed
-
     private void txtFacturaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyPressed
          if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if ("*".equals(txtFactura.getText())) {
@@ -792,9 +751,9 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\"";
-                bf.tabla = "compra";
+                BuscarForm bf = new BuscarForm(null, true);
+                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\"";
+                bf.tabla = "Compra";
                 bf.order = "vencimiento DESC";
                 bf.filtroBusqueda = "(estado='PENDIENTE' or estado='CONFIRMADO') and es_factura='S' and proveedor_id= "+ prov+ "";
                 bf.setLocationRelativeTo(this);
@@ -847,7 +806,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtProveedor.getText())) {
 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "substring(ci from 1 for 1)||'.'||substring(ci from 2 for 3)||'.'||substring(ci from 5 for 7) as \"CI\", nombre||' '||apellido as \"Proveedor\"";
+                bf.columnas = "trim(to_char(cast(ci as integer),'9G999G999')) as \"CI\", nombre||' '||apellido as \"Proveedor\"";
                 bf.tabla = "proveedor";
                 bf.order = "proveedor_id";
                 bf.filtroBusqueda = "estado!='INACTIVO'";
@@ -882,7 +841,6 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bCancelar;
-    private org.edisoncor.gui.button.ButtonTask bImprimir;
     private org.edisoncor.gui.button.ButtonTask bNuevo;
     private org.edisoncor.gui.button.ButtonTask bSuspender;
     private javax.swing.JButton btnDetallePago;
