@@ -6,9 +6,11 @@
 
 package controlador;
 
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import modelo.FacturaPendiente;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -34,6 +36,18 @@ public class FacturaPendienteControlador {
     public ResultSet getFacturasPendientes(int idCliente) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         String query = "SELECT nro_prefijo as \"Nro Prefijo\" , nro_factura  \"Nro Factura\" , fecha_vencimiento as \"Fecha vencimiento\", cuota as \"Cuota\", total \"Total\", estado \"Estado\" from factura_pendiente where cliente_id='"+idCliente+"'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Factura Pendiente: \n" + e.getMessage());
+        }
+    }
+    
+    public ResultSet getCuotasPagadasProv(int nro_factura) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT nro_prefijo as \"Nro Prefijo\" , nro_factura  \"Nro Factura\" , fecha_vencimiento as \"Fecha vencimiento\", plazo as \"Plazo\", total \"Total\", monto_pendiente \"Monto Pendiente\", estado \"Estado\" from factura_pendiente where nro_factura='"+nro_factura+"' and estado='PAGADO'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -171,5 +185,55 @@ public class FacturaPendienteControlador {
         } 
         
      }
+     
+     public void updateEstadoAnuladoPendiente(int idRecibo, String plazo) throws Exception {
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update FacturaPendiente set estado = 'ANULADO' where recibo_id = '" +idRecibo+ "' and plazo = '"+plazo+"'").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al anular factura de compra: \n" + e.getMessage());
+            }
+    }
+
+     
+    public void updateEstadoAnuladoContado(int idRecibo) throws Exception {
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update FacturaPendiente set estado = 'ANULADO' where recibo_id = '" +idRecibo+ "'").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al anular factura de compra: \n" + e.getMessage());
+            }
+    }
+    
+    public void updateEstadoPendiente(int nroPrefijo, int nroFactura) throws Exception {
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update FacturaPendiente set estado = 'PENDIENTE' where nro_prefijo = '" +nroPrefijo+ "' and nro_factura= '" +nroFactura+ "' and pagado is null").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al anular factura de compra: \n" + e.getMessage());
+            }
+    }
+    
+     public ResultSet getDetalle(int idRecibo, String cuota) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT nro_factura,nro_prefijo,total,monto_pendiente,fecha_vencimiento,plazo,recibo_id, proveedor_id from factura_pendiente where recibo_id='"+idRecibo+"' and plazo ='"+cuota+"'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+        }
+    }
+     
      
 }
