@@ -276,5 +276,17 @@ public class ProveedorControlador {
             throw new Exception("Error al consultar Proveedor: \n" + e.getMessage());
         } 
     }
+     
+     public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(proveedor_id), 0) + 1 from Proveedor").uniqueResult();
+            
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código de factura pendiente: \n" + e.getMessage());
+        }
+        
+    }
 }
    
