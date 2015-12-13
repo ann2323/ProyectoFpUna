@@ -522,6 +522,9 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFacturaKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFacturaKeyReleased(evt);
+            }
         });
         jPanel1.add(txtFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 80, -1));
 
@@ -837,6 +840,10 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     private void tbVistaFacturasPendientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVistaFacturasPendientesMouseClicked
 
     }//GEN-LAST:event_tbVistaFacturasPendientesMouseClicked
+
+    private void txtFacturaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFacturaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
