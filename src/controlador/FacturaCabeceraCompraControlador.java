@@ -167,7 +167,7 @@ public class FacturaCabeceraCompraControlador {
     
      public ResultSet datosTablaBusquedaFacturasPendientes(Integer idProv) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\" from Compra where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO') and proveedor_id='" + idProv + "' order by vencimiento desc";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\" from Compra where es_factura = 'S' and (estado = 'PENDIENTE' or estado = 'CONFIRMADO') and proveedor_id='" + idProv + "' order by vencimiento desc";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
