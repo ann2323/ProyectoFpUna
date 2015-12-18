@@ -386,7 +386,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(consultarSaldoNotaCreditoCompra);
 
-        jMenuItem2.setText("jMenuItem2");
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarStock.png"))); // NOI18N
+        jMenuItem2.setText("Consultar Stock");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -955,21 +956,21 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mAnularPagoProveedorActionPerformed
 
     private void mAnularPagoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoClienteActionPerformed
-//       try {
-//            AnularPagoClienteForm tf2 = new AnularPagoClienteForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+       try {
+           AnularPagoClienteForm tf2 = new AnularPagoClienteForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                   showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+      } catch (Exception ex) {
+         Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+       }
     }//GEN-LAST:event_mAnularPagoClienteActionPerformed
 
     private void mNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mNotaCreditoCompraActionPerformed
