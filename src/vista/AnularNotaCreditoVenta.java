@@ -7,6 +7,7 @@
 package vista;
 
 
+import controlador.ClienteControlador;
 import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
 import controlador.StockControlador;
@@ -47,6 +48,7 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
     
 
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
+    ClienteControlador cliC = new ClienteControlador();
     
     FacturaCabeceraVentaControlador ventaControlador = new FacturaCabeceraVentaControlador();
     DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
@@ -392,14 +394,53 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
               }
             try {
                ventaControlador.updateEstadoAnuladoNotaCreditoV(Integer.parseInt(txtNroNotaCredito.getText().replace(".", "").trim()));
-               
-                
                 showMessageDialog(null, "Nota de crédito de venta anulada correctamente");
+                
+                // - saldo nc
+                //+cliente
+                //+factura
+                
+                String totalNotaCredito = "";
+                totalNotaCredito = txtTotal.getText().replace(".", "");
+                String nroFactura = txtFacturaReferenciada.getText().replace(".", "");
+                String nroNotaCredito = txtNroNotaCredito.getText().replace(".", "");
+         
+                int saldoFactura = 0;
+                try {
+                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(totalNotaCredito);
+                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          
+                int saldoNotaCredito = 0;
+                try{
+                    saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) - Integer.parseInt(totalNotaCredito);
+                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
+                }catch(Exception ex){
+                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          
+                int idCliente = 0;
+                try {
+                    idCliente = cliC.devuelveId(modeloBusqueda.getValueAt(0, 6).toString());
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          
+                try {
+                    int saldoCliente = 0;
+                    saldoCliente = cliC.getTotalSaldo(idCliente) - Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    cliC.updateSaldo(saldoCliente, idCliente);
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           
             } catch (Exception ex) {
                 Logger.getLogger(AnularNotaCreditoVenta.class.getName()).log(Level.SEVERE, null, ex);
             }
-            limpiar();
-            txtPrefijo.setBackground(Color.yellow);
+                limpiar();
+                txtPrefijo.setBackground(Color.yellow);
         }   
     }
 
