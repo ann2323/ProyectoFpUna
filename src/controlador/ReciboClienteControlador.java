@@ -43,6 +43,60 @@ public class ReciboClienteControlador {
         }
     }
      
+     public ResultSet recibosCliente(Integer idCli) throws Exception {
+            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_recibo as \"Nro Prefijo\", trim(to_char(cast(factura_nro as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"FechaVenc\" from cabecera_recibo where cliente_id="+idCli +" order by fecha desc";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla cabecera recibo \n" + e.getMessage());
+            }
+        }
+     
+      public void updateFechaAnulacion(int idRecibo, String fechaAnulacion) throws Exception {
+          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update CabeceraRecibo set fecha_anulacion = '"+ fechaAnulacion +"'  where recibo_id = '" +idRecibo+ "'").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al anular factura de compra: \n" + e.getMessage());
+            }
+    }
+     
+      public Integer devuelveId(Integer nroRecibo) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT recibo_id from cabecera_recibo where nro_recibo = '" + nroRecibo + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver nro de recibo: \n" + e.getMessage());
+        } 
+     }
+     
+     
+      public Integer getNroFactura(Integer nroRecibo) throws SQLException, Exception {
+          
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "SELECT factura_nro from cabecera_recibo where nro_recibo = '" + nroRecibo + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return (int) rs.getObject(1);
+        } catch(HibernateException e){
+            throw new Exception("Error al devolver nro de recibo: \n" + e.getMessage());
+        } 
+     }
+     
    public void insert(CabeceraRecibo recibo) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
