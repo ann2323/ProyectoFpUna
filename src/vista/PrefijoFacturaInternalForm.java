@@ -2,7 +2,6 @@
 
 package vista;
 
-import controlador.FacturaCabeceraVentaControlador;
 import modelo.PrefijoFactura;
 import controlador.PrefijoFacturaControlador;
 import java.text.DecimalFormat;
@@ -15,7 +14,6 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import modelo.Venta;
 
 /**
  *
@@ -56,6 +54,8 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
         txtNroFinalFactura = new javax.swing.JTextField();
         lbTipoDocumento = new javax.swing.JLabel();
         comboTipoDocumento = new javax.swing.JComboBox();
+        lbTimbrado = new javax.swing.JLabel();
+        txtTimbrado = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -128,6 +128,15 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
         comboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "F", "N" }));
         comboTipoDocumento.setSelectedIndex(-1);
 
+        lbTimbrado.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+        lbTimbrado.setText("Timbrado Número");
+
+        txtTimbrado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTimbradoKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -138,13 +147,15 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
-                    .addComponent(lbTipoDocumento))
+                    .addComponent(lbTipoDocumento)
+                    .addComponent(lbTimbrado))
                 .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtNroInicialFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                     .addComponent(txtPrefijo)
                     .addComponent(txtNroFinalFactura)
-                    .addComponent(comboTipoDocumento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(comboTipoDocumento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtTimbrado))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -162,6 +173,10 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtNroFinalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbTimbrado)
+                    .addComponent(txtTimbrado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbTipoDocumento)
@@ -201,9 +216,9 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(156, 156, 156)
+                        .addGap(133, 133, 133)
                         .addComponent(bGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(84, 84, 84)
+                        .addGap(96, 96, 96)
                         .addComponent(bCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(48, 48, 48)
@@ -220,7 +235,7 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -243,7 +258,7 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtNroInicialFacturaActionPerformed
 
     private void txtPrefijoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrefijoKeyTyped
-         if (txtPrefijo.getText().length() > 2) {
+        /* if (txtPrefijo.getText().length() > 2) {
             evt.consume();
         }
         char c = evt.getKeyChar();
@@ -251,7 +266,7 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
         if (Character.isLetter(c)) {
             getToolkit().beep();
             evt.consume();
-        }
+        }*/
     }//GEN-LAST:event_txtPrefijoKeyTyped
 
     private void txtNroInicialFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroInicialFacturaKeyTyped
@@ -278,6 +293,18 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtNroFinalFacturaKeyTyped
 
+    private void txtTimbradoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimbradoKeyTyped
+         if (txtTimbrado.getText().length() > 7) {
+            evt.consume();
+        }
+        char c = evt.getKeyChar();
+
+        if (Character.isLetter(c)) {
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTimbradoKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.edisoncor.gui.button.ButtonTask bCancelar;
@@ -289,10 +316,12 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lbTimbrado;
     private javax.swing.JLabel lbTipoDocumento;
     private javax.swing.JTextField txtNroFinalFactura;
     private javax.swing.JTextField txtNroInicialFactura;
     private javax.swing.JTextField txtPrefijo;
+    private javax.swing.JTextField txtTimbrado;
     // End of variables declaration//GEN-END:variables
 
     
@@ -318,6 +347,11 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
             
              if(txtNroFinalFactura.getText().trim().isEmpty() == true){
                 showMessageDialog(this, "Campo número final vacío, por favor ingrese un valor ", "Atención", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+             
+              if(txtTimbrado.getText().trim().isEmpty() == true){
+                showMessageDialog(this, "Campo timbrado vacío, por favor ingrese un valor ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
@@ -351,11 +385,12 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
                 showMessageDialog(this, "Campo número de factura final vacío, por favor ingrese un valor ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+            prefijoFactura.setIdprefijo(prefijoBD.nuevoCodigo());
             prefijoFactura.setPrefijo(txtPrefijo.getText());
             prefijoFactura.setPrincipiofactura(Integer.parseInt(txtNroInicialFactura.getText()));
             prefijoFactura.setFinfactura(Integer.parseInt(txtNroFinalFactura.getText()));
             prefijoFactura.setTipoDocumento(comboTipoDocumento.getSelectedItem().toString());
+            prefijoFactura.setTimbrado(txtTimbrado.getText());
        
                 try{
                     prefijoBD.insert(prefijoFactura); 
@@ -373,6 +408,7 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
     private void limpiar() {
         txtNroInicialFactura.setText("");
         txtPrefijo.setText("");
+        txtTimbrado.setText("");
         txtNroFinalFactura.setText("");
         comboTipoDocumento.setSelectedIndex(-1);
     }
