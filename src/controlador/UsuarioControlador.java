@@ -56,6 +56,16 @@ public class UsuarioControlador{
          
     }
      
+     public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(idusuario), 0) + 1 from Usuario").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código usuario \n" + e.getMessage());
+        }
+    }
+     
      
       public void delete(String codigo) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
@@ -70,7 +80,7 @@ public class UsuarioControlador{
         }
     }
     
-    public void update(Usuario usuario) throws Exception {
+    public void update(Usuario usuario, int idUsuario) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
         
@@ -78,7 +88,7 @@ public class UsuarioControlador{
             baseDatos.createQuery("update Usuario set "
                    +" nombre = '" + usuario.getNombre() + "', apellido = '" + usuario.getApellido() + "'"
                     + ", nombreusuario = '" +  usuario.getNombreusuario() + "', contrasenha = '" +  usuario.getContrasenha() + "', email = '" + usuario.getEmail()+ "'"
-                    + ", id_rol = '" + usuario.getIdRol()+  "' where idusuario = '" + usuario.getIdusuario() + "'").executeUpdate();
+                    + ", id_rol = '" + usuario.getIdRol()+  "' where idusuario = '" + idUsuario + "'").executeUpdate();
             baseDatos.beginTransaction().commit();
             //baseDatos.flush();
             //baseDatos.close();
@@ -157,7 +167,7 @@ public class UsuarioControlador{
 
      public ResultSet consultar() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String query = "Select u.nombre AS \"Nombre\", u.apellido as \"Apellido\", u.nombreusuario as \"Usuario\", u.email as \"Correo Electrónico\", r.nombre as \"Rol\", u.idusuario, u.contrasenha from Usuario u left outer join Rol r on u.id_rol = r.id_rol order by u.nombre ";
+        String query = "Select u.nombre AS \"Nombre\", u.apellido as \"Apellido\", u.nombreusuario as \"Usuario\", u.email as \"Correo Electrónico\", r.nombre as \"Rol\", u.idusuario, u.contrasenha from usuario u left outer join rol r on u.id_rol = r.id_rol order by u.nombre ";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
