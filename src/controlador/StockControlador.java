@@ -6,6 +6,9 @@
 
 package controlador;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import modelo.Stock;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -96,5 +99,17 @@ public class StockControlador {
         } catch(HibernateException e){
             throw new Exception("Error al calcular Nuevo codigo para stock: \n" + e.getMessage());
         }
+    }
+     
+     public ResultSet getStock(String codDeposito) throws SQLException, Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String cad = "Select s.cod_componente as \"Código Componente\", c.descripcion as \"Descripción\", s.cantidad as \"Cantidad\" from Stock s, Componentes c, Deposito d where s.cod_componente = c.codigo and s.cod_deposito = '" + codDeposito + "'";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
+        try {
+            ResultSet rs = ps.executeQuery();
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar stock: \n" + e.getMessage());
+        } 
     }
 }
