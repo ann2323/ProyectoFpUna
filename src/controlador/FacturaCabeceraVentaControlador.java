@@ -267,7 +267,7 @@ public class FacturaCabeceraVentaControlador {
         baseDatos.beginTransaction();
         
         try {
-            baseDatos.createQuery("update Venta set estado = 'CONFIRMADO' where nro_factura = '" +nro_factura+ "'").executeUpdate();
+            baseDatos.createQuery("update Venta set estado = 'CONFIRMADO' where es_factura = 'S' and nro_factura = '" +nro_factura+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
             throw new Exception("Error al actualizar estado factura: \n" + e.getMessage());
@@ -279,7 +279,7 @@ public class FacturaCabeceraVentaControlador {
         baseDatos.beginTransaction();
         
         try {
-            baseDatos.createQuery("update Venta set estado = 'PENDIENTE' where nro_factura = '" +nro_factura+ "'").executeUpdate();
+            baseDatos.createQuery("update Venta set estado = 'PENDIENTE' where es_factura = 'S' and nro_factura = '" +nro_factura+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
             throw new Exception("Error al actualizar estado factura: \n" + e.getMessage());
