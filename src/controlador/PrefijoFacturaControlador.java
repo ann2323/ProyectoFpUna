@@ -35,6 +35,17 @@ public class PrefijoFacturaControlador {
         }
         
     }
+       public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(idprefijo), 0) + 1 from PrefijoFactura").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código prefijo: \n" + e.getMessage());
+        }
+    }
+       
+       
      public Integer primernrofactura() throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         String query = "SELECT MAX(principiofactura) from prefijo_factura where tipo_documento = 'F'";
@@ -104,7 +115,7 @@ public class PrefijoFacturaControlador {
     //devuelve el fin de factura de la tabla prefijo
      public Integer finfactura() throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-String query = "SELECT MAX(finfactura) from prefijo_factura where tipo_documento = 'F'";
+        String query = "SELECT MAX(finfactura) from prefijo_factura where tipo_documento = 'F'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         try {
             ResultSet rs = ps.executeQuery();
@@ -168,8 +179,6 @@ String query = "SELECT MAX(finfactura) from prefijo_factura where tipo_documento
          }
       }
      
-
-     /*Patricia*/
 
     public int primernroNotaC() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
