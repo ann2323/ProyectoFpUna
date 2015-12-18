@@ -12,8 +12,6 @@ import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -30,11 +28,12 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
      */
     public ConsultarFacturaVentaForm() {
         initComponents();
-        getCliente();
-        
-       
+        //getCliente();
+        txtLimite.setText("");
+        txtSaldo.setText("");
     }
 
+     DecimalFormat forma = new DecimalFormat("###,###.##");
     int codigoCliente = 0;
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     ClienteControlador clienteControlador = new ClienteControlador();
@@ -123,10 +122,13 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
                 return false; //Disallow the editing of any cell
             }
         };
+        jLabel4 = new javax.swing.JLabel();
+        txtLimite = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtSaldo = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
         setTitle("Consultar Factura Venta");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarFacturaVenta.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
@@ -162,7 +164,7 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(157, 157, 157)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                 .addGap(155, 155, 155))
         );
         jPanel2Layout.setVerticalGroup(
@@ -199,9 +201,9 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(328, 328, 328)
+                .addGap(397, 397, 397)
                 .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(400, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,19 +216,20 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
         tbFact.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tbFact.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Vencimiento", "Total", "Estado"
+                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Vencimiento", "Total", "Estado", "Saldo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -236,19 +239,54 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
         tbFact.setEditingRow(0);
         jScrollPane1.setViewportView(tbFact);
 
+        jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 14)); // NOI18N
+        jLabel4.setText("Límite de crédito");
+
+        txtLimite.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        txtLimite.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jLabel5.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 14)); // NOI18N
+        jLabel5.setText("Saldo");
+
+        txtSaldo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        txtSaldo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
             .addComponent(jScrollPane1)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(266, 266, 266)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
+                        .addComponent(txtLimite, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 926, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLimite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(71, 71, 71))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -256,16 +294,16 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(256, 256, 256)
+                .addGap(319, 319, 319)
                 .addComponent(jLabel2)
-                .addGap(31, 31, 31)
+                .addGap(40, 40, 40)
                 .addComponent(comboCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 933, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,7 +314,8 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -297,18 +336,24 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
 
     private void comboClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboClienteActionPerformed
          try {
+            codigoCliente = 0;
             codigoCliente = clienteControlador.getCodigo((String) comboCliente.getSelectedItem());
             getFactura(codigoCliente);
+            txtSaldo.setText(forma.format(clienteControlador.getSaldo(codigoCliente)));
+            txtLimite.setText(forma.format(clienteControlador.getLimite(codigoCliente)));
             cargarTabla();
             //System.out.println(codigoCliente);
-            
         } catch (Exception ex) {
             //Logger.getLogger(PruebaCombo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_comboClienteActionPerformed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-       comboCliente.setSelectedIndex(-1);
+        tbFact.removeAll();
+        getCliente();
+        txtLimite.setText("");
+        txtSaldo.setText("");
+        comboCliente.setSelectedIndex(-1);
     }//GEN-LAST:event_formInternalFrameOpened
 
 
@@ -317,6 +362,8 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -324,12 +371,12 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private org.jdesktop.swingx.painter.ShapePainter shapePainter1;
     private javax.swing.JTable tbFact;
+    private javax.swing.JTextField txtLimite;
+    private javax.swing.JTextField txtSaldo;
     private org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI windowsStatusBarUI1;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarTabla() {
-        
-        DecimalFormat forma = new DecimalFormat("###,###.##");
+    private void cargarTabla() throws Exception {
         int i=0;
         while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
@@ -340,8 +387,11 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 4), i, 4);
             String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
             tbFact.setValueAt(total, i, 5);
-            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 6), i, 6);
+            String saldo = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 7).toString()));
+            tbFact.setValueAt(saldo, i, 7);
             i++;
         }
+       
     }
+    
 }
