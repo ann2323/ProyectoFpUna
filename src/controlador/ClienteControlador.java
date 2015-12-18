@@ -67,7 +67,7 @@ public class ClienteControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         
-        String query = "SELECT cedula as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
+        String query = "SELECT trim(to_char(cast(cedula as integer), '9G999G999')) as \"RUC/CI\", nombre||' '||apellido as \"Nombre\" from Cliente";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -202,7 +202,57 @@ public class ClienteControlador {
         } 
     }
      
+     public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(cliente_id), 0) + 1 from Cliente").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
+        }
+    }
+
+    public int getTotalSaldo(int idCliente) throws Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
      
+          try{
+            return (int) baseDatos.createQuery("Select coalesce(saldo, 0) from Cliente where cliente_id = '" + idCliente + "'").uniqueResult();
+         } catch(HibernateException e){
+            throw new Exception("Error al consultar tabla Cliente: \n" + e.getMessage());
+         }
+    }
+
+    public void updateSaldo(int saldoCliente, int idCliente) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            baseDatos.beginTransaction();
+        
+            try {
+                baseDatos.createQuery("update Cliente set saldo = " + saldoCliente + " where cliente_id = '" +idCliente+ "'").executeUpdate();
+                baseDatos.beginTransaction().commit();
+            } catch(HibernateException e){
+                throw new Exception("Error al actualizar saldo clinete: \n" + e.getMessage());
+            }
+    }
+
+    //returna el limite de credito en la ventana de consulta de factura
+    public int getLimite(int codigoCliente) throws Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+          try{
+            return (int) baseDatos.createQuery("Select coalesce(limitecredito, 0) from Cliente where cliente_id = '" + codigoCliente + "'").uniqueResult();
+         } catch(HibernateException e){
+            throw new Exception("Error al consultar tabla Cliente: \n" + e.getMessage());
+         }
+    }
+    
+    //txt consulta de factura, returna el saldo del cliente
+    public int getSaldo(int codigoCliente) throws Exception {
+         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+          try{
+            return (int) baseDatos.createQuery("Select coalesce(saldo, 0) from Cliente where cliente_id = '" + codigoCliente + "'").uniqueResult();
+         } catch(HibernateException e){
+            throw new Exception("Error al consultar tabla Cliente: \n" + e.getMessage());
+         }
+    }
 
    
 }
