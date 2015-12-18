@@ -133,8 +133,22 @@ public class DepositoControlador {
             rs.next();
             return (String) rs.getObject(1);
         } catch(HibernateException e){
-            throw new Exception("Error al consultar cliente: \n" + e.getMessage());
+            throw new Exception("Error al consultar deposito: \n" + e.getMessage());
         } 
+    }
+    
+    
+    //metodo para la consulta de stock
+    public ResultSet getDepositos() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        String query = "SELECT codigo as \"Cod. Deposito\" from deposito";
+        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        try {
+            return rs;
+        } catch(HibernateException e){
+            throw new Exception("Error al consultar la tabla Deposito: \n" + e.getMessage());
+        }
     }
 
    
