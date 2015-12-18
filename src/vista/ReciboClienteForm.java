@@ -107,6 +107,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     
      private void getFacturasCliente(Integer idCli) {
         try {
+            System.out.println("idCLI "+idCli);
             modeloBusquedaFacturas.setColumnCount(0);
             modeloBusquedaFacturas.setRowCount(0);
            
@@ -249,6 +250,44 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
             reciboModelo.setClienteId(cliId);
             Integer reciboId = reciboControlador.nuevoCodigo();
             reciboModelo.setReciboId(reciboId);
+            
+            //si se pago con NC -
+            //saldo cliente -
+            //saldo factura -
+            String nroFactura = "";
+            nroFactura = txtFactura.getText().replace(".","").trim();
+            
+            if(detallePagoModel.getNroNotaCredito() != null){
+                int nroNotaCredito = 0;
+                nroNotaCredito = detallePagoModel.getNroNotaCredito();
+                int totalNotaCredito = 0;
+                totalNotaCredito = detallePagoModel.getMontoAbonado();
+                int saldoNotaCredito = 0;
+                try{
+                    saldoNotaCredito = ventaControlador.getTotalSaldoNC(nroNotaCredito) - totalNotaCredito;
+                    ventaControlador.updateSaldoFactura(nroNotaCredito, saldoNotaCredito); //Saldo de la factura
+                }catch(Exception ex){
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }   
+            } 
+            
+             int saldoFactura = 0;
+             try {
+                saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) - Integer.parseInt(txtpagado.getText().replace(".", ""));
+                ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+             } catch (Exception ex) {
+                Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+          
+            try {
+              int saldoCliente = 0;
+              saldoCliente = cliC.getTotalSaldo(cliId) - Integer.parseInt(txtpagado.getText().replace(".", ""));
+              cliC.updateSaldo(saldoCliente, cliId);
+            } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
                 int f=0;
                 while (f<tbVistaFacturasPendientes.getRowCount()){
                     if(tbVistaFacturasPendientes.isRowSelected(f)) {
@@ -271,25 +310,25 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
                             detallePagoModel.setFacturaPendienteId(idFacturaPendiente);
                             detallePagoModel.setNombrePago(tbDetallePago.getValueAt(f1, 0).toString());
                             if (tbDetallePago.getValueAt(f1, 1).toString().isEmpty()){
-                            detallePagoModel.setNroTarjetaCheque(null);
+                                detallePagoModel.setNroTarjetaCheque(null);
                             }else{
-                            detallePagoModel.setNroTarjetaCheque(Integer.parseInt(tbDetallePago.getValueAt(f1, 1).toString()));
+                                detallePagoModel.setNroTarjetaCheque(Integer.parseInt(tbDetallePago.getValueAt(f1, 1).toString()));
                             }
-                            detallePagoModel.setMontoAbonado(Integer.parseInt(tbDetallePago.getValueAt(f1, 2).toString().replace(".", "").trim()));
+                                detallePagoModel.setMontoAbonado(Integer.parseInt(tbDetallePago.getValueAt(f1, 2).toString().replace(".", "").trim()));
                             if (tbDetallePago.getValueAt(f1, 3).toString().isEmpty()){
-                            detallePagoModel.setMontoCredito(null);
+                                detallePagoModel.setMontoCredito(null);
                             }else{
-                            detallePagoModel.setMontoCredito(Integer.parseInt(tbDetallePago.getValueAt(f1, 3).toString().replace(".", "").trim()));
+                                detallePagoModel.setMontoCredito(Integer.parseInt(tbDetallePago.getValueAt(f1, 3).toString().replace(".", "").trim()));
                             }
                             if (tbDetallePago.getValueAt(f1, 4).toString().isEmpty()){
-                            detallePagoModel.setPendienteAAplicar(null);
+                                detallePagoModel.setPendienteAAplicar(null);
                             }else{
-                            detallePagoModel.setPendienteAAplicar(Integer.parseInt(tbDetallePago.getValueAt(f1, 4).toString().replace(".", "").trim()));
+                                detallePagoModel.setPendienteAAplicar(Integer.parseInt(tbDetallePago.getValueAt(f1, 4).toString().replace(".", "").trim()));
                             }
                             if (tbDetallePago.getValueAt(f1, 4).toString().isEmpty()){
-                            detallePagoModel.setNroNotaCredito(null);
+                                detallePagoModel.setNroNotaCredito(null);
                             }else{
-                            detallePagoModel.setNroNotaCredito(Integer.parseInt(tbDetallePago.getValueAt(f1, 5).toString().trim()));
+                                detallePagoModel.setNroNotaCredito(Integer.parseInt(tbDetallePago.getValueAt(f1, 5).toString().trim()));
                             }
                             
                             if (bNuevo.isEnabled() == false){ 
@@ -326,8 +365,8 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     }
      
       private void datosActuales2(){
-        txtFactura.setText(modeloBusquedaFacturas.getValueAt(k3, 1).toString());
-        cargarFacturasPendientes(Integer.parseInt(txtFactura.getText()));
+        txtFactura.setText(modeloBusquedaFacturas.getValueAt(k3, 0).toString());
+        cargarFacturasPendientes(Integer.parseInt(txtFactura.getText().replace(".", "")));
         datosActualesFacturaPendiente();
         establecerBotones("Nuevo");
     }
@@ -469,6 +508,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(785, 700));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        txtTotal.setEditable(false);
         txtTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         jPanel1.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(485, 488, 85, -1));
 
@@ -516,6 +556,11 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
                 txtNroReciboActionPerformed(evt);
             }
         });
+        txtNroRecibo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroReciboKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtNroRecibo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 80, -1));
 
         txtFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
@@ -527,6 +572,9 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
         txtFactura.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFacturaKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFacturaKeyTyped(evt);
             }
         });
         jPanel1.add(txtFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 80, -1));
@@ -754,6 +802,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
         cancelar();
+        limpiar();
     }//GEN-LAST:event_bCancelarActionPerformed
 
     private void tbVistaFacturasPendientesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tbVistaFacturasPendientesFocusLost
@@ -795,9 +844,9 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
                     Logger.getLogger(ReciboClienteForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", precio_total as \"Total\"";
+                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", nro_prefijo as \"Nro Prefijo\",  to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\"";
                 bf.tabla = "venta";
-                bf.order = "vencimiento DESC";
+                bf.order = "";
                 bf.filtroBusqueda = "(estado='PENDIENTE' or estado='CONFIRMADO') and es_factura='S' and cliente_id= "+ cliente+ "";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
@@ -849,7 +898,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtCliente.getText())) {
 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "cedula as \"CI\", nombre||' '||apellido as \"Cliente\"";
+                bf.columnas = "trim(to_char(cast(cedula as integer), '9G999G999')) as \"CI\", nombre||' '||apellido as \"Cliente\"";
                 bf.tabla = "cliente";
                 bf.order = "cliente_id";
                 bf.filtroBusqueda = "estado!='INACTIVO'";
@@ -880,6 +929,24 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     private void tbVistaFacturasPendientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVistaFacturasPendientesMouseClicked
 
     }//GEN-LAST:event_tbVistaFacturasPendientesMouseClicked
+
+    private void txtNroReciboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroReciboKeyTyped
+        char c = evt.getKeyChar();
+
+        if (Character.isLetter(c)) {
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNroReciboKeyTyped
+
+    private void txtFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyTyped
+       if(txtCliente.getText().equals("") || txtCliente1.getText().equals("")){
+           showMessageDialog(null, "Primero debe ingresar un cliente", "Atención", INFORMATION_MESSAGE);
+           txtCliente.requestFocusInWindow();
+           txtFactura.setText("");
+           return;
+       }
+    }//GEN-LAST:event_txtFacturaKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
