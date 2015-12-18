@@ -63,14 +63,14 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Component id="jPanel2" min="-2" pref="49" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                  <Component id="jPanel3" pref="339" max="32767" attributes="0"/>
+                  <Component id="jPanel3" min="-2" pref="339" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="47" pref="47" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -242,12 +242,13 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder justification="1" position="1" title="Datos del Cliente">
+            <TitledBorder justification="1" title="Datos del Cliente">
               <Font PropertyName="font" name="Aharoni" size="12" style="0"/>
               <Color PropertyName="color" blue="0" green="0" red="0" type="rgb"/>
             </TitledBorder>
           </Border>
         </Property>
+        <Property name="focusable" type="boolean" value="false"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">

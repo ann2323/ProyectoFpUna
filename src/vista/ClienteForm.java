@@ -246,7 +246,8 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         });
         jPanel1.add(bBuscar);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del Cliente", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Aharoni", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del Cliente", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Aharoni", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
+        jPanel3.setFocusable(false);
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Aharoni", 0, 11)); // NOI18N
@@ -487,13 +488,13 @@ public class ClienteForm extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE))
-                .addGap(47, 47, 47))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -514,7 +515,11 @@ public class ClienteForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_bNuevoActionPerformed
 
     private void bGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarActionPerformed
-        guardar();
+        try {
+            guardar();
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_bGuardarActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
@@ -692,18 +697,18 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         if (txtNombre.isEnabled() == true){
             return;
         }
+       
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if ("*".equals(txtCodigo.getText())) {
-                
                 BuscarForm bf = new BuscarForm(null, true);
-                bf.columnas = "codigocliente as \"Cód. Cliente\", nombre as \"Nombre\", apellido as \"Apellido\", to_char(cast(cedula as integer),'9G999G999') as \"Cedula\", estado as \"Estado\"";
+                bf.columnas = "codigocliente as \"Cód. Cliente\", nombre as \"Nombre\", apellido as \"Apellido\", to_char(cast(cedula as integer),'9G999G999') as \"Cédula\", estado as \"Estado\"";
                 bf.tabla = "Cliente";
                 bf.order = "codigocliente";
                 bf.filtroBusqueda = "";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
-                
+                getClientes();
                 for(int c=0; c<modelo.getRowCount(); c ++){ 
                     
                     if (modelo.getValueAt(c, 0).toString().equals(bf.retorno)){
@@ -795,7 +800,7 @@ public class ClienteForm extends javax.swing.JInternalFrame {
                         }
                     return;
                     }
-            }
+            }   
         } 
     }//GEN-LAST:event_txtCodigoKeyPressed
 
@@ -803,7 +808,7 @@ public class ClienteForm extends javax.swing.JInternalFrame {
      * Método que guarda todos los datos introducidos por el usuario. 
      * Se valida que no haya campos vacíos
      */
-    private void guardar() {
+    private void guardar() throws Exception {
         if (showConfirmDialog(null, "Está seguro de guardar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
             ocultarColumna();
             
@@ -857,8 +862,8 @@ public class ClienteForm extends javax.swing.JInternalFrame {
                 return;
             }
             
+            cliente.setClienteId(clienteBD.nuevoCodigo());
             cliente.setCodigocliente(txtCodigo.getText());
-            
             cliente.setCedula(txtCedula.getText().replace(".", ""));
             cliente.setDv(txtDigVerificador.getText());
             cliente.setNombre(txtNombre.getText());
@@ -980,10 +985,11 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         txtDireccion.setText("");
         txtTelefono.setText("");
         txtDigVerificador.setText("");
+        
 
-        if (tbCliente.getRowCount() == 0) {
+        /*if (tbCliente.getRowCount() == 0) {
             establecerBotones("Vacio");
-        }
+        }*/
     }
     
     /**
@@ -1014,6 +1020,7 @@ public class ClienteForm extends javax.swing.JInternalFrame {
             ocultarColumna();
             txtCodigo.setEnabled(false);
             limpiar();
+            limpiarJTable();
             comboEstado.setEnabled(true);
             getClientes();
             modoBusqueda(false);
@@ -1021,8 +1028,18 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         }
     }
     
+    private void limpiarJTable(){
+        int indice = modelo.getRowCount()-1;  //Índices van de 0 a n-1
+        //System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
+        for(int i=indice;i>=0;i--){  
+            //System.out.println("i "+i);    //Para mostrar por consola el resultado
+            modelo.removeRow(i);
+        }
+    }
+    
      private void buscar() {
         limpiar();
+        limpiarJTable();
         radioButtonEmpresa.setSelected(true);
         establecerBotones("Buscar");
         modoBusqueda(true);
