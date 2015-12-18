@@ -7,6 +7,7 @@
 package vista;
 
 
+import controlador.ClienteControlador;
 import controlador.DetalleFacturaVenta;
 import controlador.FacturaCabeceraVentaControlador;
 import controlador.StockControlador;
@@ -52,6 +53,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
     DetalleFacturaVenta facturaDetalleCont = new DetalleFacturaVenta();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     StockControlador stockCont = new StockControlador();
+    ClienteControlador cliC = new ClienteControlador();
     
     Date dato = null;
     int k;
@@ -227,9 +229,9 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(129, Short.MAX_VALUE)
+                .addContainerGap(113, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(92, 92, 92))
+                .addGap(108, 108, 108))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,8 +368,27 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             try {
                 ventaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText().replace(".", "")));
                 //detalleCuentaControlador.updateEstadoAnulado(Integer.parseInt(txtNroFactura.getText()));
-                
                 showMessageDialog(null, "Factura venta anulada correctamente");
+                
+                //- saldo cliente
+                //- saldo factura
+                
+                String nroFactura = txtNroFactura.getText().replace(".", "");
+                int saldoFactura = 0;
+                try {
+                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura))- Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          
+                try {
+                    int saldoCliente = 0;
+                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(modeloBusqueda.getValueAt(0, 5).toString())) - Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    cliC.updateSaldo(saldoCliente, Integer.parseInt(modeloBusqueda.getValueAt(0, 5).toString()));
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (Exception ex) {
                 Logger.getLogger(AnularFacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
             }
