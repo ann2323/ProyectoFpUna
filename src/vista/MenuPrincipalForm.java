@@ -78,6 +78,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mConsultarNotaCreditoVenta = new javax.swing.JMenuItem();
         consultarSaldoFacturaCompra = new javax.swing.JMenuItem();
         consultarSaldoNotaCreditoCompra = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
@@ -385,6 +386,14 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(consultarSaldoNotaCreditoCompra);
 
+        jMenuItem2.setText("jMenuItem2");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        mConsultar.add(jMenuItem2);
+
         jMenuBar1.add(mConsultar);
 
         jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anulaciones.png"))); // NOI18N
@@ -452,9 +461,13 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 
         mSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salir.png"))); // NOI18N
         mSalir.setText("Salir");
-        mSalir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                mSalirMouseClicked(evt);
+        mSalir.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                mSalirMenuSelected(evt);
             }
         });
         mSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -498,12 +511,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
        this.jDesktopPane1.add(prueba);
        prueba.show();
     }//GEN-LAST:event_mClienteActionPerformed
-
-    private void mSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mSalirMouseClicked
-        LoginForm login = new LoginForm();
-        login.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_mSalirMouseClicked
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         lbUsuario.setText("Bienvenido "+nombreUsuario);
@@ -613,27 +620,91 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mFacturaCompraActionPerformed
 
     private void mUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUsuarioActionPerformed
-       UsuarioForm usuario = new UsuarioForm();
-       this.jDesktopPane1.add(usuario);
-       usuario.show();
+      try {
+            UsuarioForm tf2 = new UsuarioForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0 ){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(p.codJefe() != this.codRol){
+                    showMessageDialog(this, "Solo el jefe tiene acceso a esta ventana", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mUsuarioActionPerformed
 
     private void mRolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mRolActionPerformed
-       RolForm rol = new RolForm();
-       this.jDesktopPane1.add(rol);
-       rol.show();
+        try {
+            RolForm tf2 = new RolForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0 ){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(p.codJefe() != this.codRol){
+                    showMessageDialog(this, "Solo el jefe tiene acceso a esta ventana", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mRolActionPerformed
 
     private void mVentanaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mVentanaActionPerformed
-       VentanaInternalForm ventana = new VentanaInternalForm();
-       this.jDesktopPane1.add(ventana);
-       ventana.show();
+       try {
+            VentanaInternalForm tf2 = new VentanaInternalForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0 ){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(p.codJefe() != this.codRol){
+                    showMessageDialog(this, "Solo el jefe tiene acceso a esta ventana", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mVentanaActionPerformed
 
     private void mPermisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPermisoActionPerformed
-       VentanaRolInternalForm permiso = new VentanaRolInternalForm();
-       this.jDesktopPane1.add(permiso);
-       permiso.show();
+       try {
+            VentanaRolInternalForm tf2 = new VentanaRolInternalForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0 ){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(p.codJefe() != this.codRol){
+                    showMessageDialog(this, "Solo el jefe tiene acceso a esta ventana", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mPermisoActionPerformed
 
     private void mSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSalirActionPerformed
@@ -866,20 +937,21 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void mAnularPagoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoProveedorActionPerformed
-       try {
-           AnularPagoProveedorForm tf2 = new AnularPagoProveedorForm();
-           try {
-               if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-                   showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-                   return;              }
-            } catch (Exception ex) {
-               Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-          }
-           this.jDesktopPane1.add(tf2);
-           tf2.show();
-       } catch (Exception ex) {
-        Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-       }
+//       try {
+//            AnularPagoProveedorForm tf2 = new AnularPagoProveedorForm();
+//            try {
+//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//            } catch (Exception ex) {
+//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            this.jDesktopPane1.add(tf2);
+//            tf2.show();
+//        } catch (Exception ex) {
+//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_mAnularPagoProveedorActionPerformed
 
     private void mAnularPagoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularPagoClienteActionPerformed
@@ -972,6 +1044,18 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ReciboPagoProvActionPerformed
 
+    private void mSalirMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_mSalirMenuSelected
+        LoginForm login = new LoginForm();
+       login.setVisible(true);
+       this.dispose();
+    }//GEN-LAST:event_mSalirMenuSelected
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        ConsultarStockForm consultarStock = new ConsultarStockForm();
+        this.jDesktopPane1.add(consultarStock);
+        consultarStock.show();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1016,6 +1100,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JTextField jTextField1;
     private org.jdesktop.swingx.JXMonthView jXMonthView1;
     private javax.swing.JLabel lbRol;
