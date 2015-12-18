@@ -172,9 +172,8 @@ public class DetallePagoClienteForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
         setTitle("Detalle de Pago");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -430,11 +429,17 @@ public class DetallePagoClienteForm extends javax.swing.JInternalFrame {
 
         jLabel14.setText("Pagado");
         jPanelVenta.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 530, -1, -1));
+
+        txtCambio.setEditable(false);
         jPanelVenta.add(txtCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 560, 90, -1));
+
+        txtPagado.setEditable(false);
         jPanelVenta.add(txtPagado, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 560, 90, -1));
 
         jLabel15.setText("Pendiente");
         jPanelVenta.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 530, -1, -1));
+
+        txtPendiente.setEditable(false);
         jPanelVenta.add(txtPendiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 560, 90, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -569,7 +574,7 @@ public class DetallePagoClienteForm extends javax.swing.JInternalFrame {
             txtPendienteAplicar.setText(formateador.format(pendienteAplicar));
             datos[4]=txtPendienteAplicar.getText();
             String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
-            String notaCredito = nroPrefijoNotaCredito.substring(4);
+            String notaCredito = nroPrefijoNotaCredito.substring(8);
             datos[5]=notaCredito;
             modeloPago.addRow(datos);  
             }
@@ -647,7 +652,8 @@ public class DetallePagoClienteForm extends javax.swing.JInternalFrame {
 
     private void JCfacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCfacturaActionPerformed
     String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
-    String notaCredito = nroPrefijoNotaCredito.substring(4);
+    String notaCredito = nroPrefijoNotaCredito.substring(8);
+        System.out.println("NOTA DE CREDITO "+notaCredito);
         try {
             if(detalleControl.verificarEstadoFactura(Integer.parseInt(notaCredito.trim()))==0) {
                 try {
