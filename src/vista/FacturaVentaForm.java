@@ -45,8 +45,11 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import modelo.CabeceraRecibo;
+import modelo.Cliente;
 import modelo.Deposito;
 import modelo.DetalleVenta;
 import modelo.FacturaPendiente;
@@ -99,6 +102,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloDetallePago = new DefaultTableModel();
     DefaultTableModel modeloDetalleRecibo = new DefaultTableModel();
+    DefaultTableModel modeloAuxiliar = new DefaultTableModel(); //stock al imprimir
     
     /**
      *
@@ -106,10 +110,12 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     public String totalLetras;
     
     Stock stock = new Stock();
+    Cliente cliente = new Cliente();
     PrefijoFactura prefijo = new PrefijoFactura();
     private boolean esPrimero = true;
     Formatter formato = new Formatter();
     
+     boolean imprime = false;
      int contadorLote = 0, montoCuota = 0;
      Integer subTotal= 0, totaldesc=0, borrado2 = 0;
      Integer  cantProducto=0;
@@ -353,16 +359,30 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             txtPrefijoVenta.requestFocusInWindow();
             return;
         }else if (comboDeposito.getSelectedIndex() == -1) {
-            showMessageDialog(null, "Debe seleccionar el deposito", "Atención", INFORMATION_MESSAGE);
+            showMessageDialog(null, "Debe elegir el deposito", "Atención", INFORMATION_MESSAGE);
             comboDeposito.requestFocusInWindow();
             return;
         } else if (comboPago.getSelectedIndex() == -1) {
-            showMessageDialog(null, "Debe seleccionar el pago Contado/Credito", "Atención", INFORMATION_MESSAGE);
+            showMessageDialog(null, "Debe definir el tipo de pago: Contado/Credito", "Atención", INFORMATION_MESSAGE);
+            comboDeposito.requestFocusInWindow();
+            return;
+        } else if (comboPago.getSelectedItem().equals("CREDITO") && comboCuota.getSelectedIndex() == -1) {
+            showMessageDialog(null, "Debe elegir la cantidad de cuotas", "Atención", INFORMATION_MESSAGE);
             comboDeposito.requestFocusInWindow();
             return;
         }
-        else {
-           if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+        int confirmar = 0;
+        boolean entro = false;
+        if(imprime == false){
+           confirmar = showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION);
+           entro = true;
+            //if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+        } 
+            System.out.println("ENTRO "+entro);
+            System.out.println("CONFIRMAR "+ confirmar);
+            System.out.println("IMPRIME "+imprime );
+        if((confirmar == 0 && entro == true) || (entro == false)){
+        
             int id= ventaControlador.nuevoCodigo(); 
             System.out.println("EL ID ES"+id);
             
@@ -372,13 +392,13 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             ventaC.setVentaId(id);
             ventaC.setNroPrefijo(txtPrefijoVenta.getText());
             if(!txtIva10.getText().equals("")){
-               ventaC.setIva10(Integer.parseInt(txtIva10.getText().trim().replace(".", "")));
+                ventaC.setIva10(Integer.parseInt(txtIva10.getText().trim().replace(".", "")));
             }
             
-             if(!txtIva5.getText().equals("")){
-               ventaC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".", "")));
+            if(!txtIva5.getText().equals("")){
+                ventaC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".", "")));
             }
-           
+            
             
             ventaC.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
             SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
@@ -404,14 +424,14 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             String dateVenc;
           
             if ("CREDITO".equals(comboPago.getSelectedItem().toString())){
-                ventaC.setPagoEn(Integer.parseInt(comboCuota.getSelectedItem().toString()));  
+                ventaC.setPagoEn(Integer.parseInt(comboCuota.getSelectedItem().toString()));
                 dateVenc = (ventaControlador.Vencimiento(ventaC.getFecha(), ventaC.getPagoEn()));  
                 ventaC.setEstado("BORRADOR");
                 ventaC.setVencimiento(formateador.parse(dateVenc));           
             }
             
-               
-              
+            
+            
             
             ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText()));
         
@@ -420,98 +440,45 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
                    
             ventaC.setPrecioTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-            
-
-             if (comboPago.getSelectedItem().equals("CREDITO")){
-                   montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
-                   String cuota = comboCuota.getSelectedItem().toString();
-                   for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
-                        facturaPendiente.setPlazo(j+" de "+cuota);
-                        facturaPendiente.setClienteId(idCliente);
-                        facturaPendiente.setEstado("PENDIENTE");
-                        facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
-                        facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
-                        facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                        facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                        facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), j));
-                        facturaPendiente.setMontoPendiente(montoCuota);
-                        facturaPendiente.setProveedorId(null);
-                        if (bNuevo.isEnabled() == false){                           
-                            facturaPendienteControlador.insert(facturaPendiente);
-                               
-                        }else{
-                            if (borrado2 == 0){
-                               facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
-                             }
-                                    facturaPendienteControlador.insert(facturaPendiente);
-                                    borrado2=1; 
-                                }
-                            }
-                        }else if(comboPago.getSelectedItem().equals("CONTADO")){
-                           montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
-                           facturaPendiente.setClienteId(idCliente);
-                           facturaPendiente.setEstado("PENDIENTE");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
-                           facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
-                           facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
-                           facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
-                           SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
-                           Date ahora = new Date();
-                           facturaPendiente.setFechaVencimiento(forma.format(ahora));
-                           facturaPendiente.setMontoPendiente(montoCuota);
-                           facturaPendiente.setProveedorId(null);
-                           
-                           if (bNuevo.isEnabled() == false){                           
-                                facturaPendienteControlador.insert(facturaPendiente);
-                               
-                            }else{                   
-                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
-                            
-                                facturaPendienteControlador.insert(facturaPendiente);                             
-                               
-                           }
-                       }
-            
-            
-            
+           
             //if (bNuevo.isEnabled() == false) {
-                    try {
-                    int i = 0;
-                    try {             
-                        int venta_id = ventaControlador.nuevoCodigo();                        
-                        int borrado  = 0;
-                        while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
-                            ventaD.setVentaId(venta_id);
-                            ventaD.setDetalleFacturaId(facturaDetalleCont.nuevaLinea());
-                            ventaD.setCodigo(tbDetalleVenta.getValueAt(i, 0).toString());
-                            
-                            ventaD.setDescripcion(tbDetalleVenta.getValueAt(i, 1).toString());
-                            System.out.println("DESCRIPCION "+ventaD.getDescripcion());
-                          try {
-                             ventaD.setPrecioUnitario(Integer.parseInt(tbDetalleVenta.getValueAt(i, 2).toString().replace(".", "").trim()));
-                            } catch (NumberFormatException e) {
-                              System.out.println("Problema");
-                              System.out.println("not a number"); 
-                            }
-                         try {
-                              ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
-                            } catch (NumberFormatException e) {
-                              ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString()+"0"));
-                            }
-                         
-                          try {
-                                ventaD.setExentas(Integer.parseInt(tbDetalleVenta.getValueAt(i, 4).toString().replace(".", "").trim()));
-                            } catch (NumberFormatException e) {
-                                ventaD.setExentas(Integer.parseInt(tbDetalleVenta.getValueAt(i, 4).toString()+"0"));
-                          }
-                         
-                         try {
-                                ventaD.setSubTotal(Integer.parseInt(tbDetalleVenta.getValueAt(i, 5).toString().replace(".", "").trim()));
-                            } catch (NumberFormatException e) {
-                                ventaD.setSubTotal(Integer.parseInt(tbDetalleVenta.getValueAt(i, 5).toString()+"0"));
-                            }    
-              
-                            if (tbDetalleVenta.getValueAt(i, 0).toString() != "PRY") {
+            try {
+                int i = 0;
+                try {
+                    int venta_id = ventaControlador.nuevoCodigo();
+                    int borrado  = 0;
+                    while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
+                        ventaD.setVentaId(venta_id);
+                        ventaD.setDetalleFacturaId(facturaDetalleCont.nuevaLinea());
+                        ventaD.setCodigo(tbDetalleVenta.getValueAt(i, 0).toString());
+                        
+                        ventaD.setDescripcion(tbDetalleVenta.getValueAt(i, 1).toString());
+                        System.out.println("DESCRIPCION "+ventaD.getDescripcion());
+                        try {
+                            ventaD.setPrecioUnitario(Integer.parseInt(tbDetalleVenta.getValueAt(i, 2).toString().replace(".", "").trim()));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Problema");
+                            System.out.println("not a number");
+                        }
+                        try {
+                            ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                        } catch (NumberFormatException e) {
+                            ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString()+"0"));
+                        }
+                        
+                        try {
+                            ventaD.setExentas(Integer.parseInt(tbDetalleVenta.getValueAt(i, 4).toString().replace(".", "").trim()));
+                        } catch (NumberFormatException e) {
+                            ventaD.setExentas(Integer.parseInt(tbDetalleVenta.getValueAt(i, 4).toString()+"0"));
+                        }
+                        
+                        try {
+                            ventaD.setSubTotal(Integer.parseInt(tbDetalleVenta.getValueAt(i, 5).toString().replace(".", "").trim()));
+                        } catch (NumberFormatException e) {
+                            ventaD.setSubTotal(Integer.parseInt(tbDetalleVenta.getValueAt(i, 5).toString()+"0"));
+                        }
+                        
+                        if (tbDetalleVenta.getValueAt(i, 0).toString() != "PRY") {
                             if (stockCont.tieneCodStock(tbDetalleVenta.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
                                 
                                 stock.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
@@ -524,80 +491,159 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                                 if(stockCont.tieneStock(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo()) < Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString()) ){
                                     showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
                                     return;        
-                                }
-                                //stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
-            
-                              }
-                            }
-                         
-                            
-                            if (bNuevo.isEnabled() == false){ 
-                                System.out.println("Entro en el insert de detalle");
-                                facturaDetalleCont.insert(ventaD);
-                                i++;
-                                //nuevo();
-                                //si no inserta, actualiza (factura en suspension)
-                            }else{
-                                try {
-                                    
-                                    System.out.println("Entro en el update de detalle");
-                                    System.out.println("Cabecera id "+ventaC.getVentaId());
-                                    System.out.println("Detalle Venta Id" +ventaD.getVentaId());
-                                    System.out.println("Nro factura devuelve id"+ventaControlador.devuelveId(ventaC.getNroFactura()));
-                                         
-                                    //borra el detalle para actualizar en caso de que ingrese más componentes
-                                    if (borrado == 0){
-                                        facturaDetalleCont.borrarDetalle(ventaControlador.devuelveId(ventaC.getNroFactura()));
-                                    }
-                                    borrado = 1;
-                                    facturaDetalleCont.insert(ventaD);
-                                    //showMessageDialog(null, "Detalle actualizado correctamente");
-                                    i++;
-                                    //limpiar();
-                                }catch(Exception ex){
-                                    showMessageDialog(null, ex, "Error al actualizar detalle venta", ERROR_MESSAGE);   
-                                }        
+                                }  
                             }
                         }
-                    } catch (Exception ex) {
-                       showMessageDialog(null, ex, "Atención", INFORMATION_MESSAGE);
-                        //Guardar.requestFocusInWindow();
-                        return;
-                    }
-                   
-                   if (bNuevo.isEnabled() == false){ 
-                       System.out.println("Entro en el insert de cabecera");         
-                        ventaControlador.insert(ventaC);
-                        txtFacturaVenta.setText("");
-                        nuevo();
-                   }else{
-                        try {
-                            //factura en suspension
-                            System.out.println("Entro en el update de cabecera");
-                            //ventaControlador.update(ventaC);
-                            //borra la cabecera para actualizar en caso que sea necesario
-                            ventaControlador.borrarCabecera(ventaC.getNroFactura());
-                            System.out.println("\n NRO FACTURA CABECERA "+ventaC.getNroFactura());
-                            //saldoV.insert(saldoModel);
-                            ventaControlador.insert(ventaC);
-                            limpiar();
-                            nuevo();
-                            //showMessageDialog(null, "Venta actualizada correctamente");
-                           
-                        }catch(Exception ex){
-                            showMessageDialog(null, ex, "Error al actualizar factura venta", ERROR_MESSAGE);   
-                        }        
-                    }
+                        
+                        System.out.println("imprimeee "+ imprime);
+                         //actualiza el stock solo cuando se imprime la factura, no al suspender.
+                         if(imprime == true){
+                             System.out.println("ENTRO A PESAR DE QUE imprime = " + imprime );
+                            stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                         }  
+                        
+                        if (bNuevo.isEnabled() == false){
+                            System.out.println("Entro en el insert de detalle");
+                            
+                             if (comboPago.getSelectedItem().equals("CREDITO")){
+                                montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
+                                String cuota = comboCuota.getSelectedItem().toString();
+                                for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
+                                    facturaPendiente.setPlazo(j+" de "+cuota);
+                                    facturaPendiente.setClienteId(idCliente);
+                                    facturaPendiente.setEstado("PENDIENTE");
+                                    facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                                    facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                                    facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                                    System.out.println("Factura nuevo codigo "+facturaPendiente.getFacturaPendienteId());
+                                    facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                                    facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), j));
+                                    facturaPendiente.setMontoPendiente(montoCuota);
+                                    facturaPendiente.setProveedorId(null);
+                                    System.out.println("BORRADO2 "+borrado2);
+                                    facturaPendienteControlador.insert(facturaPendiente);
+                            }
                     
-                    //getEntradas():
+                           }else if(comboPago.getSelectedItem().equals("CONTADO")){
+                                montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                                facturaPendiente.setClienteId(idCliente);
+                                facturaPendiente.setEstado("PENDIENTE");
+                                facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+                                facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                                facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                                facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                                SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
+                                Date ahora = new Date();
+                                facturaPendiente.setFechaVencimiento(forma.format(ahora));
+                                facturaPendiente.setMontoPendiente(montoCuota);
+                                facturaPendiente.setProveedorId(null);
+                                facturaPendienteControlador.insert(facturaPendiente);
+                            }
+                            
+                            facturaDetalleCont.insert(ventaD);
+                            i++;
+                            //nuevo();
+                            //si no inserta, actualiza (factura en suspension)
+                        }else{
+                            try {
+                                
+                                System.out.println("Entro en el update de detalle");
+                                System.out.println("Cabecera id "+ventaC.getVentaId());
+                                System.out.println("Detalle Venta Id" +ventaD.getVentaId());
+                                System.out.println("Nro factura devuelve id"+ventaControlador.devuelveId(ventaC.getNroFactura()));
+                                
+                                //borra el detalle para actualizar en caso de que ingrese más componentes
+                                if (borrado == 0){
+                                    facturaDetalleCont.borrarDetalle(ventaControlador.devuelveId(ventaC.getNroFactura()));
+                                }
+                                borrado = 1;
+                                facturaDetalleCont.insert(ventaD);
+                                //showMessageDialog(null, "Detalle actualizado correctamente");
+                                i++;
+                                //limpiar();
+                            }catch(Exception ex){
+                                showMessageDialog(null, ex, "Error al actualizar detalle venta", ERROR_MESSAGE);        
+                            }
+                        }
+                    }
                 } catch (Exception ex) {
                     showMessageDialog(null, ex, "Atención", INFORMATION_MESSAGE);
                     //bGuardar.requestFocusInWindow();
                     return;
                 }
+                
+                if (bNuevo.isEnabled() == false){
+                    System.out.println("Entro en el insert de cabecera");
+                    ventaControlador.insert(ventaC);
+                    txtFacturaVenta.setText("");
+                    nuevo();
+                }else{
+                    try {
+                        //factura en suspension
+                        System.out.println("Entro en el update de cabecera");
+                        //ventaControlador.update(ventaC);
+                        //borra la cabecera para actualizar en caso que sea necesario
+                        ventaControlador.borrarCabecera(ventaC.getNroFactura());
+                        System.out.println("\n NRO FACTURA CABECERA "+ventaC.getNroFactura());
+                        //saldoV.insert(saldoModel);
+                        ventaControlador.insert(ventaC);
+                        facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaVenta.getText().replace(".", "")));
+                        
+                         if (comboPago.getSelectedItem().equals("CREDITO")){
+                                montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim())/Integer.parseInt(comboCuota.getSelectedItem().toString());
+                                String cuota = comboCuota.getSelectedItem().toString();
+                                for (int j = 1; j <= Integer.parseInt(comboCuota.getSelectedItem().toString()); j++) {
+                                    facturaPendiente.setPlazo(j+" de "+cuota);
+                                    facturaPendiente.setClienteId(idCliente);
+                                    facturaPendiente.setEstado("PENDIENTE");
+                                    facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText()));
+                                    facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                                    facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                                    System.out.println("Factura nuevo codigo "+facturaPendiente.getFacturaPendienteId());
+                                    facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                                    facturaPendiente.setFechaVencimiento(ventaControlador.Vencimiento(ventaC.getFecha(), j));
+                                    facturaPendiente.setMontoPendiente(montoCuota);
+                                    facturaPendiente.setProveedorId(null);
+                                    System.out.println("BORRADO2 "+borrado2);
+                                    facturaPendienteControlador.insert(facturaPendiente);
+                            }
+                    
+                           }else if(comboPago.getSelectedItem().equals("CONTADO")){
+                                montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
+                                facturaPendiente.setClienteId(idCliente);
+                                facturaPendiente.setEstado("PENDIENTE");
+                                facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+                                facturaPendiente.setNroPrefijo(txtPrefijoVenta.getText());
+                                facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
+                                System.out.println("factura pendinete id "+facturaPendiente.getFacturaPendienteId());
+                                facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
+                                SimpleDateFormat forma = new SimpleDateFormat("dd/MM/yyyy");
+                                Date ahora = new Date();
+                                facturaPendiente.setFechaVencimiento(forma.format(ahora));
+                                facturaPendiente.setMontoPendiente(montoCuota);
+                                facturaPendiente.setProveedorId(null);
+                                facturaPendienteControlador.insert(facturaPendiente);
+                            }
+                            
+                        
+                        
+                        limpiar();
+                        nuevo();
+                        //showMessageDialog(null, "Venta actualizada correctamente");
+                        
+                    }catch(Exception ex){
+                        showMessageDialog(null, ex, "Error al actualizar factura venta", ERROR_MESSAGE);
+                    }
+                }
+                
+                //getEntradas():
+            } catch (Exception ex) {
+                showMessageDialog(null, ex, "Atención", INFORMATION_MESSAGE);
+                //bGuardar.requestFocusInWindow();
+                return;
+            }
         }
-           
-     }
+          
     }
     
      private Connection coneccionSQL()
@@ -858,14 +904,18 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jPanel1.setPreferredSize(new java.awt.Dimension(785, 700));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        txtSubTotal.setEditable(false);
         txtSubTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         jPanel1.add(txtSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 500, 85, -1));
 
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel1.setText("%");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 530, -1, -1));
+
+        txtIva10.setEditable(false);
         jPanel1.add(txtIva10, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, 60, -1));
 
+        txtTotal.setEditable(false);
         txtTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         jPanel1.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 560, 85, -1));
 
@@ -882,6 +932,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 530, 50, -1));
 
+        txtCantidadTotal.setEditable(false);
         txtCantidadTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCantidadTotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -892,7 +943,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
         jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel4.setText("Depósito ");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, 60, 20));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 180, 60, 20));
 
         comboDeposito.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NODO1", "NODO13", "NODO2" }));
         comboDeposito.addActionListener(new java.awt.event.ActionListener() {
@@ -900,7 +951,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 comboDepositoActionPerformed(evt);
             }
         });
-        jPanel1.add(comboDeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 180, -1, -1));
+        jPanel1.add(comboDeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 180, -1, -1));
 
         labelCantidadTotal2.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal2.setText("Iva 10%");
@@ -939,20 +990,26 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         });
         jScrollPane1.setViewportView(tbDetalleVenta);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 990, 220));
-        jPanel1.add(txtCliente1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 180, 190, -1));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 1150, 220));
+        jPanel1.add(txtCliente1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 180, 190, -1));
 
         lbCliente.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbCliente.setText("Cliente");
-        jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 40, -1));
+        jPanel1.add(lbCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 180, 40, 20));
 
+        txtPrefijoVenta.setEditable(false);
         txtPrefijoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPrefijoVentaActionPerformed(evt);
             }
         });
-        jPanel1.add(txtPrefijoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
+        jPanel1.add(txtPrefijoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 120, 80, -1));
 
+        txtFacturaVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFacturaVentaActionPerformed(evt);
+            }
+        });
         txtFacturaVenta.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFacturaVentaKeyPressed(evt);
@@ -961,7 +1018,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 txtFacturaVentaKeyReleased(evt);
             }
         });
-        jPanel1.add(txtFacturaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 80, -1));
+        jPanel1.add(txtFacturaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 150, 80, -1));
 
         txtCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -969,31 +1026,33 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 txtClienteKeyPressed(evt);
             }
         });
-        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
+        jPanel1.add(txtCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 180, 80, -1));
 
         labelPrefijoVenta.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPrefijoVenta.setText("Nro. Prefijo");
-        jPanel1.add(labelPrefijoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, 76, -1));
+        jPanel1.add(labelPrefijoVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, 76, 20));
 
         labelFacturaVenta.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFacturaVenta.setText("Nro. Factura");
-        jPanel1.add(labelFacturaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 70, -1));
-        jPanel1.add(txtFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 93, -1));
+        jPanel1.add(labelFacturaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 150, 70, 20));
+
+        txtFechaVenta.setEditable(false);
+        jPanel1.add(txtFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 120, 93, -1));
 
         labelFechaVenta.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaVenta.setText("Fecha de Venta");
         labelFechaVenta.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jPanel1.add(labelFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, -1, 20));
+        jPanel1.add(labelFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 120, -1, 20));
 
         labelDias.setText("Cuotas");
-        jPanel1.add(labelDias, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 150, 40, 20));
+        jPanel1.add(labelDias, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 150, 40, 20));
 
         comboCuota.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
-        jPanel1.add(comboCuota, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 150, -1, -1));
+        jPanel1.add(comboCuota, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 150, -1, -1));
 
         labelPagoen.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPagoen.setText("Pago en:");
-        jPanel1.add(labelPagoen, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 150, -1, 20));
+        jPanel1.add(labelPagoen, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 150, -1, 20));
 
         comboPago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONTADO", "CREDITO" }));
         comboPago.addItemListener(new java.awt.event.ItemListener() {
@@ -1006,11 +1065,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                 comboPagoActionPerformed(evt);
             }
         });
-        jPanel1.add(comboPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 120, 100, -1));
+        jPanel1.add(comboPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 120, 100, -1));
 
         labelPago.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelPago.setText("Pago");
-        jPanel1.add(labelPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 35, 20));
+        jPanel1.add(labelPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 120, 35, 20));
 
         labelCantidadTotal.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelCantidadTotal.setText("Cantidad Total");
@@ -1085,7 +1144,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
         lbDatosGenerales.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 11)); // NOI18N
         lbDatosGenerales.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)), "Datos Generales", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
-        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 990, 140));
+        jPanel1.add(lbDatosGenerales, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 1150, 140));
 
         jPanel3.setBackground(new java.awt.Color(51, 94, 137));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -1098,21 +1157,23 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(447, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(491, 491, 491)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(375, 375, 375))
+                .addContainerGap(491, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 990, 30));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 1150, 30));
 
         lbIva5.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         lbIva5.setText("Iva 5%");
         jPanel1.add(lbIva5, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 500, -1, 20));
+
+        txtIva5.setEditable(false);
         jPanel1.add(txtIva5, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 500, 60, -1));
 
         tbDetallePagoVenta.setModel(new javax.swing.table.DefaultTableModel(
@@ -1143,24 +1204,24 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(557, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(487, 487, 487))
+                .addGap(514, 514, 514))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel5)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1275, Short.MAX_VALUE)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 1259, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1479,14 +1540,19 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     }//GEN-LAST:event_txtDescuentoKeyPressed
 
     private void txtDescuentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescuentoFocusLost
+        
         if ("0".equals(txtDescuento.getText())){
             txtTotal.setText(txtSubTotal.getText());
+            System.out.println("ENTRO EN DESCUENTO ");
         }else{
+            System.out.println("ENTRO EN DESCUENTO 2");
             int desc=Integer.parseInt(txtDescuento.getText().replace(".", ""));
+            DecimalFormat formato = new DecimalFormat("###,###.##");
             totaldesc = (Integer.parseInt(txtSubTotal.getText().replace(".", ""))-((Integer.parseInt(txtSubTotal.getText().replace(".", ""))*desc)/100));
-            String totalDesc=formateador.format(totaldesc);
+            String totalDesc=formato.format(totaldesc);
             txtTotal.setText(totalDesc);
             totaldesc=0;
+            
        }   
     }//GEN-LAST:event_txtDescuentoFocusLost
 
@@ -1553,9 +1619,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             if ("*".equals(txtFacturaVenta.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\"";
+                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\", nro_prefijo as \"Nro Prefijo\"";
                 bf.tabla = "venta";
-                bf.order = "nro_factura";
+                bf.order = "";
                 bf.filtroBusqueda = "es_factura = 'S' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
@@ -1563,8 +1629,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
 
                 for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
                     System.out.println("modelo row count "+modeloNroFactura.getRowCount());
-                    if (modeloNroFactura.getValueAt(c, 1).toString().equals(bf.retorno)){
-                        System.out.println("MODELO "+modeloNroFactura.getValueAt(c, 1).toString());
+                    if (modeloNroFactura.getValueAt(c, 0).toString().equals(bf.retorno)){
+                        System.out.println("MODELO "+modeloNroFactura.getValueAt(c, 0).toString());
                         modoBusqueda(false);
                         establecerBotones("Edicion");
                         k2 = c;
@@ -1579,7 +1645,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             
             System.out.println(modeloNroFactura.getRowCount());
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtFacturaVenta.getText())){
+                if (modeloNroFactura.getValueAt(c, 0).toString().equals(txtFacturaVenta.getText())){
                     modoBusqueda(false);
                     establecerBotones("Edicion");
                     k2 = c;                   
@@ -1594,37 +1660,106 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
       
       if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
-          String nroFactura = "";
+          if ("".equals(txtFechaVenta.getText())) {
+            showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
+            txtFechaVenta.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtFechaVenta.getText())) {
+            showMessageDialog(null, "Debe ingresar la fecha de venta", "Atención", INFORMATION_MESSAGE);
+            txtFechaVenta.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtCliente.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtCliente1.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente1.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtFacturaVenta.getText())) {
+            showMessageDialog(null, "Debe ingresar algun nro de factura", "Atención", INFORMATION_MESSAGE);
+            txtFacturaVenta.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtPrefijoVenta.getText())) {
+            showMessageDialog(null, "Debe ingresar algun nro de prefijo", "Atención", INFORMATION_MESSAGE);
+            txtPrefijoVenta.requestFocusInWindow();
+            return;
+        }else if (comboDeposito.getSelectedIndex() == -1) {
+            showMessageDialog(null, "Debe elegir el deposito", "Atención", INFORMATION_MESSAGE);
+            comboDeposito.requestFocusInWindow();
+            return;
+        } else if (comboPago.getSelectedIndex() == -1) {
+            showMessageDialog(null, "Debe definir el tipo de pago: Contado/Credito", "Atención", INFORMATION_MESSAGE);
+            comboDeposito.requestFocusInWindow();
+            return;
+        } else if (comboPago.getSelectedItem().equals("CREDITO") && comboCuota.getSelectedIndex() == -1) {
+            showMessageDialog(null, "Debe elegir la cantidad de cuotas", "Atención", INFORMATION_MESSAGE);
+            comboDeposito.requestFocusInWindow();
+            return;
+        }
+          
+          String nroFactura = ""; 
+          String prefijo = "";
+          String precioTotal = "";
+          String estado = "";
+          
           nroFactura = txtFacturaVenta.getText().trim().replace(".", "");
-          String prefijo = txtPrefijoVenta.getText();
-          String precioTotal = txtTotal.getText().replace(".", "");
+          int idCliente = 0;
+          try {
+              idCliente = cliC.devuelveId(txtCliente.getText().replace(".", ""));
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          prefijo = txtPrefijoVenta.getText();
+          precioTotal = txtTotal.getText().replace(".", "");
           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
-          String estado = comboPago.getSelectedItem().toString();
-          int i = 0;
-         
-           while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
-           Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
-           try {
-               stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
-               i++;
-           } catch (Exception ex) {
-               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-           }
+          estado = comboPago.getSelectedItem().toString();
+          
            
-       }  
-          
-          
           //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
           //dos veces
           try { 
               if(ventaControlador.verificarEstadoFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".",""))) == 0) {
-                 guardar();  
+                  imprime = true;
+                  guardar();  
               }
           } catch (Exception ex) {
               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
           
+           int i = 0;
+         
+           while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
+              Deposito dep = (Deposito) this.comboDeposito.getSelectedItem();
+              try {
+                 stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                 i++;
+              } catch (Exception ex) {
+                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+              }
+          }  
+          
+           //saldo factura +
+           //saldo cliente +
+          
+          int saldoFactura = 0;
+          try {
+              saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(precioTotal);
+              ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          
+          try {
+              int saldoCliente = 0;
+              saldoCliente = cliC.getTotalSaldo(idCliente)+Integer.parseInt(precioTotal);
+              cliC.updateSaldo(saldoCliente, idCliente);
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          
        
+         
       
           switch (estado) {
               case "CREDITO":
@@ -1711,6 +1846,10 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             }
         }
     }//GEN-LAST:event_txtClienteKeyPressed
+
+    private void txtFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFacturaVentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFacturaVentaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1851,8 +1990,8 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
     private void datosActualesNroFactura() {
             
             DecimalFormat forma = new DecimalFormat("###,###.##");  
-            txtPrefijoVenta.setText(modeloNroFactura.getValueAt(k2, 0).toString());
-            txtFacturaVenta.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            txtPrefijoVenta.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            txtFacturaVenta.setText(modeloNroFactura.getValueAt(k2, 0).toString());
             try {
                 String cedula=forma.format(Integer.parseInt(cliC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
                 txtCliente.setText(cedula);
