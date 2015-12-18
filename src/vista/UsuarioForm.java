@@ -51,6 +51,7 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     Usuario usuario = new Usuario();
     UsuarioControlador usuarioBD = new UsuarioControlador();
+    int idUsu = 0;
 
     
     /**
@@ -375,7 +376,7 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -387,6 +388,7 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
      */
     private void bBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBorrarActionPerformed
         borrar();
+        limpiar();
     }//GEN-LAST:event_bBorrarActionPerformed
 
     private void bNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNuevoActionPerformed
@@ -394,7 +396,11 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_bNuevoActionPerformed
 
     private void bGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarActionPerformed
-        guardar();
+        try {
+            guardar();
+        } catch (Exception ex) {
+            Logger.getLogger(UsuarioForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_bGuardarActionPerformed
 
     private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
@@ -403,37 +409,15 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
 
     private void bBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBuscarActionPerformed
         buscar();
-        
-        
     }//GEN-LAST:event_bBuscarActionPerformed
 
      /**
      * Método que guarda todos los datos introducidos por el usuario. 
      * Se valida que no haya campos vacíos
      */
-    private void guardar() {
+    private void guardar() throws Exception {
         if (showConfirmDialog(null, "Está seguro de guardar los datos?", "Confirmar", YES_NO_OPTION) == YES_OPTION) {
-            ocultarColumna();
-
-            if (txtIdUsuario.getText().isEmpty() == false) {
-                usuario.setIdusuario(Integer.parseInt(txtIdUsuario.getText()));
-                System.out.println("ENTRO");
-            }
-            usuario.setNombre(txtNombre.getText());
-            usuario.setApellido(txtApellido.getText());
-            usuario.setNombreusuario(txtUsuario.getText());
-            contrasenhaSinEncriptar = txtContrasenha.getText();
-            System.out.println(contrasenhaSinEncriptar);
-            usuario.setContrasenha(md5(txtContrasenha.getText()));
-            usuario.setEmail(txtEmail.getText());
-
-            try {
-                usuario.setIdRol(usuarioBD.getCodigo((String) jComboBoxRol.getSelectedItem()));
-
-            } catch (Exception ex) {
-                Logger.getLogger(UsuarioForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            
             if (txtNombre.getText().trim().isEmpty() == true) {
                 showMessageDialog(this, "Campo nombre vacío, por favor ingrese su nombre ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -458,10 +442,32 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
                 showMessageDialog(null, "Debe seleccionar el rol", "Atención", INFORMATION_MESSAGE);
                 return;
             }
+            
+            ocultarColumna();
+
+            
+            System.out.println("ID USUARIO "+usuario.getIdusuario());
+            usuario.setIdusuario(usuarioBD.nuevoCodigo());
+            usuario.setNombre(txtNombre.getText());
+            usuario.setApellido(txtApellido.getText());
+            usuario.setNombreusuario(txtUsuario.getText());
+            contrasenhaSinEncriptar = txtContrasenha.getText();
+            System.out.println(contrasenhaSinEncriptar);
+            usuario.setContrasenha(md5(txtContrasenha.getText()));
+            usuario.setEmail(txtEmail.getText());
+
+            try {
+                usuario.setIdRol(usuarioBD.getCodigo((String) jComboBoxRol.getSelectedItem()));
+
+            } catch (Exception ex) {
+                Logger.getLogger(UsuarioForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            
             System.out.println(modificar);
             if (bNuevo.isEnabled() == false) {
                 try {
-
+                    
                     usuarioBD.insert(usuario);
                     nuevo();
                     //showMessageDialog(null, "Guardado correctamente");
@@ -476,7 +482,9 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
                     if(modificar == false){
                         usuario.setContrasenha(contrasenhaSinEncriptar);
                     }
-                    usuarioBD.update(usuario);
+                   
+                    System.out.println("ID QUE ENVIA "+idUsu);
+                    usuarioBD.update(usuario, idUsu);
                     showMessageDialog(null, "Actualizado correctamente");
                     limpiar();
                     getUsuario();
@@ -591,13 +599,21 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
     
      private void buscar() {
         limpiar();
+        limpiarJTable();
         establecerBotones("Buscar");
         modoBusqueda(true);
-    
+    }
+     
+      private void limpiarJTable(){
+        int indice = modelo.getRowCount()-1;  //Índices van de 0 a n-1
+        //System.out.println("Tabla "+a);   //Para mostrar por consola el resultado
+        for(int i=indice;i>=0;i--){  
+            //System.out.println("i "+i);    //Para mostrar por consola el resultado
+            modelo.removeRow(i);
+        }
     }
 
       private void ocultarColumna(){
-  
         //oculto columna id
         tbUsuario.getColumnModel().getColumn(5).setMaxWidth(0);
         tbUsuario.getColumnModel().getColumn(5).setMinWidth(0);
@@ -607,7 +623,6 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
         tbUsuario.getColumnModel().getColumn(6).setMaxWidth(0);
         tbUsuario.getColumnModel().getColumn(6).setMinWidth(0);
         tbUsuario.getColumnModel().getColumn(6).setPreferredWidth(0);
-    
     }
       
       
@@ -682,12 +697,14 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtUsuario.getText())) {
 
                 BuscarForm bf = new BuscarForm(null, true);
-                bf.columnas = "idusuario, nombre";
-                bf.tabla = "Usuario";
+                bf.columnas = "u.idusuario as \"Id\", u.nombre||' '||u.apellido as \"Nombre\", u.nombreusuario as \"Usuario\", r.nombre as \"Rol\" ";
+                bf.tabla = "usuario u, rol r";
                 bf.order = "idusuario";
-                bf.filtroBusqueda = "";
+                bf.filtroBusqueda = "u.id_rol = r.id_rol";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
+                
+                getUsuario();
 
                 for (int c = 0; c < modelo.getRowCount(); c++) {
                     if (modelo.getValueAt(c, 5).toString().equals(bf.retorno)) {
@@ -700,7 +717,8 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
                         txtEmail.setText((String) modelo.getValueAt(c, 3));
                         txtIdUsuario.setText(modelo.getValueAt(c, 5).toString());
                         txtContrasenha.setText((String) modelo.getValueAt(c, 6));
-
+                        idUsu = Integer.parseInt(modelo.getValueAt(c, 5).toString());
+                        tbUsuario.changeSelection(c, 5, false, false);
                         try {
                             jComboBoxRol.setSelectedItem(modelo.getValueAt(c, 4));
                         } catch (Exception ex) {
@@ -711,7 +729,7 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
                 }
             }
             for (int c = 0; c < modelo.getRowCount(); c++) {
-                if (modelo.getValueAt(c, 2).toString().equals(txtUsuario.getText())) {
+                if (modelo.getValueAt(c, 5).toString().equals(txtUsuario.getText())) {
                     modoBusqueda(false);
                     establecerBotones("Edicion");
                     txtNombre.setText((String) modelo.getValueAt(c, 0));
@@ -766,6 +784,8 @@ public class UsuarioForm extends javax.swing.JInternalFrame {
             evt.consume();
         }else{
             try {
+                idUsu = 0;
+                idUsu = Integer.parseInt(tbUsuario.getValueAt(tbUsuario.getSelectedRow(), 5).toString());
                 txtIdUsuario.setText(tbUsuario.getValueAt(tbUsuario.getSelectedRow(), 5).toString());
                 txtNombre.setText(tbUsuario.getValueAt(tbUsuario.getSelectedRow(), 0).toString());
                 txtApellido.setText(tbUsuario.getValueAt(tbUsuario.getSelectedRow(), 1).toString());
