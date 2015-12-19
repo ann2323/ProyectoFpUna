@@ -118,7 +118,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
      boolean imprime = false;
      int contadorLote = 0, montoCuota = 0;
      Integer subTotal= 0, totaldesc=0, borrado2 = 0;
-     Integer  cantProducto=0;
+     Integer  cantProducto=0, subTotalAuxiliar=0;
      int k, k2;
      double iva10=0.0, iva5=0.0; //variables que suman el iva al traer los componentes
      double iva_10 = 0.0, iva_5 = 0.0;
@@ -401,6 +401,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             
             
             ventaC.setNroFactura(Integer.parseInt(txtFacturaVenta.getText().trim().replace(".", "")));
+            subTotalAuxiliar = Integer.parseInt(txtSubTotal.getText().replace(".", "").trim());
             SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formateador.parse(txtFechaVenta.getText());
             ventaC.setFecha(date);
@@ -433,7 +434,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             
             
             
-            ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText()));
+            ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText().trim().replace(".", "")));
         
             if(!txtDescuento.getText().equals("")){
                 ventaC.setDescuento(Integer.parseInt(txtDescuento.getText())); 
@@ -461,7 +462,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                             System.out.println("not a number");
                         }
                         try {
-                            ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                            ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim().replace(".", "")));
                         } catch (NumberFormatException e) {
                             ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString()+"0"));
                         }
@@ -481,7 +482,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
                         if (tbDetalleVenta.getValueAt(i, 0).toString() != "PRY") {
                             if (stockCont.tieneCodStock(tbDetalleVenta.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
                                 
-                                stock.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                                stock.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim().trim().replace(".", "")));
                                 stock.setCodComponente(tbDetalleVenta.getValueAt(i, 0).toString());
                                 stock.setCodDeposito(dep.getCodigo());
                                 stock.setLine(stockCont.nuevoCodigo());
@@ -652,9 +653,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             try
              {
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/intersat";
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
                      return con;
             }
              catch(Exception e)
@@ -1305,7 +1306,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
         String codigo = tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(),0).toString();
         precio = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 2).toString().replace(".", "").trim());
         int cantidad;
-        cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim());
+        cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim().replace(".", ""));
         int total=(precio*cantidad);
         String totalFormat=(formateador.format(total));
 
@@ -1416,7 +1417,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            int precio2 = 0;       
            precio2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 2).toString().replace(".", "").trim());
            int cantidad2 = 0;
-           cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim());
+           cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim().replace(".", ""));
            int total2 = 0;
            double iva102 = 0.0;
            double iva25 = 0.0;
@@ -1465,7 +1466,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
            int precio2 = 0;
            precio2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 2).toString().replace(".", "").trim());
            int cantidad2 = 0;
-           cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim());
+           cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim().replace(".", ""));
            int total2 = 0;
            total2=(precio2*cantidad2);
            System.out.println(total2);
@@ -1514,7 +1515,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
        
         try {
            stockActual= stockCont.tieneStock(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 0).toString(), dep.getCodigo());
-           cantidadIntroducida = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString());
+           cantidadIntroducida = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim().replace(".", ""));
             System.out.println("STOCK ACTUAL "+stockActual + "\nCantidad introducida "+cantidadIntroducida);
             if(stockActual < cantidadIntroducida){
                 showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
@@ -1787,11 +1788,12 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
              		             
              Map parametro = new HashMap ();        		               
              		             
-             parametro.put("factura", ventaC.getNroFactura());		     
+             parametro.put("factura", ventaC.getNroFactura());	
+             parametro.put("subtotal", subTotalAuxiliar);
              parametro.put("letras", monto);		          
              parametro.put("prefijo", txtPrefijoVenta.getText());		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
   		
              //JasperViewer visor = new JasperViewer(print,false) ;
              JasperViewer.viewReport(print, false);
@@ -2055,7 +2057,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
             tbDetalleVenta.setValueAt(modeloDetalleBusqueda.getValueAt(i, 1), i, 1);
             String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
             tbDetalleVenta.setValueAt(precioUnit, i, 2);
-            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString().trim().replace(".", "")));
             tbDetalleVenta.setValueAt(cantidadFormat, i, 3);
             String exentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
             tbDetalleVenta.setValueAt(exentasFormat, i, 4);
@@ -2144,7 +2146,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame implements Prin
          }
         int cantidad;
             try {
-                cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(0, 3).toString().trim());
+                cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(0, 3).toString().trim().replace(".", ""));
             }catch (Exception ex) {
                 cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(0, 3).toString()+"0");
             } 

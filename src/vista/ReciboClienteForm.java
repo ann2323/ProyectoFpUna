@@ -8,6 +8,8 @@ import controlador.FacturaPendienteControlador;
 import controlador.ReciboClienteControlador;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -16,6 +18,9 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +36,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelo.CabeceraRecibo;
 import modelo.DetallePago;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
@@ -48,7 +56,8 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
      */
     
     int k, k3;
-    Integer total=0;
+    Integer total=0, nroRecibo=0, pagado=0; String concepto="", plazo="";
+    Formatter formato = new Formatter();
     DecimalFormat formateador = new DecimalFormat("###,###.##");
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     DefaultTableModel modeloBusquedaFacturas = new DefaultTableModel();
@@ -135,7 +144,24 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }
-     
+    
+     private Connection coneccionSQL()
+ 
+    {
+            try
+             {
+                    String cadena;
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
+                    Class.forName("org.postgresql.Driver");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
+                     return con;
+            }
+             catch(Exception e)
+             {
+                  System.out.println(e.getMessage());
+             }
+              return null;
+     }  
    
     
     public static String getFechaActual() {
@@ -811,12 +837,14 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tbVistaFacturasPendientesFocusLost
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
+        if(showConfirmDialog (null, "Está seguro de generar el recibo?", "Confirmar", YES_NO_OPTION) == YES_OPTION){  
         try {
             if (txtpagado.getText().equals("")){
               showMessageDialog(null, "Debe realizar el detalle de pago para generar el recibo", "Atención", INFORMATION_MESSAGE);
             }else{
                Integer nroFactura = Integer.parseInt(txtFactura.getText().replace(".", "").trim());
                if (ventaControlador.esContado(Integer.parseInt(txtFactura.getText().replace(".", "").trim())).equals("CREDITO")){
+                concepto= "Pago de cuota/cuotas ";
                 Long cuotas = (long) ventaControlador.getCuota(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
                 Long cuotasCant = facturaPendienteControl.verificarEstadoFacturaPendientes(Integer.parseInt(txtFactura.getText().replace(".", "").trim()));
                 guardar();
@@ -824,14 +852,43 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
                         ventaControlador.updateEstadoPagado(nroFactura);
                     } 
                 }else{
+                 concepto="Pago de factura ";
                 guardar();
                 ventaControlador.updateEstadoPagado(nroFactura);
                
                 }
             }
+            try {	
+                
+             String monto = ventaControlador.totalLetras(pagado);		         
+             		             
+             Map parametro = new HashMap ();   
+              formato = new Formatter();
+              String nroRecFormat = (formato.format("%07d", nroRecibo).toString());             
+                        
+             parametro.put("nroRecibo", nroRecibo);		     
+             parametro.put("letras", monto);
+             parametro.put("concepto", concepto);
+             parametro.put("plazo", plazo);
+             parametro.put("labelRecibo", nroRecFormat);
+    
+             plazo=""; nroRecFormat="";	 
+             pagado=0;
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/recibo.jasper", parametro, coneccionSQL());
+  		//JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");	
+            //JasperPrint print = JasperFillManager.fillReport(report,parametro,coneccionSQL());
+                
+                //JasperViewer visor = new JasperViewer(print,false) ;
+             JasperViewer.viewReport(print, false);
+  		  
+            } catch (Exception ex) {		            
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }		
         } catch (Exception ex) {
             Logger.getLogger(ReciboClienteForm.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }  
+        
+        }
     }//GEN-LAST:event_bImprimirActionPerformed
 
     private void txtFacturaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyPressed
@@ -846,7 +903,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
                 BuscarForm bf = new BuscarForm( null, true);
                 bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", nro_prefijo as \"Nro Prefijo\",  to_char(vencimiento,'dd/mm/yyyy') as \"FechaVenc\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\"";
                 bf.tabla = "venta";
-                bf.order = "";
+                bf.order = "nro_factura DESC";
                 bf.filtroBusqueda = "(estado='PENDIENTE' or estado='CONFIRMADO') and es_factura='S' and cliente_id= "+ cliente+ "";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);

@@ -172,9 +172,8 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
         setTitle("Detalle de Pago");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reciboCompra.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -569,7 +568,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
             txtPendienteAplicar.setText(formateador.format(pendienteAplicar));
             datos[4]=txtPendienteAplicar.getText();
             String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
-            String notaCredito = nroPrefijoNotaCredito.substring(4);
+            String notaCredito = nroPrefijoNotaCredito.substring(8);
             datos[5]=notaCredito;
             modeloPago.addRow(datos);  
             }
@@ -647,11 +646,11 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
 
     private void JCfacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JCfacturaActionPerformed
     String nroPrefijoNotaCredito = JCfactura.getSelectedItem().toString();
-    String notaCredito = nroPrefijoNotaCredito.substring(4);
+    String notaCredito = nroPrefijoNotaCredito.substring(8);
         try {
             if(detalleControl.verificarEstadoFactura(Integer.parseInt(notaCredito.trim()))==0) {
                 try {
-                    Integer montoCredito  = facturaCabeceraControlador.getMonto(Integer.parseInt(notaCredito));
+                    Integer montoCredito  = facturaCabeceraControlador.getMontoNotaCredito(Integer.parseInt(notaCredito));
                     formateador = new DecimalFormat("###,###.##");
                     txtValorDelCredito.setText(formateador.format(montoCredito));
                     formateador = new DecimalFormat("###,###.##");
@@ -661,7 +660,7 @@ public class DetallePagoProveedorForm extends javax.swing.JInternalFrame {
                 }
                 
             }else{
-                    Integer montoCredito  = facturaCabeceraControlador.getMonto(Integer.parseInt(notaCredito));
+                    Integer montoCredito  = facturaCabeceraControlador.getMontoNotaCredito(Integer.parseInt(notaCredito));
                     formateador = new DecimalFormat("###,###.##");
                     txtValorDelCredito.setText(formateador.format(montoCredito));
                     Integer montoActualAplicar = detalleControl.getPendienteAplicar(Integer.parseInt(notaCredito.trim()));

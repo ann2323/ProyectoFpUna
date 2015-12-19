@@ -30,9 +30,17 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Deposito;
 import modelo.DetalleVenta;
 import controlador.PrefijoFacturaControlador;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.HashMap;
+import java.util.Map;
 import static javax.swing.JOptionPane.showMessageDialog;
 import modelo.Stock;
 import modelo.Venta;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -70,7 +78,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     
      Integer subTotal= 0, totaldesc=0;
      double iva10=0.0, iva5=0.0;
-     Integer  cantProducto=0;
+     Integer  cantProducto=0, subTotalAuxiliar=0;;
      int k, k2, factRef;
      DecimalFormat formateador = new DecimalFormat("###,###.##");
      
@@ -348,6 +356,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                 ventaC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".","")));
             }
             ventaC.setNroPrefijo(txtPrefijo.getText());
+            subTotalAuxiliar = Integer.parseInt(txtSubTotal.getText().replace(".", "").trim());
             ventaC.setNroFactura(Integer.parseInt(txtNroNotaCredito.getText()));
             Date ahora = new Date();
             SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
@@ -362,7 +371,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
             ventaC.setCodDeposito(dep.getCodigo());
             
-            ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText().replace(".", "").trim()));
+            ventaC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText().replace(".", "").trim().replace(".", "")));
         
             ventaC.setDescuento(Integer.parseInt(txtDescuento.getText()));
           
@@ -393,7 +402,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                               System.out.println("not a number"); 
                             }
                           try {
-                              ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                              ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim().replace(".", "")));
                             } catch (NumberFormatException e) {
                                ventaD.setCantidad(Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString()+"0"));
                             }
@@ -693,7 +702,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
             tbDetalleVenta.setValueAt(precioUnit, i, 2);
             forma = new DecimalFormat("###,###.##");
-            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString().trim().replace(".", "")));
             tbDetalleVenta.setValueAt(cantidadFormat, i, 3);
             forma = new DecimalFormat("###,###.##");
             String excentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
@@ -808,6 +817,24 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
         }
     
     }
+       
+     private Connection coneccionSQL()
+ 
+    {
+            try
+             {
+                    String cadena;
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
+                    Class.forName("org.postgresql.Driver");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
+                     return con;
+            }
+             catch(Exception e)
+             {
+                  System.out.println(e.getMessage());
+             }
+              return null;
+     }
        
    private void cargarDetalleFacturaFactura(int idVenta) {
         tbDetalleVenta.removeAll();
@@ -1052,8 +1079,8 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
         jPanel1.add(bBuscar);
 
         jBGuardar1.setForeground(new java.awt.Color(0, 51, 102));
-        jBGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guardar.png"))); // NOI18N
-        jBGuardar1.setText("Guardar");
+        jBGuardar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/imprimir.png"))); // NOI18N
+        jBGuardar1.setText("Guardar e Imprimir");
         jBGuardar1.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
         jBGuardar1.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
         jBGuardar1.setDescription(" ");
@@ -1295,37 +1322,37 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
 
         txtFecha.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     true,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 255),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(128, 128, 128),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(255, 0, 0),
                     false,
@@ -1472,7 +1499,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
      
            Integer Cantidad2;
       
-           Cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim());
+           Cantidad2 = Integer.parseInt(tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).toString().trim().replace(".", ""));
                     
             int total2=(precio2*Cantidad2);
            
@@ -1607,7 +1634,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
           int saldoFactura = 0;
           try {
               saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) - Integer.parseInt(totalNotaCredito);
-              ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+             ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
           } catch (Exception ex) {
               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
@@ -1635,6 +1662,28 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
           } catch (Exception ex) {
               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
+          
+            try {	
+                		                       
+             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
+             		             
+             Map parametro = new HashMap ();        		               
+             		             
+             parametro.put("factura", ventaC.getNroFactura());	
+             parametro.put("subtotal", subTotalAuxiliar);
+             parametro.put("letras", monto);		          
+             parametro.put("prefijo", txtPrefijo.getText());		  
+            		            	  
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaCredito.jasper", parametro, coneccionSQL());
+  		
+             //JasperViewer visor = new JasperViewer(print,false) ;
+             JasperViewer.viewReport(print, false);
+  		  
+            } catch (JRException jRException) {		           
+  		  
+             System.out.println(jRException.getMessage());
+  		  
+            }
            
      } catch (Exception ex) {
          Logger.getLogger(NotaCreditoVentaForm.class.getName()).log(Level.SEVERE, null, ex);

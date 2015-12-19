@@ -510,6 +510,11 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 txtNroReciboActionPerformed(evt);
             }
         });
+        txtNroRecibo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroReciboKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtNroRecibo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 80, -1));
 
         txtFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
@@ -524,6 +529,9 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtFacturaKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFacturaKeyTyped(evt);
             }
         });
         jPanel1.add(txtFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 80, -1));
@@ -640,6 +648,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
         });
         jPanel1.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 80, -1));
 
+        txtFecha.setFormat(2);
         txtFecha.setLocale(new java.util.Locale("es", "BO", ""));
         jPanel1.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, -1, -1));
 
@@ -776,6 +785,19 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 }
 
             }
+            
+            for(int c=0; c<modeloBusquedaFacturas.getRowCount(); c ++){
+                    if (modeloBusquedaFacturas.getValueAt(c, 0).toString().equals(txtFactura.getText())){
+                        establecerBotones("Edicion");
+                        k3 = c;
+                        try {
+                            datosActuales2();
+                        } catch (Exception ex) {
+                            Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        return;
+                    }
+                }
         }
     }//GEN-LAST:event_txtFacturaKeyPressed
 
@@ -830,6 +852,19 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                 }
 
             }
+            
+             for(int c=0; c<modeloBusqueda.getRowCount(); c ++){
+                    if (modeloBusqueda.getValueAt(c, 0).toString().equals(txtProveedor.getText())){
+                        establecerBotones("Edicion");
+                        k = c;
+                        try {
+                            datosActuales();
+                        } catch (Exception ex) {
+                            Logger.getLogger(ReciboProveedorForm.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        return;
+                    }
+                }
         }
     }//GEN-LAST:event_txtProveedorKeyPressed
 
@@ -844,6 +879,24 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     private void txtFacturaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFacturaKeyReleased
+
+    private void txtNroReciboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroReciboKeyTyped
+         char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+    }//GEN-LAST:event_txtNroReciboKeyTyped
+
+    private void txtFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyTyped
+         char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+    }//GEN-LAST:event_txtFacturaKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

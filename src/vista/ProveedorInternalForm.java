@@ -570,6 +570,11 @@ private void modoBusqueda(boolean v){
             }
         });
 
+        txtci.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtciActionPerformed(evt);
+            }
+        });
         txtci.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtciFocusLost(evt);
@@ -1174,6 +1179,10 @@ private void modoBusqueda(boolean v){
     private void txtdvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdvActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtdvActionPerformed
+
+    private void txtciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtciActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtciActionPerformed
 
     private void datosActuales(){
             String ced = modelo.getValueAt(k, 1).toString();

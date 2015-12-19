@@ -150,6 +150,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     }
       private void limpiar() {
         txtPrefijoCompra.setText("");
+        txtFechaRecepcion.setText("");
+        txtTimbrado.setText("");
         JCdeposito.setSelectedIndex(0);
         JCpagoEn.setSelectedIndex(-1);
         JCpago.setSelectedIndex(0);
@@ -239,6 +241,10 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, "Debe ingresar algun nro de prefijo", "Atención", INFORMATION_MESSAGE);
             txtFechaRecepcion.requestFocusInWindow();
             return;
+        }else if ("".equals(txtTimbrado.getText())) {
+            showMessageDialog(null, "Debe ingresar el timbrado de la factura", "Atención", INFORMATION_MESSAGE);
+            txtFechaRecepcion.requestFocusInWindow();
+            return;
         }else if (JCdeposito.getSelectedIndex() == -1) {
             showMessageDialog(null, "Debe seleccionar el deposito", "Atención", INFORMATION_MESSAGE);
             JCdeposito.requestFocusInWindow();
@@ -260,8 +266,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                compraC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".","")));
             }
             compraC.setNroPrefijo(txtPrefijoCompra.getText());
-            compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            nroFacturaAux=Integer.parseInt(txtFacturaCompra.getText());
+            compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText().replace(".", "")));
+            compraC.setTimbrado(txtTimbrado.getText());
+            nroFacturaAux=Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim());
             Date ahora = new Date();
             compraC.setFechaRecepcion(ahora);
             SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
@@ -303,7 +310,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                            facturaPendiente.setPlazo(j+" de "+cuota);
                            facturaPendiente.setProveedorId(idProveedor);
                            facturaPendiente.setEstado("PENDIENTE");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim()));
                            facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
                            facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
                            facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
@@ -315,7 +322,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                
                             }else{
                                 if (borrado2 == 0){
-                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText()));
+                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim()));
                                 }
                                 facturaPendienteControlador.insert(facturaPendiente);
                                  borrado2=1;
@@ -329,7 +336,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                            montoCuota=Integer.parseInt(txtTotal.getText().replace(".", "").trim());
                            facturaPendiente.setProveedorId(idProveedor);
                            facturaPendiente.setEstado("PENDIENTE");
-                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
+                           facturaPendiente.setNroFactura(Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim()));
                            facturaPendiente.setNroPrefijo(txtPrefijoCompra.getText());
                            facturaPendiente.setFacturaPendienteId(facturaPendienteControlador.nuevoCodigo());
                            facturaPendiente.setTotal(Integer.parseInt(txtTotal.getText().replace(".", "")));
@@ -341,7 +348,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                                 facturaPendienteControlador.insert(facturaPendiente);
                                
                             }else{                   
-                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText()));
+                                facturaPendienteControlador.borrarFacturasPendientes(Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim()));
                             
                                 facturaPendienteControlador.insert(facturaPendiente);                             
                                
@@ -381,7 +388,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                               
                             if (stockCont.tieneCodStock(tbDetalleCompra.getValueAt(i, 0).toString(),dep.getCodigo()) == 0){
                                 
-                                stock.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim()));
+                                stock.setCantidad(0);
                                 stock.setCodComponente(tbDetalleCompra.getValueAt(i, 0).toString());
                                 stock.setCodDeposito(dep.getCodigo());
                                 stock.setLine(stockCont.nuevoCodigo());
@@ -599,6 +606,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             DecimalFormat forma = new DecimalFormat("###,###.##");   
             txtPrefijoCompra.setText(modeloNroFactura.getValueAt(k2, 0).toString());
             txtFacturaCompra.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            txtTimbrado.setText(modeloNroFactura.getValueAt(k2, 15).toString());
             try {
                          
                 String cedula=forma.format(Integer.parseInt(provC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
@@ -674,7 +682,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
             tbDetalleCompra.setValueAt(precioUnit, i, 2);
             forma = new DecimalFormat("###,###.##");
-            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString().trim().replace(".", "")));
             tbDetalleCompra.setValueAt(cantidadFormat, i, 3);
             forma = new DecimalFormat("###,###.##");
             String excentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
@@ -728,6 +736,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         tbDetalleCompra.removeAll();
         txtFacturaCompra.setText("");
         txtPrefijoCompra.setText("");
+        txtTimbrado.setText("");
         txtProveedor.setText("");
         txtProveedor1.setText("");
         txtFechaCompra.setText("");
@@ -747,6 +756,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             txtFacturaCompra.requestFocusInWindow();
             txtFacturaCompra.setBackground(Color.yellow);
             txtPrefijoCompra.setEnabled(false);
+            txtTimbrado.setEnabled(false);
             txtCantidadTotal.setEnabled(false);
             txtProveedor.setEnabled(false);
             txtTotal.setEnabled(false);
@@ -766,6 +776,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             txtFacturaCompra.setBackground(Color.white);
             txtPrefijoCompra.setEnabled(true);
             txtPrefijoCompra.setEditable(true);
+            txtTimbrado.setEnabled(true);
             txtCantidadTotal.setEnabled(true);
             txtCantidadTotal.setEditable(false);
             txtProveedor.setEnabled(true);
@@ -878,6 +889,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelCantidadTotal4 = new javax.swing.JLabel();
         txtFechaRecepcion = new javax.swing.JTextField();
         txtFechaCompra = new datechooser.beans.DateChooserCombo();
+        labelProveedorNombre1 = new javax.swing.JLabel();
+        txtTimbrado = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -1001,7 +1014,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 txtProveedorKeyPressed(evt);
             }
         });
-        JpanelCompra.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 200, 77, -1));
+        JpanelCompra.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 200, 80, -1));
 
         txtPrefijoCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1013,7 +1026,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 txtPrefijoCompraKeyTyped(evt);
             }
         });
-        JpanelCompra.add(txtPrefijoCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 137, 57, -1));
+        JpanelCompra.add(txtPrefijoCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 137, 80, -1));
 
         txtFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1033,7 +1046,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 txtFacturaCompraKeyTyped(evt);
             }
         });
-        JpanelCompra.add(txtFacturaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 168, 77, -1));
+        JpanelCompra.add(txtFacturaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 168, 80, -1));
 
         labelFechaRecepcion.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaRecepcion.setText("Fecha de Recepcion");
@@ -1056,7 +1069,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         labelPagoen.setText("Pago en:");
         JpanelCompra.add(labelPagoen, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 190, 53, -1));
 
-        JCpago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONTADO", "CREDITO", " " }));
+        JCpago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CONTADO", "CREDITO" }));
         JCpago.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 JCpagoItemStateChanged(evt);
@@ -1275,9 +1288,29 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
                 (datechooser.view.BackRenderer)null,
                 false,
                 true)));
+    txtFechaCompra.setNothingAllowed(false);
     txtFechaCompra.setFormat(2);
     txtFechaCompra.setLocale(new java.util.Locale("es", "BO", ""));
     JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 140, -1));
+
+    labelProveedorNombre1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+    labelProveedorNombre1.setText("Timbrado");
+    JpanelCompra.add(labelProveedorNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 140, 60, -1));
+
+    txtTimbrado.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            txtTimbradoActionPerformed(evt);
+        }
+    });
+    txtTimbrado.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            txtTimbradoKeyPressed(evt);
+        }
+        public void keyTyped(java.awt.event.KeyEvent evt) {
+            txtTimbradoKeyTyped(evt);
+        }
+    });
+    JpanelCompra.add(txtTimbrado, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 140, 120, -1));
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -1583,7 +1616,8 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         }else{
             int desc=Integer.parseInt(txtDescuento.getText().replace(".", ""));
             totaldesc = (Integer.parseInt(txtSubTotal.getText().replace(".", ""))-((Integer.parseInt(txtSubTotal.getText().replace(".", ""))*desc)/100));
-            String totalDesc=formateador.format(totaldesc);
+            DecimalFormat formateadorDes = new DecimalFormat("###,###.##");
+            String totalDesc=formateadorDes.format(totaldesc);
             txtTotal.setText(totalDesc);
             totaldesc=0;
         }
@@ -1631,7 +1665,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         }  
          else{
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if ("*".equals(txtFacturaCompra.getText())) {
+            if ("*".equals(txtFacturaCompra.getText().replace(".", "").trim())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
                 bf.columnas = "nro_prefijo as \"Nro. Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\"";
@@ -1683,6 +1717,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
              getToolkit().beep();
              evt.consume();
          }   
+         if(txtPrefijoCompra.getText().length()>6){
+             evt.consume();  
+         }
     }//GEN-LAST:event_txtPrefijoCompraKeyTyped
 
     private void txtFacturaCompraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyTyped
@@ -1692,6 +1729,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
              getToolkit().beep();
              evt.consume();
          }   
+         if(txtFacturaCompra.getText().length()>6){
+             evt.consume();  
+         }
     }//GEN-LAST:event_txtFacturaCompraKeyTyped
 
     private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
@@ -1711,6 +1751,27 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_JCpagoItemStateChanged
+
+    private void txtTimbradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimbradoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTimbradoActionPerformed
+
+    private void txtTimbradoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimbradoKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTimbradoKeyPressed
+
+    private void txtTimbradoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimbradoKeyTyped
+        char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }  
+         
+         if(txtTimbrado.getText().length()>7){
+             evt.consume();  
+        }
+    }//GEN-LAST:event_txtTimbradoKeyTyped
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1748,6 +1809,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel labelPagoen;
     private javax.swing.JLabel labelPrefijoCompra;
     private javax.swing.JLabel labelProveedorNombre;
+    private javax.swing.JLabel labelProveedorNombre1;
     private javax.swing.JLabel labelSubTotal;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JTable tbDetalleCompra;
@@ -1763,6 +1825,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtProveedor;
     private javax.swing.JTextField txtProveedor1;
     private javax.swing.JFormattedTextField txtSubTotal;
+    private javax.swing.JTextField txtTimbrado;
     public static javax.swing.JFormattedTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }

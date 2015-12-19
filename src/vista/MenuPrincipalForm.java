@@ -76,9 +76,9 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         mConsultarFacturaCompra = new javax.swing.JMenuItem();
         mConsultarNotaCreditoCompra = new javax.swing.JMenuItem();
         mConsultarNotaCreditoVenta = new javax.swing.JMenuItem();
-        consultarSaldoFacturaCompra = new javax.swing.JMenuItem();
-        consultarSaldoNotaCreditoCompra = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        consultarMovimientoVenta = new javax.swing.JMenuItem();
+        consultarMovimientoCompra = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
@@ -368,24 +368,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(mConsultarNotaCreditoVenta);
 
-        consultarSaldoFacturaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
-        consultarSaldoFacturaCompra.setText("Consultar Saldo Factura de Compra");
-        consultarSaldoFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultarSaldoFacturaCompraActionPerformed(evt);
-            }
-        });
-        mConsultar.add(consultarSaldoFacturaCompra);
-
-        consultarSaldoNotaCreditoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
-        consultarSaldoNotaCreditoCompra.setText("Consultar Saldo Nota de Credito Compra");
-        consultarSaldoNotaCreditoCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consultarSaldoNotaCreditoCompraActionPerformed(evt);
-            }
-        });
-        mConsultar.add(consultarSaldoNotaCreditoCompra);
-
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarStock.png"))); // NOI18N
         jMenuItem2.setText("Consultar Stock");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -394,6 +376,24 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mConsultar.add(jMenuItem2);
+
+        consultarMovimientoVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
+        consultarMovimientoVenta.setText("Consultar Movimiento Venta");
+        consultarMovimientoVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                consultarMovimientoVentaActionPerformed(evt);
+            }
+        });
+        mConsultar.add(consultarMovimientoVenta);
+
+        consultarMovimientoCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        consultarMovimientoCompra.setText("Consultar Movimiento Compra");
+        consultarMovimientoCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                consultarMovimientoCompraActionPerformed(evt);
+            }
+        });
+        mConsultar.add(consultarMovimientoCompra);
 
         jMenuBar1.add(mConsultar);
 
@@ -787,7 +787,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mConsultarFacturaVentaActionPerformed
 
     private void mConsultarFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarFacturaCompraActionPerformed
-       try {
+       /*try {
             ConsultarFacturaCompraForm tf2 = new ConsultarFacturaCompraForm();
             try {
                 if (p.tiene(tf2.getTitle(),this.codRol) == 0){
@@ -801,7 +801,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_mConsultarFacturaCompraActionPerformed
 
     private void mAnularFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaCompraActionPerformed
@@ -894,30 +894,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 //        }
 //       
     }//GEN-LAST:event_mAnularNotaCreditoCompraActionPerformed
-
-    private void consultarSaldoNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarSaldoNotaCreditoCompraActionPerformed
-       ConsultarSaldoNotaCreditoForm saldoNotaCredito = new ConsultarSaldoNotaCreditoForm();
-       this.jDesktopPane1.add(saldoNotaCredito);
-       saldoNotaCredito.show();
-    }//GEN-LAST:event_consultarSaldoNotaCreditoCompraActionPerformed
-
-    private void consultarSaldoFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarSaldoFacturaCompraActionPerformed
-        /*try {
-            ConsultarCuentaClienteForm tf2 = new ConsultarCuentaClienteForm();
-            try {
-                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            this.jDesktopPane1.add(tf2);
-            tf2.show();
-        } catch (Exception ex) {
-            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-    }//GEN-LAST:event_consultarSaldoFacturaCompraActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         try {
@@ -1057,6 +1033,42 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         consultarStock.show();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void consultarMovimientoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarMovimientoVentaActionPerformed
+        try {
+            MovimientoVentaForm tf2 = new MovimientoVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_consultarMovimientoVentaActionPerformed
+
+    private void consultarMovimientoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarMovimientoCompraActionPerformed
+        try {
+            MovimientoCompraForm tf2 = new MovimientoCompraForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_consultarMovimientoCompraActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1095,8 +1107,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem ReciboPagoProv;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
-    private javax.swing.JMenuItem consultarSaldoFacturaCompra;
-    private javax.swing.JMenuItem consultarSaldoNotaCreditoCompra;
+    private javax.swing.JMenuItem consultarMovimientoCompra;
+    private javax.swing.JMenuItem consultarMovimientoVenta;
     public static javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;

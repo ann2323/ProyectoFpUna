@@ -71,6 +71,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     DefaultTableModel modeloD = new DefaultTableModel();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
+    DefaultTableModel modeloNroFacturaPagadas = new DefaultTableModel();
     DefaultTableModel modeloNroFactura;
     
     Stock stock = new Stock();
@@ -165,6 +166,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         tbDetalleCompra.removeAll();
         txtFacturaCompra.setText("");
         txtFacturaReferenciada.setText("");
+        txtTimbrado.setText("");
         txtProveedor.setText("");
         txtProveedor1.setText("");
         JCproyecto1.setSelectedIndex(0);
@@ -255,19 +257,19 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     
         private void getNroFacturaPagadas() {
         
-        modeloNroFactura=new DefaultTableModel();
+        modeloNroFacturaPagadas=new DefaultTableModel();
         try {
-            modeloNroFactura.setColumnCount(0);
-            modeloNroFactura.setRowCount(0);
+            modeloNroFacturaPagadas.setColumnCount(0);
+            modeloNroFacturaPagadas.setRowCount(0);
                       
-            try (ResultSet rs = compraControlador.getNroFacturaPagadas()) {
+            try (ResultSet rs = compraControlador.getNroFacturaPagadas2()) {
            
                 ResultSetMetaData rsMd = rs.getMetaData();
                 
                 int cantidadColumnas = rsMd.getColumnCount();
                 
                 for (int i = 1; i <= cantidadColumnas; i++) {
-                    modeloNroFactura.addColumn(rsMd.getColumnLabel(i));
+                    modeloNroFacturaPagadas.addColumn(rsMd.getColumnLabel(i));
                 }
 
                 while (rs.next()) {
@@ -275,7 +277,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                     for (int i = 0; i < cantidadColumnas; i++) {
                         fila[i]=rs.getObject(i+1);
                     }
-                    modeloNroFactura.addRow(fila);
+                    modeloNroFacturaPagadas.addRow(fila);
                 }
             } catch (Exception ex) {
                 showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -328,8 +330,9 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                compraC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".","")));
             }
             compraC.setNroPrefijo(txtPrefijoCompra.getText());
-            compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText()));
-            nroFacturaAux=Integer.parseInt(txtFacturaCompra.getText());
+            compraC.setNroFactura(Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim()));
+            compraC.setTimbrado(txtTimbrado.getText());
+            nroFacturaAux=Integer.parseInt(txtFacturaCompra.getText().replace(".", "").trim());
             Date ahora = new Date();
             compraC.setFechaRecepcion(ahora);
             SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
@@ -337,7 +340,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             compraC.setFecha(date);
             compraC.setEsFactura("N");
             compraC.setPagoContado("");
-            compraC.setFactReferenciada(Integer.parseInt(txtFacturaReferenciada.getText().trim()));
+            compraC.setFactReferenciada(Integer.parseInt(txtFacturaReferenciada.getText().trim().replace(".", "")));
             compraC.setEstado("BORRADOR");
             estado=compraC.getEstado();
             int idProveedor = provC.devuelveId(txtProveedor.getText().replace(".", ""));
@@ -358,7 +361,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             
             //id de la facturaRefenciada
             if (compraC.getEsFactura().equals("N")){
-               factRef=compraControlador.devuelveId(Integer.parseInt(txtFacturaReferenciada.getText()));
+               factRef=compraControlador.devuelveId(Integer.parseInt(txtFacturaReferenciada.getText().replace(".", "").trim()));
             }
             
           
@@ -378,7 +381,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                               System.out.println("not a number"); 
                             }
                           try {
-                              compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim()));
+                              compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
                             } catch (NumberFormatException e) {
                                compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString()+"0"));
                             }
@@ -580,6 +583,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             DecimalFormat forma = new DecimalFormat("###,###.##");   
             txtPrefijoCompra.setText(modeloNroFactura.getValueAt(k2, 0).toString());
             txtFacturaCompra.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            txtTimbrado.setText(modeloNroFactura.getValueAt(k2, 15).toString());
             txtFacturaReferenciada.setText(forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 14).toString())));
             try {
                          
@@ -602,18 +606,19 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
          private void datosActualesNroFacturaFactura() {
             
             DecimalFormat forma = new DecimalFormat("###,###.##");   
-            txtFacturaReferenciada.setText(modeloNroFactura.getValueAt(k2, 1).toString());
+            txtFacturaReferenciada.setText(modeloNroFacturaPagadas.getValueAt(k2, 1).toString().replace(".", "").trim());
+            txtTimbrado.setText(modeloNroFacturaPagadas.getValueAt(k2, 15).toString());
             try {
                          
-                String cedula=forma.format(Integer.parseInt(provC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
+                String cedula=forma.format(Integer.parseInt(provC.getCedula(modeloNroFacturaPagadas.getValueAt(k2, 2).toString())));
                 txtProveedor.setText(cedula);
-                txtProveedor1.setText(provC.getNombreProveedor(modeloNroFactura.getValueAt(k2, 2).toString()));
-                JCdeposito.setSelectedItem(modeloNroFactura.getValueAt(k2, 5).toString());
+                txtProveedor1.setText(provC.getNombreProveedor(modeloNroFacturaPagadas.getValueAt(k2, 2).toString()));
+                JCdeposito.setSelectedItem(modeloNroFacturaPagadas.getValueAt(k2, 5).toString());
             
             } catch (Exception ex) {
                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
             }      
-            cargarDetalleFacturaFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString())); 
+            cargarDetalleFacturaFactura(Integer.parseInt(modeloNroFacturaPagadas.getValueAt(k2, 9).toString())); 
             datosActualesDetalleFactura();
             
     }
@@ -630,7 +635,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
             tbDetalleCompra.setValueAt(precioUnit, i, 2);
             forma = new DecimalFormat("###,###.##");
-            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString().trim().replace(".", "")));
             tbDetalleCompra.setValueAt(cantidadFormat, i, 3);
             forma = new DecimalFormat("###,###.##");
             String excentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
@@ -725,6 +730,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         tbDetalleCompra.removeAll();
         txtFacturaCompra.setText("");
         txtPrefijoCompra.setText("");
+        txtTimbrado.setText("");
         txtProveedor.setText("");
         txtProveedor1.setText("");
         txtFechaCompra.setText("");
@@ -743,6 +749,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             txtFacturaCompra.requestFocusInWindow();
             txtFacturaCompra.setBackground(Color.yellow);
             txtFacturaReferenciada.setEnabled(false);
+            txtTimbrado.setEnabled(false);
             txtPrefijoCompra.setEnabled(false);
             txtCantidadTotal.setEnabled(false);
             txtProveedor.setEnabled(false);
@@ -761,7 +768,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             txtFacturaCompra.setBackground(Color.white);
             txtFacturaReferenciada.setEnabled(true);
             txtPrefijoCompra.setEnabled(true);
-            txtPrefijoCompra.setEditable(true);
+            txtPrefijoCompra.setEnabled(true);
+            txtTimbrado.setEnabled(true);
             txtCantidadTotal.setEnabled(true);
             txtCantidadTotal.setEditable(false);
             txtProveedor.setEnabled(true);
@@ -901,6 +909,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         labelFechaCompra1 = new javax.swing.JLabel();
         txtFechaRecepcion = new javax.swing.JTextField();
         txtFechaCompra = new datechooser.beans.DateChooserCombo();
+        labelProveedorNombre1 = new javax.swing.JLabel();
+        txtTimbrado = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -1020,7 +1030,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 txtProveedorKeyPressed(evt);
             }
         });
-        JpanelCompra.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 200, 77, -1));
+        JpanelCompra.add(txtProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 200, 80, -1));
 
         txtPrefijoCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1035,7 +1045,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 txtPrefijoCompraKeyTyped(evt);
             }
         });
-        JpanelCompra.add(txtPrefijoCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 57, -1));
+        JpanelCompra.add(txtPrefijoCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 80, -1));
 
         txtFacturaCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1055,7 +1065,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 txtFacturaCompraKeyTyped(evt);
             }
         });
-        JpanelCompra.add(txtFacturaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 77, -1));
+        JpanelCompra.add(txtFacturaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 80, -1));
 
         labelFechaRecepcion.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         labelFechaRecepcion.setText("Fecha de Recepcion");
@@ -1073,11 +1083,11 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 JCdepositoActionPerformed(evt);
             }
         });
-        JpanelCompra.add(JCdeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 190, -1, -1));
+        JpanelCompra.add(JCdeposito, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 190, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel4.setText("Deposito ");
-        JpanelCompra.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 190, 71, -1));
+        JpanelCompra.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 190, 71, -1));
 
         txtFacturaReferenciada.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1087,6 +1097,9 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         txtFacturaReferenciada.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFacturaReferenciadaKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFacturaReferenciadaKeyTyped(evt);
             }
         });
         JpanelCompra.add(txtFacturaReferenciada, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 140, 93, -1));
@@ -1273,8 +1286,28 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 (datechooser.view.BackRenderer)null,
                 false,
                 true)));
+    txtFechaCompra.setFormat(2);
     txtFechaCompra.setLocale(new java.util.Locale("es", "BO", ""));
     JpanelCompra.add(txtFechaCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 170, 120, -1));
+
+    labelProveedorNombre1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
+    labelProveedorNombre1.setText("Timbrado");
+    JpanelCompra.add(labelProveedorNombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 180, 60, 20));
+
+    txtTimbrado.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            txtTimbradoActionPerformed(evt);
+        }
+    });
+    txtTimbrado.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            txtTimbradoKeyPressed(evt);
+        }
+        public void keyTyped(java.awt.event.KeyEvent evt) {
+            txtTimbradoKeyTyped(evt);
+        }
+    });
+    JpanelCompra.add(txtTimbrado, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 180, 120, -1));
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -1518,6 +1551,15 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
 
             }
         }
+        
+        for(int c=0; c<modeloBusqueda.getRowCount(); c ++){
+                    if (modeloBusqueda.getValueAt(c, 0).toString().equals(txtProveedor.getText())){
+                        establecerBotones("Edicion");
+                        k = c;
+                        datosActuales();
+                        return;
+                    }
+                }
     }//GEN-LAST:event_txtProveedorKeyPressed
 
     private void jBGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardar1ActionPerformed
@@ -1551,7 +1593,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         }else{
             int desc=Integer.parseInt(txtDescuento.getText().replace(".", ""));
             totaldesc = (Integer.parseInt(txtSubTotal.getText().replace(".", ""))-((Integer.parseInt(txtSubTotal.getText().replace(".", ""))*desc)/100));
-            String totalDesc=formateador.format(totaldesc);
+            DecimalFormat formateadorDes = new DecimalFormat("###,###.##");
+            String totalDesc=formateadorDes.format(totaldesc);
             txtTotal.setText(totalDesc);
             totaldesc=0;
         }
@@ -1604,6 +1647,10 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
              getToolkit().beep();
              evt.consume();
          }   
+         
+         if(txtPrefijoCompra.getText().length()>6){
+             evt.consume();  
+        }
     }//GEN-LAST:event_txtPrefijoCompraKeyTyped
 
     private void txtFacturaCompraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyTyped
@@ -1613,6 +1660,9 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
              getToolkit().beep();
              evt.consume();
          }   
+         if(txtFacturaCompra.getText().length()>6){
+             evt.consume();  
+         }
     }//GEN-LAST:event_txtFacturaCompraKeyTyped
 
     private void txtFacturaCompraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyPressed
@@ -1646,6 +1696,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 }
                 
             }
+            
             getNroFactura();
             
             for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
@@ -1687,13 +1738,13 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 bf.columnas = "nro_prefijo as \"Nro. Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\"";
                 bf.tabla = "Compra";
                 bf.order = "nro_factura";
-                bf.filtroBusqueda = "es_factura = 'S' and estado = 'PENDIENTE' or estado = 'CONFIRMADO'"; //factura en suspension. Solo los que esten en estado Borrador
+                bf.filtroBusqueda = "es_factura = 'S' and estado = 'PENDIENTE' or estado = 'PAGADO'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
 
-                for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                    if (modeloNroFactura.getValueAt(c, 0).toString().equals(bf.retorno)){
+                for(int c=0; c<modeloNroFacturaPagadas.getRowCount(); c ++){
+                    if (modeloNroFacturaPagadas.getValueAt(c, 0).toString().equals(bf.retorno)){
                         modoBusqueda(false);
                         establecerBotones("Nuevo");
                         k2 = c;
@@ -1706,8 +1757,8 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             }
             getNroFacturaPagadas();
        
-            for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                if (modeloNroFactura.getValueAt(c, 0).toString().equals(txtFacturaCompra.getText())){
+            for(int c=0; c<modeloNroFacturaPagadas.getRowCount(); c ++){
+                if (modeloNroFacturaPagadas.getValueAt(c, 0).toString().equals(txtFacturaReferenciada.getText())){
                     modoBusqueda(false);
                     establecerBotones("Edicion");
                     k2 = c;                   
@@ -1717,6 +1768,38 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_txtFacturaReferenciadaKeyPressed
+
+    private void txtFacturaReferenciadaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaReferenciadaKeyTyped
+       char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }  
+         if(txtFacturaReferenciada.getText().length()>6){
+             evt.consume();  
+         }
+    }//GEN-LAST:event_txtFacturaReferenciadaKeyTyped
+
+    private void txtTimbradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimbradoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTimbradoActionPerformed
+
+    private void txtTimbradoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimbradoKeyPressed
+       
+    }//GEN-LAST:event_txtTimbradoKeyPressed
+
+    private void txtTimbradoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimbradoKeyTyped
+        char c = evt.getKeyChar();
+        if(Character.isLetter(c))
+        {
+            getToolkit().beep();
+            evt.consume();
+        }
+        if(txtTimbrado.getText().length()>7){
+             evt.consume();  
+        }
+    }//GEN-LAST:event_txtTimbradoKeyTyped
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1749,6 +1832,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JLabel labelFechaRecepcion;
     private javax.swing.JLabel labelPrefijoCompra;
     private javax.swing.JLabel labelProveedorNombre;
+    private javax.swing.JLabel labelProveedorNombre1;
     private javax.swing.JLabel labelSubTotal;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JTable tbDetalleCompra;
@@ -1764,6 +1848,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtProveedor;
     private javax.swing.JTextField txtProveedor1;
     private javax.swing.JFormattedTextField txtSubTotal;
+    private javax.swing.JTextField txtTimbrado;
     private javax.swing.JFormattedTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }
