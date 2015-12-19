@@ -185,6 +185,9 @@ public class AnularNotaCreditoCompra extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPrefijoKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrefijoKeyTyped(evt);
+            }
         });
         jPanel1.add(txtPrefijo, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 90, 76, -1));
 
@@ -203,6 +206,12 @@ public class AnularNotaCreditoCompra extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel1.setText("Número de nota de crédito a anular");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 210, 20));
+
+        txtNroNotaCredito.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroNotaCreditoKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtNroNotaCredito, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 90, 70, -1));
 
         jLabel6.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
@@ -344,6 +353,27 @@ public class AnularNotaCreditoCompra extends javax.swing.JInternalFrame {
             txtPrefijo.setBackground(Color.yellow);
         }
     }//GEN-LAST:event_bCancelarActionPerformed
+
+    private void txtNroNotaCreditoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroNotaCreditoKeyTyped
+         char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+    }//GEN-LAST:event_txtNroNotaCreditoKeyTyped
+
+    private void txtPrefijoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrefijoKeyTyped
+          char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+          if(txtPrefijo.getText().length()>6){
+             evt.consume();  
+         }
+    }//GEN-LAST:event_txtPrefijoKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -407,16 +407,16 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
          
                 int saldoFactura = 0;
                 try {
-                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(totalNotaCredito);
-                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                   // saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(totalNotaCredito);
+                   // ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
           
                 int saldoNotaCredito = 0;
                 try{
-                    saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) - Integer.parseInt(totalNotaCredito);
-                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
+                   // saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) - Integer.parseInt(totalNotaCredito);
+                    //ventaControlador.updateSaldoFactura(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
                 }catch(Exception ex){
                      Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
