@@ -85,7 +85,7 @@ public class DepositoControlador {
     public ResultSet datoCombo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
 
-        String query = "SELECT codigo, nombre, descripcion from deposito";
+        String query = "SELECT codigo || ' - ' || nombre as dato, codigo from Deposito";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
