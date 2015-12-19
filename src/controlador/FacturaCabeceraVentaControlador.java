@@ -447,7 +447,7 @@ public class FacturaCabeceraVentaControlador {
     public ResultSet getNroFactura() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select trim(to_char(cast(nro_factura as integer),'9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd/mm/yyyy'), pago_contado, moneda_id, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0) from venta where estado = 'BORRADOR'";
+          String query = "Select trim(to_char(cast(nro_factura as integer),'9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd/mm/yyyy'), pago_contado, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0) from venta where estado = 'BORRADOR'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
