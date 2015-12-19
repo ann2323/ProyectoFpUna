@@ -450,6 +450,9 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtNroRecibKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroRecibKeyTyped(evt);
+            }
         });
         jPanel1.add(txtNroRecib, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 80, -1));
 
@@ -760,6 +763,15 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
          }
         }
     }//GEN-LAST:event_txtNroRecibKeyPressed
+
+    private void txtNroRecibKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroRecibKeyTyped
+         char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+    }//GEN-LAST:event_txtNroRecibKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
