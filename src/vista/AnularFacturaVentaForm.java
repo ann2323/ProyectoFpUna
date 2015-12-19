@@ -376,8 +376,8 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
                 String nroFactura = txtNroFactura.getText().replace(".", "");
                 int saldoFactura = 0;
                 try {
-                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura))- Integer.parseInt(txtTotal.getText().replace(".", ""));
-                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                    //saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura))- Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    //ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }

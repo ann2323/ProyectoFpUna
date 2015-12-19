@@ -155,6 +155,9 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPrefijoKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrefijoKeyTyped(evt);
+            }
         });
         jPanel1.add(txtPrefijo, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 76, -1));
 
@@ -174,6 +177,12 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel1.setText("Número de factura a anular");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, 170, 20));
+
+        txtNroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroFacturaKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtNroFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 80, 70, -1));
 
         jLabel6.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
@@ -317,6 +326,27 @@ public class AnularFacturaCompraForm extends javax.swing.JInternalFrame {
     private void txtPrefijoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrefijoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPrefijoActionPerformed
+
+    private void txtPrefijoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrefijoKeyTyped
+          char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+         if(txtPrefijo.getText().length()>6){
+             evt.consume();  
+         }
+    }//GEN-LAST:event_txtPrefijoKeyTyped
+
+    private void txtNroFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNroFacturaKeyTyped
+           char c = evt.getKeyChar();
+         if(Character.isLetter(c))
+         {
+             getToolkit().beep();
+             evt.consume();
+         }   
+    }//GEN-LAST:event_txtNroFacturaKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
