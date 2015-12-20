@@ -34,33 +34,11 @@ public class FacturaCabeceraVentaControlador {
             throw new Exception("Error al guardar venta - cabecera: \n" + e.getMessage());
         }
     }
-     
-      /*public void update(Venta venta) throws Exception {
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        baseDatos.beginTransaction();
-        
-        try {
-            baseDatos.createQuery("update Venta set "
-                   +" fecha = '" + venta.getFecha() + "', precio_total = '" + venta.getPrecioTotal()  + "', cantidad_total = '" + venta.getCantidadTotal() + "'"
-                    + ", descuento = '" +  venta.getDescuento() + "', pago_contado = '" +  venta.getPagoContado() + "', estado = '" + venta.getEstado() +  "'"                   
-            + ", es_factura = '" + venta.getEsFactura() + "', cliente_id = '" + venta.getClienteId() + "', vencimiento = '" + venta.getVencimiento() + "'"
-                    + ", pago_en = '" + venta.getPagoEn() + "', moneda_id = '" + venta.getMonedaId() + "', cod_deposito = '" + venta.getCodDeposito() + "'"
-                    + ", nro_prefijo = '" + venta.getNroPrefijo() + "', nro_factura = '" + venta.getNroFactura() + "', iva10 = '" + venta.getIva10() + "', iva5 = '" + venta.getIva5() + "' where nro_factura = '" + venta.getNroFactura() + "'").executeUpdate();
-            baseDatos.beginTransaction().commit();
-            baseDatos.flush();
-            baseDatos.close();
-       } catch (org.hibernate.exception.ConstraintViolationException cve) {
-             JOptionPane.showMessageDialog(null, "El valor ya existe. Error al actualizar venta", "Error", JOptionPane.ERROR_MESSAGE);
-             
-        }catch(HibernateException e){
-            e.getMessage();
-        }
-     }*/
-     
+       
      public ResultSet getNroFacturaPagadas() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select trim(to_char(cast(nro_factura as integer), '9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd/mm/yyyy'), pago_contado, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0), to_char(fecha,'dd/mm/yyyy'), fact_referenciada from venta where estado = 'CONFIRMADO' or estado ='PENDIENTE'";
+          String query = "Select trim(to_char(cast(nro_factura as integer), '9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd/mm/yyyy'), pago_contado, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0), fact_referenciada from venta where estado = 'CONFIRMADO' or estado ='PENDIENTE'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -206,22 +184,6 @@ public class FacturaCabeceraVentaControlador {
         }
     }
    
-    public ResultSet datoCombo() throws Exception {
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        //SELECT codigo || ' - ' || nombre as dato, codigo from Deposito
-
-        String query = "SELECT moneda_id, nombre from moneda";
-        PreparedStatement ps = baseDatos.connection().prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
-        try {
-            return rs;
-        } catch(HibernateException e){
-            throw new Exception("Error al consultar la tabla moneda: \n" + e.getMessage());
-        }
-    }
-    
-    
-    
     
     public String getDate(Integer nro_factura){
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
@@ -462,7 +424,7 @@ public class FacturaCabeceraVentaControlador {
      public ResultSet getNroFactura1() throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
          
-          String query = "Select trim(to_char(cast(nro_factura as integer), '9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd/mm/yyyy'), pago_contado, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0), fact_referenciada from venta where estado = 'BORRADOR'";
+          String query = "Select trim(to_char(cast(nro_factura as integer), '9G999G999')), nro_prefijo, cliente_id, to_char(fecha,'dd-mm-yyyy'), pago_contado, cod_deposito, cantidad_total, precio_total, descuento, venta_id, coalesce(iva10, 0), coalesce(iva5, 0), coalesce(pago_en, 0), fact_referenciada from venta where estado = 'BORRADOR' and es_factura = 'N'";
          
          PreparedStatement ps = baseDatos.connection().prepareStatement(query);
          ResultSet rs = ps.executeQuery();
@@ -474,19 +436,6 @@ public class FacturaCabeceraVentaControlador {
     }
     
 
-    public String getTipoPago(String idMoneda) throws SQLException, Exception {
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT nombre from Moneda where moneda_id = '" + idMoneda + "'";
-        PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
-        try {
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return (String) rs.getObject(1);
-        } catch(HibernateException e){
-            throw new Exception("Error al consultar cliente: \n" + e.getMessage());
-        } 
-    }
-    
      public void updateEstadoAnuladoNotaCreditoV(int nroNotaCredito) throws Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             baseDatos.beginTransaction();
