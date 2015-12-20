@@ -73,6 +73,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     DefaultTableModel modeloD = new DefaultTableModel();
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     DefaultTableModel modeloNroFactura;
+    DefaultTableModel modeloNroFacturaBorrador;
     
     Stock stock = new Stock();
     
@@ -102,7 +103,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
         Vector<Deposito> depVec = new Vector<Deposito>();
         try {
           
-            try (ResultSet rs = depBD.datoCombo()) {
+            try (ResultSet rs = depBD.datoComboFactura()) {
                 while(rs.next()){
                     depModel=new Deposito();
                     depModel.setCodigo(rs.getString(1));
@@ -251,10 +252,10 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     
     private void getNroFactura() {
         
-        modeloNroFactura=new DefaultTableModel();
+        modeloNroFacturaBorrador=new DefaultTableModel();
         try {
-            modeloNroFactura.setColumnCount(0);
-            modeloNroFactura.setRowCount(0);
+            modeloNroFacturaBorrador.setColumnCount(0);
+            modeloNroFacturaBorrador.setRowCount(0);
                       
             try (ResultSet rs = ventaControlador.getNroFactura1()) {
            
@@ -263,7 +264,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                 int cantidadColumnas = rsMd.getColumnCount();
                 
                 for (int i = 1; i <= cantidadColumnas; i++) {
-                    modeloNroFactura.addColumn(rsMd.getColumnLabel(i));
+                    modeloNroFacturaBorrador.addColumn(rsMd.getColumnLabel(i));
                 }
 
                 while (rs.next()) {
@@ -271,7 +272,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                     for (int i = 0; i < cantidadColumnas; i++) {
                         fila[i]=rs.getObject(i+1);
                     }
-                    modeloNroFactura.addRow(fila);
+                    modeloNroFacturaBorrador.addRow(fila);
                 }
             } catch (Exception ex) {
                 showMessageDialog(null,  ex, "Error", JOptionPane.ERROR_MESSAGE);
@@ -357,7 +358,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             }
             ventaC.setNroPrefijo(txtPrefijo.getText());
             subTotalAuxiliar = Integer.parseInt(txtSubTotal.getText().replace(".", "").trim());
-            ventaC.setNroFactura(Integer.parseInt(txtNroNotaCredito.getText()));
+            ventaC.setNroFactura(Integer.parseInt(txtNroNotaCredito.getText().trim().replace(".","")));
             Date ahora = new Date();
             SimpleDateFormat formateador = new SimpleDateFormat("dd-MM-yyyy");
             Date date = formateador.parse(txtFecha.getText());
@@ -652,23 +653,23 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
      
      private void datosActualesNroFactura() {
             DecimalFormat forma = new DecimalFormat("###,###.##");   
-            txtPrefijo.setText(modeloNroFactura.getValueAt(k2, 1).toString());
-            txtNroNotaCredito.setText(modeloNroFactura.getValueAt(k2, 0).toString());
+            txtPrefijo.setText(modeloNroFacturaBorrador.getValueAt(k2, 1).toString());
+            txtNroNotaCredito.setText(modeloNroFacturaBorrador.getValueAt(k2, 0).toString());
             try {
                          
-                String cedula=forma.format(Integer.parseInt(cliC.getCedula(modeloNroFactura.getValueAt(k2, 2).toString())));
+                String cedula=forma.format(Integer.parseInt(cliC.getCedula(modeloNroFacturaBorrador.getValueAt(k2, 2).toString())));
                 txtCliente.setText(cedula);
-                txtCliente1.setText(cliC.getNombreCliente(modeloNroFactura.getValueAt(k2, 2).toString()));
-                JCdeposito.setSelectedItem(modeloNroFactura.getValueAt(k2, 5).toString());
+                txtCliente1.setText(cliC.getNombreCliente(modeloNroFacturaBorrador.getValueAt(k2, 2).toString()));
+                JCdeposito.setSelectedItem(modeloNroFacturaBorrador.getValueAt(k2, 5).toString());
             
             } catch (Exception ex) {
                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
             }
   
-            txtFecha.setText(modeloNroFactura.getValueAt(k2, 3).toString());
-            String facturaReferenciada = forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 13).toString().trim().replace(".", "")));
+            txtFecha.setText(modeloNroFacturaBorrador.getValueAt(k2, 3).toString());
+            String facturaReferenciada = forma.format(Integer.parseInt(modeloNroFacturaBorrador.getValueAt(k2, 13).toString()));
             txtFacturaReferenciada.setText(facturaReferenciada);
-            cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString())); 
+            cargarDetalleFactura(Integer.parseInt(modeloNroFacturaBorrador.getValueAt(k2, 9).toString())); 
             datosActualesDetalleFactura();
             
     }
@@ -708,7 +709,8 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             String excentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
             tbDetalleVenta.setValueAt(excentasFormat, i, 4);
             forma = new DecimalFormat("###,###.##");
-            String subTotalFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 5).toString()));
+            String subTotalFormat = "";
+            subTotalFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 5).toString()));
             tbDetalleVenta.setValueAt(subTotalFormat, i, 5);
             i++;
            }
@@ -747,7 +749,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim());      
              String subTotalFormat=formateador.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
-             txtTotal.setText(txtSubTotal.getText().trim());
+             txtTotal.setText(txtSubTotal.getText());
              double h = Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
              iva10=iva10+h;
              String ivaFormat=formateador.format(Math.round(iva10));
@@ -1322,37 +1324,37 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
 
         txtFecha.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     true,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 255),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.ButtonPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(128, 128, 128),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(0, 0, 255),
                     false,
                     true,
                     new datechooser.view.appearance.swing.LabelPainter()),
-                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
+                new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 0),
                     new java.awt.Color(255, 0, 0),
                     false,
@@ -1362,6 +1364,12 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                 false,
                 true)));
     txtFecha.setFormat(2);
+    try {
+        txtFecha.setDefaultPeriods(new datechooser.model.multiple.PeriodSet(new datechooser.model.multiple.Period(new java.util.GregorianCalendar(2015, 11, 20),
+            new java.util.GregorianCalendar(2015, 11, 20))));
+} catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
+    e1.printStackTrace();
+    }
     txtFecha.setLocale(new java.util.Locale("es", "BO", ""));
     JpanelVenta.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 170, 120, -1));
 
@@ -1383,6 +1391,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
 
     private void tbDetalleVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDetalleVentaKeyPressed
         
+        System.out.println("ENTRO EN EL KEY PRESSED");
         if (!tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 2).equals("")&&!tbDetalleVenta.getValueAt(tbDetalleVenta.getSelectedRow(), 3).equals("")){
         txtDescuento.setText("0");
         formateador = new DecimalFormat();
@@ -1798,16 +1807,16 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtNroNotaCredito.getText())) {
                 //TBdetalleCuenta2.setRowSelectionInterval(0,0);
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Factura\", nro_prefijo as \"Nro. Prefijo\"";
+                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro. Nota Crédito\", nro_prefijo as \"Nro. Prefijo\"";
                 bf.tabla = "venta";
                 bf.order = "nro_factura";
-                bf.filtroBusqueda = "es_factura = 'N' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
+                bf.filtroBusqueda = " es_factura = 'N' and estado = 'BORRADOR'"; //factura en suspension. Solo los que esten en estado Borrador
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
 
-                for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                    if (modeloNroFactura.getValueAt(c, 0).toString().equals(bf.retorno)){
+                for(int c=0; c<modeloNroFacturaBorrador.getRowCount(); c ++){
+                    if (modeloNroFacturaBorrador.getValueAt(c, 0).toString().equals(bf.retorno)){
                         modoBusqueda(false);
                         establecerBotones("Edicion");
                         k2 = c;
@@ -1820,8 +1829,8 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             }
             getNroFactura();
             
-            for(int c=0; c<modeloNroFactura.getRowCount(); c ++){
-                if (modeloNroFactura.getValueAt(c, 1).toString().equals(txtNroNotaCredito.getText())){
+            for(int c=0; c<modeloNroFacturaBorrador.getRowCount(); c ++){
+                if (modeloNroFacturaBorrador.getValueAt(c, 1).toString().equals(txtNroNotaCredito.getText())){
                     modoBusqueda(false);
                     establecerBotones("Edicion");
                     k2 = c;                   
