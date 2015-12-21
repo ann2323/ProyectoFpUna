@@ -42,18 +42,7 @@ public class EntradasControlador {
             throw new Exception("Error al guardar entrada - detalle: \n" + e.getMessage());
         }
     }
-     public void cambiarAEnProceso(String pry){
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            if (Integer.parseInt(baseDatos.createQuery("select count(*) from Proyectos where codigo = '" + pry + "'").uniqueResult().toString().trim()) > 0){
-                if (Integer.parseInt(baseDatos.createQuery("select count(*) from Entrada where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
-                    if (Integer.parseInt(baseDatos.createQuery("select count(*) from Salida where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
-                        if (Integer.parseInt(baseDatos.createQuery("select count(*) from Compra where proyecto_id = (select id from Proyectos where codigo = '" + pry + "') ").uniqueResult().toString().trim()) == 0){
-                                baseDatos.createQuery("update Proyectos set estado = 1 where codigo = '" + pry + "'").executeUpdate();
-                        }
-                    }
-                }
-            }
-    }
+    
     public void update(Entrada ent) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         baseDatos.beginTransaction();
@@ -74,6 +63,19 @@ public class EntradasControlador {
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código interno: \n" + e.getMessage());
         }
+    }
+    
+    public void cambiarAEnProceso(String pry){
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            if (Integer.parseInt(baseDatos.createQuery("select count(*) from Proyectos where codigo = '" + pry + "'").uniqueResult().toString().trim()) > 0){
+                if (Integer.parseInt(baseDatos.createQuery("select count(*) from Entrada where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
+                    if (Integer.parseInt(baseDatos.createQuery("select count(*) from Salida where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
+                        if (Integer.parseInt(baseDatos.createQuery("select count(*) from Compra where proyecto_id = (select id from Proyectos where codigo = '" + pry + "') ").uniqueResult().toString().trim()) == 0){
+                                baseDatos.createQuery("update Proyectos set estado = 1 where codigo = '" + pry + "'").executeUpdate();
+                        }
+                    }
+                }
+            }
     }
     
     public Integer nuevaLinea() throws Exception {
