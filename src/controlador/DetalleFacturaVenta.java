@@ -118,7 +118,7 @@ public class DetalleFacturaVenta {
                    +" nota_credito = 'S' where venta_id = '" +idVenta+ "' and codigo = '" +cmp+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
+            throw new Exception("Error al modificar factura: \n" + e.getMessage());
         }
     }
   
