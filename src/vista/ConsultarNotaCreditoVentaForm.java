@@ -311,20 +311,21 @@ public class ConsultarNotaCreditoVentaForm extends javax.swing.JInternalFrame {
         
         DecimalFormat forma = new DecimalFormat("###,###.##");
         int i=0;
-        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+        
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
-            String nroNotaC = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
+            String nroNotaC = "";
+            nroNotaC = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
             tbFact.setValueAt(nroNotaC, i, 1);
             String facturaRef = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 2).toString()));
             tbFact.setValueAt(facturaRef, i, 2);
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
-            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 4).toString()));
+            String total = "";
+            total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 4).toString()));
             tbFact.setValueAt(total, i, 4);
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 5), i, 5);
-            String saldo = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 6).toString()));
+            String saldo = "";
+            saldo = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 6).toString()));
             tbFact.setValueAt(saldo, i, 6);
-            i++;
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
