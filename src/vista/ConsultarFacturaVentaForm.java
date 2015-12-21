@@ -378,20 +378,22 @@ public class ConsultarFacturaVentaForm extends javax.swing.JInternalFrame {
 
     private void cargarTabla() throws Exception {
         int i=0;
-        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+         while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+            DecimalFormat forma = new DecimalFormat("###,###.##");
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
             String nroFact = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
             tbFact.setValueAt(nroFact, i, 1);
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 2), i, 2);
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
             tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 4), i, 4);
-            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
+            String total = "";
+            total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
+             System.out.println("TOTAL "+total);
             tbFact.setValueAt(total, i, 5);
-            String saldo = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 7).toString()));
+            String saldo = "";
+            saldo = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 7).toString()));
             tbFact.setValueAt(saldo, i, 7);
             i++;
-        }
-       
-    }
-    
+         }
+   }  
 }
