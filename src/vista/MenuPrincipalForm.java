@@ -80,6 +80,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         consultarMovimientoVenta = new javax.swing.JMenuItem();
         consultarMovimientoCompra = new javax.swing.JMenuItem();
+        HechaukaCompra = new javax.swing.JMenuItem();
+        HechaukaVenta = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
@@ -395,6 +397,24 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mConsultar.add(consultarMovimientoCompra);
+
+        HechaukaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        HechaukaCompra.setText("Hechauka Compra");
+        HechaukaCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HechaukaCompraActionPerformed(evt);
+            }
+        });
+        mConsultar.add(HechaukaCompra);
+
+        HechaukaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        HechaukaVenta.setText("Hechauka Venta");
+        HechaukaVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HechaukaVentaActionPerformed(evt);
+            }
+        });
+        mConsultar.add(HechaukaVenta);
 
         jMenuBar1.add(mConsultar);
 
@@ -793,7 +813,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mConsultarFacturaVentaActionPerformed
 
     private void mConsultarFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarFacturaCompraActionPerformed
-       /*try {
+       try {
             ConsultarFacturaCompraForm tf2 = new ConsultarFacturaCompraForm();
             try {
                 if (p.tiene(tf2.getTitle(),this.codRol) == 0){
@@ -807,25 +827,25 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             tf2.show();
         } catch (Exception ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }//GEN-LAST:event_mConsultarFacturaCompraActionPerformed
 
     private void mAnularFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaCompraActionPerformed
-//         try {
-//            AnularFacturaCompraForm tf2 = new AnularFacturaCompraForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+         try {
+            AnularFacturaCompraForm tf2 = new AnularFacturaCompraForm();
+            try {
+               if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mAnularFacturaCompraActionPerformed
 
     private void mConsultarNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mConsultarNotaCreditoVentaActionPerformed
@@ -1042,6 +1062,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private void consultarMovimientoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarMovimientoVentaActionPerformed
         try {
             MovimientoVentaForm tf2 = new MovimientoVentaForm();
+            tf2.setSize(600, 300);  
             try {
                 if (p.tiene(tf2.getTitle(),this.codRol) == 0){
                     showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
@@ -1060,6 +1081,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private void consultarMovimientoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultarMovimientoCompraActionPerformed
         try {
             MovimientoCompraForm tf2 = new MovimientoCompraForm();
+            tf2.setSize(600, 300);  
             try {
                 if (p.tiene(tf2.getTitle(),this.codRol) == 0){
                     showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
@@ -1084,6 +1106,64 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_mAcercaDeMouseClicked
+
+    private void HechaukaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HechaukaCompraActionPerformed
+            try {
+            HechaukaCompraForm tf4 = new HechaukaCompraForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }                                                       
+
+    private void mConsultarFacturaVenta2ActionPerformed(java.awt.event.ActionEvent evt) {                                                        
+         try {
+            HechaukaVentaForm tf4 = new HechaukaVentaForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }//GEN-LAST:event_HechaukaCompraActionPerformed
+
+    private void HechaukaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HechaukaVentaActionPerformed
+          try {
+            HechaukaVentaForm tf4 = new HechaukaVentaForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_HechaukaVentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1121,6 +1201,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem HechaukaCompra;
+    private javax.swing.JMenuItem HechaukaVenta;
     private javax.swing.JMenuItem ReciboPagoProv;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
     private javax.swing.JMenuItem consultarMovimientoCompra;

@@ -66,8 +66,8 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        txtFechaDesde = new datechooser.beans.DateChooserCombo();
         txtFechaHasta = new datechooser.beans.DateChooserCombo();
+        txtFechaDesde1 = new datechooser.beans.DateChooserCombo();
 
         setClosable(true);
         setIconifiable(true);
@@ -91,16 +91,13 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
                 formInternalFrameOpened(evt);
             }
         });
-
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel4.setText("Fecha Hasta");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, 20));
 
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel1.setText("Fecha Desde");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, 90, 20));
 
         bGenerar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultaCuentaCliente.png"))); // NOI18N
         bGenerar.setText("Generar");
@@ -115,39 +112,20 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
                 bGenerarActionPerformed(evt);
             }
         });
-        jPanel1.add(bGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 80, 130, 60));
 
         jLabel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Movimiento por Fecha", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
         jLabel2.setEnabled(false);
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 460, 110));
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel5.setFont(new java.awt.Font("Aharoni", 1, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("CONSULTA DE MOVIMIENTO DE COMPRA");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 514, -1));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel5)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addContainerGap())
-        );
-
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 510, 40));
-
-        txtFechaDesde.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
+        txtFechaHasta.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
                 new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                     new java.awt.Color(0, 0, 0),
@@ -188,11 +166,11 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
                 (datechooser.view.BackRenderer)null,
                 false,
                 true)));
-    txtFechaDesde.setNothingAllowed(false);
-    txtFechaDesde.setLocale(new java.util.Locale("es", "BO", ""));
-    jPanel1.add(txtFechaDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 140, -1));
+    txtFechaHasta.setNothingAllowed(false);
+    txtFechaHasta.setFormat(2);
+    txtFechaHasta.setLocale(new java.util.Locale("es", "BO", ""));
 
-    txtFechaHasta.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
+    txtFechaDesde1.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
         new datechooser.view.appearance.ViewAppearance("custom",
             new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                 new java.awt.Color(0, 0, 0),
@@ -233,20 +211,56 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
             (datechooser.view.BackRenderer)null,
             false,
             true)));
-txtFechaHasta.setNothingAllowed(false);
-txtFechaHasta.setLocale(new java.util.Locale("es", "BO", ""));
-jPanel1.add(txtFechaHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, 140, -1));
+txtFechaDesde1.setNothingAllowed(false);
+txtFechaDesde1.setLocale(new java.util.Locale("es", "BO", ""));
 
-javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-getContentPane().setLayout(layout);
-layout.setHorizontalGroup(
-    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+jPanel1.setLayout(jPanel1Layout);
+jPanel1Layout.setHorizontalGroup(
+    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+    .addGroup(jPanel1Layout.createSequentialGroup()
+        .addGap(30, 30, 30)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(20, 20, 20)
+                .addComponent(txtFechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(bGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(130, 130, 130)
+                .addComponent(txtFechaDesde1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
-    layout.setVerticalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+    jPanel1Layout.setVerticalGroup(
+        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(20, 20, 20)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(20, 20, 20)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(20, 20, 20)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(60, 60, 60)
+                    .addComponent(txtFechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(20, 20, 20)
+                    .addComponent(bGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(20, 20, 20)
+                    .addComponent(txtFechaDesde1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
     );
+
+    getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 660, 210));
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -260,9 +274,9 @@ layout.setHorizontalGroup(
                 		                       		                      		             
              Map parametro = new HashMap (); 
              SimpleDateFormat formato1 = new SimpleDateFormat("dd-MM-yyyy");
-             Date date1 = formato1.parse(txtFechaDesde.getText()); 
+             Date date1 = formato1.parse(txtFechaHasta.getText()); 
              SimpleDateFormat formato2 = new SimpleDateFormat("dd-MM-yyyy");
-             Date date2 = formato2.parse(txtFechaDesde.getText());             
+             Date date2 = formato2.parse(txtFechaHasta.getText());             
            		             
              parametro.put("fechaDesde", date1);		          
              parametro.put("fechaHasta", date2);		  
@@ -291,7 +305,7 @@ layout.setHorizontalGroup(
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private datechooser.beans.DateChooserCombo txtFechaDesde;
+    private datechooser.beans.DateChooserCombo txtFechaDesde1;
     private datechooser.beans.DateChooserCombo txtFechaHasta;
     // End of variables declaration//GEN-END:variables
 

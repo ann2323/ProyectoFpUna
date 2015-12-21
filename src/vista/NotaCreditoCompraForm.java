@@ -81,6 +81,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
      Integer  cantProducto=0;
      int k, k2, factRef;
      DecimalFormat formateador = new DecimalFormat("###,###.##");
+     DecimalFormat formateadorSus = new DecimalFormat("###,###.##");
      String estado="";
      
     StockControlador stockCont = new StockControlador();
@@ -128,7 +129,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         Vector<Deposito> depVec = new Vector<Deposito>();
         try {
           
-            try (ResultSet rs = depBD.datoCombo()) {
+            try (ResultSet rs = depBD.datoComboFactura()) {
                 while(rs.next()){
                     depModel=new Deposito();
                     depModel.setCodigo(rs.getString(1));
@@ -162,7 +163,6 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     }
       private void limpiar() {
         txtPrefijoCompra.setText("");
-        JCdeposito.setSelectedIndex(0);
         tbDetalleCompra.removeAll();
         txtFacturaCompra.setText("");
         txtFacturaReferenciada.setText("");
@@ -348,7 +348,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
             compraC.setCodDeposito(dep.getCodigo());
             
-            compraC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText().replace(".", "").trim()));
+            compraC.setCantidadTotal(Integer.parseInt(txtCantidadTotal.getText().replace(".","").trim()));
         
             compraC.setDescuento(Integer.parseInt(txtDescuento.getText()));
           
@@ -381,7 +381,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                               System.out.println("not a number"); 
                             }
                           try {
-                              compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().trim().replace(".", "")));
+                              compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().replace(".","").trim()));
                             } catch (NumberFormatException e) {
                                compraD.setCantidad(Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString()+"0"));
                             }
@@ -396,7 +396,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
                                 compraD.setSubTotal(Integer.parseInt(tbDetalleCompra.getValueAt(i, 5).toString()+"0"));
                             }  
    
-                            if(stockCont.tieneStock(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo()) < Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString()) ){
+                            if(stockCont.tieneStock(tbDetalleCompra.getValueAt(i, 0).toString(), dep.getCodigo()) < Integer.parseInt(tbDetalleCompra.getValueAt(i, 3).toString().replace(".", "").trim()) ){
                                     showMessageDialog(null, "No hay stock", "Atención", INFORMATION_MESSAGE);
                                     return;        
                             }
@@ -618,6 +618,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             } catch (Exception ex) {
                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
             }      
+                    
             cargarDetalleFacturaFactura(Integer.parseInt(modeloNroFacturaPagadas.getValueAt(k2, 9).toString())); 
             datosActualesDetalleFactura();
             
@@ -635,7 +636,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
             String precioUnit=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 2).toString()));
             tbDetalleCompra.setValueAt(precioUnit, i, 2);
             forma = new DecimalFormat("###,###.##");
-            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString().trim().replace(".", "")));
+            String cantidadFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 3).toString()));
             tbDetalleCompra.setValueAt(cantidadFormat, i, 3);
             forma = new DecimalFormat("###,###.##");
             String excentasFormat=forma.format(Integer.parseInt(modeloDetalleBusqueda.getValueAt(i, 4).toString()));
@@ -794,56 +795,56 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
        int j=0;
        while (!"".equals(tbDetalleCompra.getValueAt(j, 0).toString())){
         txtDescuento.setText("0");
-        formateador = new DecimalFormat();
+        formateadorSus = new DecimalFormat();
         
-        Integer precio;
+        Integer precio=0;
         String codigo = tbDetalleCompra.getValueAt(j,0).toString();
 
             
         precio = Integer.parseInt(tbDetalleCompra.getValueAt(j, 2).toString().replace(".", "").trim());
         
-        Integer Cantidad;
+        Integer Cantidad=0;
         
-        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(j, 3).toString().trim().replace(".",""));
-        formateador = new DecimalFormat("###,###.##");
-        String cantidadDet=formateador.format(Cantidad);
+        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(j, 3).toString().replace(".","").trim());
+        formateadorSus = new DecimalFormat("###,###.##");
+        String cantidadDet=formateadorSus.format(Cantidad);
         tbDetalleCompra.setValueAt((cantidadDet), j, 3); 
         int total=(precio*Cantidad);
-        String totalFormat=(formateador.format(total));
+        String totalFormat=(formateadorSus.format(total));
                           
          cantProducto=cantProducto+Cantidad;
-         formateador = new DecimalFormat("###,###.##");
-         String cantidad=formateador.format(cantProducto);
+         formateadorSus = new DecimalFormat("###,###.##");
+         String cantidad=formateadorSus.format(cantProducto);
          txtCantidadTotal.setText(cantidad);      
          if(componentesControl.getTipoIva(codigo)==0){
-             formateador = new DecimalFormat("###,###.##");
+             formateadorSus = new DecimalFormat("###,###.##");
              tbDetalleCompra.setValueAt((totalFormat), j, 5);      
 
              subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());      
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
              iva10=iva10+h;
-             String ivaFormat=formateador.format(Math.round(iva10));
+             String ivaFormat=formateadorSus.format(Math.round(iva10));
              txtIva10.setText(ivaFormat);
              
          }else if (componentesControl.getTipoIva(codigo)==1){
-             formateador = new DecimalFormat("###,###.##");
+             formateadorSus = new DecimalFormat("###,###.##");
              tbDetalleCompra.setValueAt((totalFormat), j, 5);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.05; 
              iva5=iva5+h;
-             String ivaFormat=formateador.format(Math.round(iva5));
+             String ivaFormat=formateadorSus.format(Math.round(iva5));
              txtIva5.setText(ivaFormat);
          }else{
              formateador = new DecimalFormat("###,###.##");
              tbDetalleCompra.setValueAt((totalFormat), j, 4);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 4).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              
@@ -1339,7 +1340,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
         
         Integer Cantidad;
         
-        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim().replace(".",""));
+        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().replace(".","").trim());
 		formateador = new DecimalFormat("###,###.##");
         String cantidadDet=formateador.format(Cantidad);
         tbDetalleCompra.setValueAt((cantidadDet), tbDetalleCompra.getSelectedRow(), 3); 
@@ -1399,7 +1400,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
      
            Integer Cantidad2;
       
-           Cantidad2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim().replace(".", ""));
+           Cantidad2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().replace(".", "").trim());
           
 
             int total2=(precio2*Cantidad2);
@@ -1443,7 +1444,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
      
            Integer Cantidad2;
       
-           Cantidad2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().trim());
+           Cantidad2 = Integer.parseInt(tbDetalleCompra.getValueAt(tbDetalleCompra.getSelectedRow(), 3).toString().replace(".", "").trim());
                     
             int total2=(precio2*Cantidad2);
            

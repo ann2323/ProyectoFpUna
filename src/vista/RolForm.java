@@ -365,6 +365,7 @@ public class RolForm extends javax.swing.JInternalFrame {
       
          if (JBnuevo.isEnabled() == false) {//is Enable true - habilita boton 
                 try {
+                    
                     rolBD.insert(rolModel);
                     nuevo();
                     getRoles();

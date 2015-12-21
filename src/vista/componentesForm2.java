@@ -12,6 +12,8 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -140,6 +142,11 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         bCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 bCancelarMouseClicked(evt);
+            }
+        });
+        bCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCancelarActionPerformed(evt);
             }
         });
 
@@ -543,7 +550,11 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         } else if (bGuardar.isEnabled() == false){
             return;
         } else {
-            guardar();
+            try {
+                guardar();
+            } catch (Exception ex) {
+                Logger.getLogger(componentesForm2.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_bGuardarMouseClicked
 
@@ -632,6 +643,10 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
             buscar();
         }
     }//GEN-LAST:event_bBuscarMouseClicked
+
+    private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bCancelarActionPerformed
 
     private void primero(){
         if (modelo.getRowCount() == 0) {
@@ -726,7 +741,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
     }
     
     @SuppressWarnings("UnnecessaryReturnStatement")
-    private void guardar(){
+    private void guardar() throws Exception{
         if ("".equals(txtCodigo.getText())) {
             showMessageDialog(null, "Debe ingresar un código.", "Atención", INFORMATION_MESSAGE);
             txtCodigo.requestFocusInWindow();
@@ -744,7 +759,8 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
             txtPrecio.requestFocusInWindow();
             return;
         } 
-        else {
+        else {      
+            cmp.setCodigoInterno(cmpBD.nuevoCodigo());
             cmp.setCodigo(txtCodigo.getText());
             cmp.setUnidad(jComboUnidad.getSelectedIndex());
             cmp.setDescripcion(txtDescripcion.getText());     
