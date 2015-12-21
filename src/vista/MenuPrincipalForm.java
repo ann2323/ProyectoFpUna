@@ -7,6 +7,7 @@
 package vista;
 
 import controlador.permisos;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -458,6 +459,11 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
 
         mAcercaDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/acercaDe.png"))); // NOI18N
         mAcercaDe.setText("Acerca de");
+        mAcercaDe.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mAcercaDeMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(mAcercaDe);
 
         mSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salir.png"))); // NOI18N
@@ -715,21 +721,21 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mSalirActionPerformed
 
     private void mAnularFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularFacturaVentaActionPerformed
-//        try {
-//            AnularFacturaVentaForm tf2 = new AnularFacturaVentaForm();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+       try {
+            AnularFacturaVentaForm tf2 = new AnularFacturaVentaForm();
+            try {
+                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                   showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                   return;
+               }
+            } catch (Exception ex) {
+               Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+            tf2.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_mAnularFacturaVentaActionPerformed
 
     private void mFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mFacturaVentaActionPerformed
@@ -859,21 +865,21 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }//GEN-LAST:event_mConsultarNotaCreditoCompraActionPerformed
 
     private void mAnularNotaCreditoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularNotaCreditoVentaActionPerformed
-//        try {
-//            AnularNotaCreditoVenta tf2 = new AnularNotaCreditoVenta();
-//            try {
-//                if (p.tiene(tf2.getTitle(),this.codRol) == 0){
-//                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            } catch (Exception ex) {
-//                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            this.jDesktopPane1.add(tf2);
-//            tf2.show();
-//        } catch (Exception ex) {
-//            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            AnularNotaCreditoVenta tf2 = new AnularNotaCreditoVenta();
+           try {
+               if (p.tiene(tf2.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+               }
+           } catch (Exception ex) {
+               Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf2);
+           tf2.show();
+       } catch (Exception ex) {
+           Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+       }
     }//GEN-LAST:event_mAnularNotaCreditoVentaActionPerformed
 
     private void mAnularNotaCreditoCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAnularNotaCreditoCompraActionPerformed
@@ -1068,6 +1074,16 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_consultarMovimientoCompraActionPerformed
+
+    private void mAcercaDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mAcercaDeMouseClicked
+         try { 
+            Runtime run = Runtime.getRuntime();
+            String path = new String(" C:\\Users\\Pathy\\Desktop\\help.chm"); 
+            Process pro = run.exec("hh.exe" + path);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mAcercaDeMouseClicked
 
     /**
      * @param args the command line arguments
