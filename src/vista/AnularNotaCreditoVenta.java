@@ -16,7 +16,6 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -56,6 +55,7 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
     DefaultTableModel modeloDetalleBusqueda = new DefaultTableModel();
     Date dato = null;
     int k;
+    String idCliente = "";
     
    
      private void getVenta() {
@@ -282,7 +282,7 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
         );
 
         pack();
@@ -293,22 +293,23 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
             if ("*".equals(txtPrefijo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\", trim(to_char(cast(fact_referenciada as integer),'9G999G999')) as \"Factura Referenciada\"";
+                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total Nota Crédito\", trim(to_char(cast(fact_referenciada as integer),'9G999G999')) as \"Factura referenciada\"";
                 bf.tabla = "Venta";
-                bf.order = "venta_id";
-                bf.filtroBusqueda = "estado != 'ANULADO' and es_factura = 'N'";
+                bf.order = "nro_factura";
+                bf.filtroBusqueda = "estado = 'CONFIRMADO' and es_factura = 'N'";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
                 for(int c=0; c<modeloBusqueda.getRowCount(); c++){
                     if (modeloBusqueda.getValueAt(c, 0).toString().equals(bf.retorno)){
                         k = c;
-                        txtPrefijo.setText(modeloBusqueda.getValueAt(k, 0).toString());
-                        txtNroNotaCredito.setText(modeloBusqueda.getValueAt(k, 1).toString());
+                        txtPrefijo.setText(modeloBusqueda.getValueAt(k, 1).toString());
+                        txtNroNotaCredito.setText(modeloBusqueda.getValueAt(k, 0).toString());
                         txtFechaVenta.setText(modeloBusqueda.getValueAt(k, 2).toString());
-                        txtTotal.setText(modeloBusqueda.getValueAt(k, 3).toString());
-                        txtEstado.setText(modeloBusqueda.getValueAt(k, 4).toString());
-                        txtFacturaReferenciada.setText(modeloBusqueda.getValueAt(k, 5).toString());
+                        txtTotal.setText(modeloBusqueda.getValueAt(k, 4).toString());
+                        txtEstado.setText(modeloBusqueda.getValueAt(k, 5).toString());
+                        txtFacturaReferenciada.setText(modeloBusqueda.getValueAt(k, 6).toString());
+                        idCliente = modeloBusqueda.getValueAt(k, 7).toString();
                         txtPrefijo.setBackground(Color.white);
                     return;
                     }
@@ -415,23 +416,16 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
           
                 int saldoNotaCredito = 0;
                 try{
-                   saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) + Integer.parseInt(totalNotaCredito);
+                   saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) - Integer.parseInt(totalNotaCredito);
                    ventaControlador.updateSaldoNotaC(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
                 }catch(Exception ex){
                      Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
           
-                int idCliente = 0;
-                try {
-                    idCliente = cliC.devuelveId(modeloBusqueda.getValueAt(0, 6).toString());
-                } catch (Exception ex) {
-                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
-          
                 try {
                     int saldoCliente = 0;
-                    saldoCliente = cliC.getTotalSaldo(idCliente) - Integer.parseInt(txtTotal.getText().replace(".", ""));
-                    cliC.updateSaldo(saldoCliente, idCliente);
+                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(idCliente)) + Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    cliC.updateSaldo(saldoCliente, Integer.parseInt(idCliente));
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
