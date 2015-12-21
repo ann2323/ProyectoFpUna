@@ -155,7 +155,7 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Anular Nota de Crédito de Venta");
+        setTitle("Anular Nota Crédito Venta");
         setToolTipText("");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularNotaCreditoCompra.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(604, 402));
@@ -227,7 +227,7 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
                 bAnularActionPerformed(evt);
             }
         });
-        jPanel1.add(bAnular, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 310, 50, 50));
+        jPanel1.add(bAnular, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 260, 50, 50));
 
         bCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cancelar.png"))); // NOI18N
         bCancelar.setText(" ");
@@ -242,11 +242,11 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
                 bCancelarActionPerformed(evt);
             }
         });
-        jPanel1.add(bCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 310, 50, 50));
+        jPanel1.add(bCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 260, 50, 50));
 
         jLabel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Detalle Nota de Crédito", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
         jLabel2.setEnabled(false);
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 490, 240));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 430, 190));
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
 
@@ -259,10 +259,10 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(85, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
                 .addComponent(jLabel5)
-                .addGap(76, 76, 76))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,11 +278,11 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
         );
 
         pack();
@@ -407,16 +407,16 @@ public class AnularNotaCreditoVenta extends javax.swing.JInternalFrame {
          
                 int saldoFactura = 0;
                 try {
-                   // saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(totalNotaCredito);
-                   // ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura)) + Integer.parseInt(totalNotaCredito);
+                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
           
                 int saldoNotaCredito = 0;
                 try{
-                   // saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) - Integer.parseInt(totalNotaCredito);
-                    //ventaControlador.updateSaldoFactura(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
+                   saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) + Integer.parseInt(totalNotaCredito);
+                   ventaControlador.updateSaldoNotaC(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
                 }catch(Exception ex){
                      Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
