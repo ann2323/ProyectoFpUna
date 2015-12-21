@@ -102,7 +102,6 @@ public class salidaForm2 extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Salidas");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salida.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -583,7 +582,7 @@ public class salidaForm2 extends javax.swing.JInternalFrame {
                 {
                     BuscarForm bf = new BuscarForm(null, true);
                     bf.columnas = "codigo, descripcion";
-                    bf.tabla = "componentes";
+                    bf.tabla = "componentes where servicio = 0 --";
                     bf.order = "codigo_interno";
                     bf.filtroBusqueda = "";
                     bf.setLocationRelativeTo(this);

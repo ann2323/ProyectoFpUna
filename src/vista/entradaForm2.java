@@ -16,6 +16,7 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,7 +105,6 @@ public class entradaForm2 extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Entrada");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/entrada.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -343,11 +343,6 @@ public class entradaForm2 extends javax.swing.JInternalFrame {
         jLabel5.setText("Proyecto");
 
         txtProyecto.setName("txtcodigo"); // NOI18N
-        txtProyecto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtProyectoActionPerformed(evt);
-            }
-        });
         txtProyecto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtProyectoKeyPressed(evt);
@@ -620,7 +615,7 @@ public class entradaForm2 extends javax.swing.JInternalFrame {
                 {
                     BuscarForm bf = new BuscarForm(null, true);
                     bf.columnas = "codigo, descripcion";
-                    bf.tabla = "componentes";
+                    bf.tabla = "componentes where servicio = 0 --";
                     bf.order = "codigo_interno";
                     bf.filtroBusqueda = "";
                     bf.setLocationRelativeTo(this);
@@ -653,10 +648,6 @@ public class entradaForm2 extends javax.swing.JInternalFrame {
 //            showMessageDialog(null, "No se pudo visualizar el reporte: " + ex, "Error", ERROR_MESSAGE);
 //        }
     }//GEN-LAST:event_bImprimirMouseClicked
-
-    private void txtProyectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProyectoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtProyectoActionPerformed
     
     private void nuevo() {
         limpiar();
