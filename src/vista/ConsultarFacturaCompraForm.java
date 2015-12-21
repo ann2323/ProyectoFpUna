@@ -1,15 +1,17 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 package vista;
-
 
 import controlador.FacturaCabeceraCompraControlador;
 import controlador.ProveedorControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.DecimalFormat;
 import javax.swing.DefaultComboBoxModel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -26,19 +28,20 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
      */
     public ConsultarFacturaCompraForm() {
         initComponents();
-        getProveedor();
+        getProveedores();
     }
 
-    int codigoProveedor = 0;
+     DecimalFormat forma = new DecimalFormat("###,###.##");
+    int codigoProv = 0;
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
-    ProveedorControlador proveedorControlador = new ProveedorControlador();
+    ProveedorControlador provControlador = new ProveedorControlador();
     FacturaCabeceraCompraControlador facturaControlador = new FacturaCabeceraCompraControlador();
     DefaultTableModel modeloTablaFactura = new DefaultTableModel();
     
     
-     private void getProveedor() {
+     private void getProveedores() {
         try {
-            try (ResultSet rs = proveedorControlador.datosCombo()) {
+            try (ResultSet rs = provControlador.datosCombo()) {
 
                 modelCombo.removeAllElements();
 
@@ -47,14 +50,14 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
                 }
                 comboProveedor.setModel(modelCombo);
             } catch (Exception ex) {
-                showMessageDialog(null, ex, "Error aca", ERROR_MESSAGE);
+                showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
             }
         } catch (HeadlessException ex) {
-            showMessageDialog(null, ex, "Error alla", ERROR_MESSAGE);
+            showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
     }
     
-     private void getFactura(int codigoProveedor) {
+     private void getFactura(int codigoProv) {
         try {
 
             tbFact.setModel(modeloTablaFactura);
@@ -62,7 +65,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
             modeloTablaFactura.setRowCount(0);
             modeloTablaFactura.setColumnCount(0);
 
-            try (ResultSet rs = facturaControlador.datosTablaBusqueda2(codigoProveedor)) {
+            try (ResultSet rs = facturaControlador.datosTablaBusqueda(codigoProv)) {
                 ResultSetMetaData rsMd = rs.getMetaData();
 
                 int cantidadColumnas = rsMd.getColumnCount();
@@ -120,8 +123,25 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Consultar Factura de Compra");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarFacturaCompra.png"))); // NOI18N
+        setTitle("Consultar Factura Compra");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarFacturaVenta.png"))); // NOI18N
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
         jPanel2.setPreferredSize(new java.awt.Dimension(801, 58));
@@ -138,7 +158,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(157, 157, 157)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                 .addGap(155, 155, 155))
         );
         jPanel2Layout.setVerticalGroup(
@@ -175,9 +195,9 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(328, 328, 328)
+                .addGap(397, 397, 397)
                 .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(400, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,15 +210,26 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         tbFact.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tbFact.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Cantidad Total", "Total"
+                "Nro Prefijo", "Nro Factura", "Fecha", "Forma de Pago", "Vencimiento", "Total", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tbFact.setEditingRow(0);
         jScrollPane1.setViewportView(tbFact);
 
@@ -206,15 +237,18 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
             .addComponent(jScrollPane1)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 926, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(185, 185, 185))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -222,16 +256,16 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(260, 260, 260)
+                .addGap(319, 319, 319)
                 .addComponent(jLabel2)
-                .addGap(27, 27, 27)
+                .addGap(40, 40, 40)
                 .addComponent(comboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 933, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,7 +276,8 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -255,7 +290,9 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -263,13 +300,23 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
 
     private void comboProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboProveedorActionPerformed
          try {
-            codigoProveedor = proveedorControlador.getCodigo((String) comboProveedor.getSelectedItem());
-            getFactura(codigoProveedor);
-           
+            codigoProv = 0;
+            codigoProv = provControlador.getCodigo((String) comboProveedor.getSelectedItem());
+            getFactura(codigoProv);
+
+            cargarTabla();
+
         } catch (Exception ex) {
-            //Logger.getLogger(PruebaCombo.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_comboProveedorActionPerformed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        tbFact.removeAll();
+        getProveedores();
+
+        comboProveedor.setSelectedIndex(-1);
+    }//GEN-LAST:event_formInternalFrameOpened
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -286,4 +333,22 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
     private javax.swing.JTable tbFact;
     private org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI windowsStatusBarUI1;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarTabla() throws Exception {
+        int i=0;
+        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
+            String nroFact = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
+            tbFact.setValueAt(nroFact, i, 1);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 2), i, 2);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 4), i, 4);
+            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
+            tbFact.setValueAt(total, i, 5);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 6), i, 6);
+            i++;
+        }
+       
+    }
+    
 }
