@@ -219,7 +219,8 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         jPanel1.add(bGuardar);
 
         bBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar.png"))); // NOI18N
-        bBorrar.setText("Eliminar");
+        bBorrar.setText("Inactivar");
+        bBorrar.setToolTipText("");
         bBorrar.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
         bBorrar.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
         bBorrar.setDescription(" ");
@@ -1168,10 +1169,6 @@ public class ClienteForm extends javax.swing.JInternalFrame {
         ocultarColumna();
     }//GEN-LAST:event_formInternalFrameOpened
 
-    private void txtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDireccionActionPerformed
-
     private void txtLimiteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtLimiteFocusLost
          //limite de credito con puntos decimales
         if(!txtLimite.getText().trim().equals("")){
@@ -1180,6 +1177,10 @@ public class ClienteForm extends javax.swing.JInternalFrame {
            txtLimite.setText(formatoLimite);
         }
     }//GEN-LAST:event_txtLimiteFocusLost
+
+    private void txtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDireccionActionPerformed
 
   private void modoBusqueda(boolean v){
          
