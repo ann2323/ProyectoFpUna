@@ -42,6 +42,19 @@ public class SalidasControlador {
             throw new Exception("Error al guardar salida - detalle: \n" + e.getMessage());
         }
     }
+       
+    public void cambiarAEnProceso(String pry){
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            if (Integer.parseInt(baseDatos.createQuery("select count(*) from Proyectos where codigo = '" + pry + "'").uniqueResult().toString().trim()) > 0){
+                if (Integer.parseInt(baseDatos.createQuery("select count(*) from Entrada where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
+                    if (Integer.parseInt(baseDatos.createQuery("select count(*) from Salida where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
+                        if (Integer.parseInt(baseDatos.createQuery("select count(*) from Compra where proyecto_id = (select id from Proyectos where codigo = '" + pry + "') ").uniqueResult().toString().trim()) == 0){
+                                baseDatos.createQuery("update Proyectos set estado = 1 where codigo = '" + pry + "'").executeUpdate();
+                        }
+                    }
+                }
+            }
+    }
     
     public void update(Salida sal) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
@@ -86,18 +99,6 @@ public class SalidasControlador {
         } catch(HibernateException e){
             throw new Exception("Error al consultar la tabla Salida: \n" + e.getMessage());
         }
-    }
-     public void cambiarAEnProceso(String pry){
-        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            if (Integer.parseInt(baseDatos.createQuery("select count(*) from Proyectos where codigo = '" + pry + "'").uniqueResult().toString().trim()) > 0){
-                if (Integer.parseInt(baseDatos.createQuery("select count(*) from Entrada where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
-                    if (Integer.parseInt(baseDatos.createQuery("select count(*) from Salida where proyecto = '" + pry + "'").uniqueResult().toString().trim()) == 0){
-                        if (Integer.parseInt(baseDatos.createQuery("select count(*) from Compra where proyecto_id = (select id from Proyectos where codigo = '" + pry + "') ").uniqueResult().toString().trim()) == 0){
-                                baseDatos.createQuery("update Proyectos set estado = 1 where codigo = '" + pry + "'").executeUpdate();
-                        }
-                    }
-                }
-            }
     }
     
     public ResultSet datosDetalle(int cod) throws Exception {
