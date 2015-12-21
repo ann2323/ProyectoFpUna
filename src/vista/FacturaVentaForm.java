@@ -13,6 +13,8 @@ import controlador.StockControlador;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -886,6 +888,11 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
                 formInternalFrameOpened(evt);
             }
         });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jPanel1.setToolTipText("");
         jPanel1.setMinimumSize(new java.awt.Dimension(780, 700));
@@ -1708,9 +1715,12 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
           String prefijo = "";
          
           String estado = "";
+          String subTotal2 = "";
+          int precio2 = 0;
+          precio2 = Integer.parseInt(txtTotal.getText().replace(".", ""));
           
           nroFactura = txtFacturaVenta.getText().trim().replace(".", "");
-         
+          subTotal2 = txtSubTotal.getText().trim().replace(".", "");
           prefijo = txtPrefijoVenta.getText();
           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
           estado = comboPago.getSelectedItem().toString();
@@ -1783,16 +1793,16 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
                         
          try {	
                 		                       
-             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
+             String monto = ventaControlador.totalLetras(precio2);		         
              		             
              Map parametro = new HashMap ();        		               
              		             
-             parametro.put("factura", ventaC.getNroFactura());	
-             parametro.put("subtotal", subTotalAuxiliar);
+             parametro.put("factura", nroFactura);	
+             parametro.put("subtotal", subTotal2);
              parametro.put("letras", monto);		          
-             parametro.put("prefijo", txtPrefijoVenta.getText());		  
+             parametro.put("prefijo", prefijo);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
   		
              //JasperViewer visor = new JasperViewer(print,false) ;
              JasperViewer.viewReport(print, false);
@@ -1851,6 +1861,18 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
     private void txtFacturaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFacturaVentaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFacturaVentaActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+       if(evt.getKeyCode() == KeyEvent.VK_F1){
+           try { 
+            Runtime run = Runtime.getRuntime();
+            String path = new String(" C:\\Users\\Pathy\\Desktop\\help.chm"); 
+            Process pro = run.exec("hh.exe" + path);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       }
+    }//GEN-LAST:event_formKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2104,6 +2126,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
     
     }
     
+  
 
     public void cargarDatosProyecto(){
         nuevoDetalleParaProyecto();
@@ -2175,4 +2198,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
             return 0;
         }
     }   
+
+ 
 }
