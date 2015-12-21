@@ -252,7 +252,7 @@ public class FacturaCabeceraCompraControlador {
     
      public ResultSet datosTablaBusqueda(int codigo) throws Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mmwhere est/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", cantidad_total as \"Cantidad Total\", precio_total as \"Total\" from Compra where proveedor_id = '" + codigo + "'";
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", cantidad_total as \"Cantidad Total\", precio_total as \"Total\", estado from Compra where proveedor_id = '" + codigo + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
@@ -290,7 +290,7 @@ public class FacturaCabeceraCompraControlador {
      
      public ResultSet busquedaNotaCreditoCompra(int codigoProveedor) throws SQLException, Exception {
          Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT c.nro_prefijo as \"Nro Prefijo\", c.nro_factura as \"Nro Nota de Crédito\", c.fact_referenciada as \"Factura Referenciada\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", m.nombre as \"Tipo de pago\", c.cantidad_total as \"Cantidad Total\", c.precio_total as \"Total\", c.estado as \"Estado\" from Compra c, Moneda m where m.moneda_id = c.moneda_id and es_factura = 'N' and proveedor_id = '" + codigoProveedor + "'";
+            String query = "SELECT c.nro_prefijo as \"Nro Prefijo\", c.nro_factura as \"Nro Nota de Crédito\", c.fact_referenciada as \"Factura Referenciada\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", c.cantidad_total as \"Cantidad Total\", c.precio_total as \"Total\", c.estado as \"Estado\" from Compra c where es_factura = 'N' and proveedor_id = '" + codigoProveedor + "'";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {
