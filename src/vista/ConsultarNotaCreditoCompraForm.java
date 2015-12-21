@@ -11,6 +11,7 @@ import controlador.ProveedorControlador;
 import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -33,16 +34,17 @@ public class ConsultarNotaCreditoCompraForm extends javax.swing.JInternalFrame {
        
     }
 
-    int codigoProveedor = 0;
+    int codigoProv = 0;
+    DecimalFormat forma = new DecimalFormat("###,###.##");
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
-    ProveedorControlador proveedorControlador = new ProveedorControlador();
+    ProveedorControlador provControlador = new ProveedorControlador();
     FacturaCabeceraCompraControlador compraControlador = new FacturaCabeceraCompraControlador();
     DefaultTableModel modeloTablaFactura = new DefaultTableModel();
     
     
      private void getProveedor() {
         try {
-            try (ResultSet rs = proveedorControlador.datosCombo()) {
+            try (ResultSet rs = provControlador.datosCombo()) {
 
                 modelCombo.removeAllElements();
 
@@ -92,6 +94,24 @@ public class ConsultarNotaCreditoCompraForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
         }
 
+    }
+     
+     private void cargarTabla() throws Exception {
+        int i=0;
+        while (!"".equals(modeloTablaFactura.getValueAt(i, 0).toString())){
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 0), i, 0);
+            String nroFact = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 1).toString()));
+            tbFact.setValueAt(nroFact, i, 1);
+            String nroFactRef = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 2).toString()));
+            tbFact.setValueAt(nroFactRef, i, 2);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 3), i, 3);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 4), i, 4);
+            String total = forma.format(Integer.parseInt(modeloTablaFactura.getValueAt(i, 5).toString()));
+            tbFact.setValueAt(total, i, 5);
+            tbFact.setValueAt(modeloTablaFactura.getValueAt(i, 6), i, 6);
+            i++;
+        }
+       
     }
     
     
@@ -200,7 +220,7 @@ public class ConsultarNotaCreditoCompraForm extends javax.swing.JInternalFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nro Prefijo", "Nro. Nota de Crédito", "Factura Referenciada", "Fecha", "Tipo de Pago", "Cantidad Total", "Total"
+                "Nro Prefijo", "Nro. Nota de Crédito", "Factura Referenciada", "Fecha", "Cantidad Total", "Total", "Estado"
             }
         ));
         tbFact.setEditingRow(0);
@@ -269,9 +289,11 @@ public class ConsultarNotaCreditoCompraForm extends javax.swing.JInternalFrame {
 
     private void comboProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboProveedorActionPerformed
          try {
-            codigoProveedor = proveedorControlador.getCodigo((String) comboProveedor.getSelectedItem());
-            getNotaCredito(codigoProveedor);
-            //System.out.println(codigoCliente);
+            codigoProv = 0;
+            codigoProv = provControlador.getCodigo((String) comboProveedor.getSelectedItem());
+            getNotaCredito(codigoProv);
+
+            cargarTabla();
             
         } catch (Exception ex) {
             //Logger.getLogger(PruebaCombo.class.getName()).log(Level.SEVERE, null, ex);

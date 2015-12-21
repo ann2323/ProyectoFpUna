@@ -250,9 +250,9 @@
                         <Column editable="true" title="Nro. Nota de Cr&#xe9;dito" type="java.lang.Object"/>
                         <Column editable="true" title="Factura Referenciada" type="java.lang.Object"/>
                         <Column editable="true" title="Fecha" type="java.lang.Object"/>
-                        <Column editable="true" title="Tipo de Pago" type="java.lang.Object"/>
                         <Column editable="true" title="Cantidad Total" type="java.lang.Object"/>
                         <Column editable="true" title="Total" type="java.lang.Object"/>
+                        <Column editable="true" title="Estado" type="java.lang.Object"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
