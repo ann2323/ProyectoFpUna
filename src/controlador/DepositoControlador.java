@@ -82,8 +82,6 @@ public class DepositoControlador {
         }
     }
     
-    
-    
     public ResultSet datoCombo() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
 
