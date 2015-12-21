@@ -77,6 +77,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     
     Stock stock = new Stock();
     
+    boolean imprime = false;
      Integer subTotal= 0, totaldesc=0;
      double iva10=0.0, iva5=0.0;
      Integer  cantProducto=0, subTotalAuxiliar=0;;
@@ -344,9 +345,17 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             showMessageDialog(null, "Debe seleccionar el deposito", "Atención", INFORMATION_MESSAGE);
             JCdeposito.requestFocusInWindow();
             return;
+        }
+        
+        int confirmar = 0;
+        boolean entro = false;
+        if(imprime == false){
+           confirmar = showConfirmDialog (null, "Está seguro de guardar la nota de crédito?", "Confirmar", YES_NO_OPTION);
+           entro = true;
+            //if(showConfirmDialog (null, "Está seguro de guardar la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
         } 
-        else {
-           if(showConfirmDialog (null, "Está seguro de guardar la nota de crédito?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+        
+          if((confirmar == 0 && entro == true) || (entro == false)){    
             int id= ventaControlador.nuevoCodigo(); 
             ventaC.setVentaId(id);
             if(!txtIva10.getText().equals("")){
@@ -423,16 +432,16 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                                     return;        
                             }
                 
-                          
+                          if(imprime == true){
+                             System.out.println("ENTRO A PESAR DE QUE imprime = " + imprime );
+                             stockCont.update(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                         }  
+                        
+     
                             if (bNuevo.isEnabled() == false){ 
                                 System.out.println("Entro en el insert de detalle");
                                 facturaDetalleCont.insert(ventaD);
                                 facturaDetalleCont.updateFactura(factRef, tbDetalleVenta.getValueAt(i, 0).toString());
-                                 try {
-                                    stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim().replace(".", "")));
-                                } catch (Exception ex) {
-                                    stockCont.update2(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().replace(".", "").trim() + "0"));
-                                }
                                 i++;
                                 //nuevo();
                                 //si no inserta, actualiza (factura en suspension)
@@ -485,7 +494,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
                 }
             
         }
-     }
+     
     }
     private void datosActualesComponentes(){    
            tbDetalleVenta.setValueAt(modeloComponentes.getValueAt(k2, 0), tbDetalleVenta.getSelectedRow(), 0);
@@ -826,9 +835,9 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             try
              {
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/proyecto";
+                    cadena="jdbc:postgresql://localhost:5432/intersat";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
                      return con;
             }
              catch(Exception e)
@@ -1628,17 +1637,82 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtClienteKeyPressed
 
     private void jBGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardar1ActionPerformed
-     try {
-         guardar();
+       if(showConfirmDialog (null, "Está seguro de imprimir la factura?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
+         if ("".equals(txtFecha.getText())) {
+            showMessageDialog(null, "Debe ingresar un una fecha.", "Atención", INFORMATION_MESSAGE);
+            txtFecha.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtFacturaReferenciada.getText())) {
+            showMessageDialog(null, "Debe ingresar el nro de factura de venta", "Atención", INFORMATION_MESSAGE);
+            txtFacturaReferenciada.requestFocusInWindow();
+            return;
+        } else if ("".equals(txtCliente.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtCliente1.getText())) {
+            showMessageDialog(null, "Debe ingresar el cliente", "Atención", INFORMATION_MESSAGE);
+            txtCliente1.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtNroNotaCredito.getText())) {
+            showMessageDialog(null, "Debe ingresar algun nro de nota de credito", "Atención", INFORMATION_MESSAGE);
+            txtNroNotaCredito.requestFocusInWindow();
+            return;
+        }else if ("".equals(txtPrefijo.getText())) {
+            showMessageDialog(null, "Debe ingresar algun nro de prefijo", "Atención", INFORMATION_MESSAGE);
+            txtPrefijo.requestFocusInWindow();
+            return;
+        }else if (JCdeposito.getSelectedIndex() == -1) {
+            showMessageDialog(null, "Debe seleccionar el deposito", "Atención", INFORMATION_MESSAGE);
+            JCdeposito.requestFocusInWindow();
+            return;
+        } 
          
-         //saldo nota de credito +
-         //saldo cliente -
-         //saldo factura -
-        
+          int idCliente = 0;
+          try {
+              idCliente = cliC.devuelveId(txtCliente.getText().replace(".", ""));
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+          
+         
          String totalNotaCredito = "";
          totalNotaCredito = txtTotal.getText().replace(".", "");
          String nroFactura = txtFacturaReferenciada.getText().replace(".", "");
          String nroNotaCredito = txtNroNotaCredito.getText().replace(".", "");
+         int precioTotal = 0;
+         precioTotal = Integer.parseInt(txtTotal.getText().replace(".", ""));
+         String prefijo = "";
+         prefijo = txtPrefijo.getText().trim().replace(".", "");
+         String subTotal2 = "";
+         subTotal2 = txtSubTotal.getText().trim().replace(".", "");
+         
+         //para que no guarde dos veces
+          try { 
+              if(ventaControlador.verificarEstadoNotaC(Integer.parseInt(txtNroNotaCredito.getText().trim().replace(".",""))) == 0) {
+                  imprime = true;
+                  guardar();  
+              }
+          } catch (Exception ex) {
+              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        
+          int i = 0;
+         
+           while (!"".equals(tbDetalleVenta.getValueAt(i, 0).toString())){
+              Deposito dep = (Deposito) this.JCdeposito.getSelectedItem();
+              try {
+                 stockCont.update(tbDetalleVenta.getValueAt(i, 0).toString(), dep.getCodigo(), Integer.parseInt(tbDetalleVenta.getValueAt(i, 3).toString().trim()));
+                 i++;
+              } catch (Exception ex) {
+                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+              }
+          }  
+         //saldo nota de credito +
+         //saldo cliente -
+         //saldo factura -
+        
+         
          
           int saldoFactura = 0;
           try {
@@ -1651,19 +1725,18 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
           int saldoNotaCredito = 0;
           try{
               saldoNotaCredito = ventaControlador.getTotalSaldoNC(Integer.parseInt(nroNotaCredito)) + Integer.parseInt(totalNotaCredito);
-              ventaControlador.updateSaldoFactura(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
+              System.out.println("SALDO NOTA CREDITO "+saldoNotaCredito);
+              ventaControlador.updateSaldoNotaC(Integer.parseInt(nroNotaCredito), saldoNotaCredito); //Saldo de la factura
           }catch(Exception ex){
               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
           
-          
-          int idCliente = 0;
           try {
-              idCliente = cliC.devuelveId(txtCliente.getText().replace(".", ""));
+            ventaControlador.updateEstadoConfirmadoNC(Integer.parseInt(nroNotaCredito));
           } catch (Exception ex) {
-              Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NotaCreditoVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
-          
+         
           try {
               int saldoCliente = 0;
               saldoCliente = cliC.getTotalSaldo(idCliente)-Integer.parseInt(totalNotaCredito);
@@ -1674,16 +1747,16 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
           
             try {	
                 		                       
-             String monto = ventaControlador.totalLetras(ventaC.getPrecioTotal());		         
+             String monto = ventaControlador.totalLetras(precioTotal);		         
              		             
              Map parametro = new HashMap ();        		               
              		             
-             parametro.put("factura", ventaC.getNroFactura());	
-             parametro.put("subtotal", subTotalAuxiliar);
+             parametro.put("factura", nroFactura);	
+             parametro.put("subtotal", subTotal2);
              parametro.put("letras", monto);		          
-             parametro.put("prefijo", txtPrefijo.getText());		  
+             parametro.put("prefijo", prefijo);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaCredito.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaCredito.jasper", parametro, coneccionSQL());
   		
              //JasperViewer visor = new JasperViewer(print,false) ;
              JasperViewer.viewReport(print, false);
@@ -1692,11 +1765,11 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
   		  
              System.out.println(jRException.getMessage());
   		  
-            }
-           
-     } catch (Exception ex) {
+            } catch (Exception ex) {
          Logger.getLogger(NotaCreditoVentaForm.class.getName()).log(Level.SEVERE, null, ex);
      }
+           
+       }
        
     }//GEN-LAST:event_jBGuardar1ActionPerformed
 
