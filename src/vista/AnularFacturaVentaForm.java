@@ -16,6 +16,7 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
      */
     public AnularFacturaVentaForm() {
         initComponents();
+        getVenta();
         
     }
     
@@ -148,11 +150,6 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, 20));
         jPanel1.add(txtFechaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 160, -1));
 
-        txtPrefijo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPrefijoActionPerformed(evt);
-            }
-        });
         txtPrefijo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPrefijoKeyPressed(evt);
@@ -262,18 +259,19 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtPrefijo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\"";
+                bf.columnas = "nro_factura as \"Nro Factura\"";
                 bf.tabla = "Venta";
-                bf.order = "venta_id";
-                bf.filtroBusqueda = "estado != 'ANULADO' and es_factura = 'S'";
+                bf.order = "";
+                bf.filtroBusqueda = "estado = 'PENDIENTE' or estado = 'CONFIRMADO' or estado = 'PAGADO' and es_factura = 'S'";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
                 
                 for(int c=0; c<modeloBusqueda.getRowCount(); c++){
                     if (modeloBusqueda.getValueAt(c, 0).toString().equals(bf.retorno)){
                         k = c;
-                        txtPrefijo.setText(modeloBusqueda.getValueAt(k, 0).toString());
-                        txtNroFactura.setText(modeloBusqueda.getValueAt(k, 1).toString());
+                        DecimalFormat forma = new DecimalFormat("###,###.##");
+                        txtNroFactura.setText(modeloBusqueda.getValueAt(k, 0).toString());
+                        txtPrefijo.setText(modeloBusqueda.getValueAt(k, 1).toString());
                         txtFechaVenta.setText(modeloBusqueda.getValueAt(k, 2).toString());
                         txtTipoPago.setText(modeloBusqueda.getValueAt(k, 3).toString()); 
                         txtTotal.setText(modeloBusqueda.getValueAt(k, 4).toString());
@@ -315,10 +313,6 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             txtPrefijo.setBackground(Color.yellow);
         }
     }//GEN-LAST:event_bCancelarActionPerformed
-
-    private void txtPrefijoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrefijoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPrefijoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -376,16 +370,16 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
                 String nroFactura = txtNroFactura.getText().replace(".", "");
                 int saldoFactura = 0;
                 try {
-                    //saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura))- Integer.parseInt(txtTotal.getText().replace(".", ""));
-                    //ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
+                    saldoFactura = ventaControlador.getTotalSaldoFactura(Integer.parseInt(nroFactura))- Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    ventaControlador.updateSaldoFactura(Integer.parseInt(nroFactura), saldoFactura); //Saldo de la factura
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
           
                 try {
                     int saldoCliente = 0;
-                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(modeloBusqueda.getValueAt(0, 5).toString())) - Integer.parseInt(txtTotal.getText().replace(".", ""));
-                    cliC.updateSaldo(saldoCliente, Integer.parseInt(modeloBusqueda.getValueAt(0, 5).toString()));
+                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(modeloBusqueda.getValueAt(0, 6).toString())) - Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    cliC.updateSaldo(saldoCliente, Integer.parseInt(modeloBusqueda.getValueAt(0, 6).toString()));
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
