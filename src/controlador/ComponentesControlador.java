@@ -59,7 +59,7 @@ public class ComponentesControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(codigoInterno), 0) + 1 from Componentes").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(codigo_interno), 0) + 1 from Componentes").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código interno: \n" + e.getMessage());
         }
