@@ -99,5 +99,15 @@ public class RolControlador {
             throw new Exception("Error al eliminar rol: \n" + e.getMessage());
         }
     }
+      public Integer nuevoCodigo() throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        
+        try {
+            return (Integer) baseDatos.createQuery("select coalesce (max(id_rol), 0) + 1 from Rol").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al generar nuevo código Cabecera: \n" + e.getMessage());
+        }
+    }
+
 }
    
