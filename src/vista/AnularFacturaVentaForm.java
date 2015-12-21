@@ -59,6 +59,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
     
     Date dato = null;
     int k;
+    String idCliente = "";
     
    
      private void getVenta() {
@@ -259,9 +260,9 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
             if ("*".equals(txtPrefijo.getText())) {
                 
                 BuscarForm bf = new BuscarForm( null, true);
-                bf.columnas = "nro_factura as \"Nro Factura\"";
+                bf.columnas = "trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\", nro_prefijo as \"Nro Prefijo\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total Factura\"";
                 bf.tabla = "Venta";
-                bf.order = "";
+                bf.order = "nro_factura";
                 bf.filtroBusqueda = "estado = 'PENDIENTE' or estado = 'CONFIRMADO' or estado = 'PAGADO' and es_factura = 'S'";
                 bf.setLocationRelativeTo(this);
                 bf.setVisible(true);
@@ -277,6 +278,7 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
                         txtTotal.setText(modeloBusqueda.getValueAt(k, 4).toString());
                         txtEstado.setText(modeloBusqueda.getValueAt(k, 5).toString());
                         txtPrefijo.setBackground(Color.white);
+                        idCliente = modeloBusqueda.getValueAt(k, 6).toString();
                     return;
                     }
                 }  
@@ -378,8 +380,10 @@ public class AnularFacturaVentaForm extends javax.swing.JInternalFrame {
           
                 try {
                     int saldoCliente = 0;
-                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(modeloBusqueda.getValueAt(0, 6).toString())) - Integer.parseInt(txtTotal.getText().replace(".", ""));
-                    cliC.updateSaldo(saldoCliente, Integer.parseInt(modeloBusqueda.getValueAt(0, 6).toString()));
+                    saldoCliente = cliC.getTotalSaldo(Integer.parseInt(idCliente)) - Integer.parseInt(txtTotal.getText().replace(".", ""));
+                    System.out.println("SALDO CLIENTE "+ cliC.getTotalSaldo(Integer.parseInt(modeloBusqueda.getValueAt(0, 6).toString())));
+                    System.out.println("SALDO CLINETE "+saldoCliente);
+                    cliC.updateSaldo(saldoCliente, Integer.parseInt(idCliente));
                 } catch (Exception ex) {
                     Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
