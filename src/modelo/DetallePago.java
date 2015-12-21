@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -17,7 +17,6 @@ public class DetallePago  implements java.io.Serializable {
      private Integer montoAbonado;
      private Integer nroNotaCredito;
      private Integer facturaPendienteId;
-     private String estado;
 
     public DetallePago() {
     }
@@ -26,7 +25,7 @@ public class DetallePago  implements java.io.Serializable {
     public DetallePago(int detallePagoId) {
         this.detallePagoId = detallePagoId;
     }
-    public DetallePago(int detallePagoId, Integer nroTarjetaCheque, Integer montoCredito, Integer pendienteAAplicar, String nombrePago, Integer montoAbonado, Integer nroNotaCredito, Integer facturaPendienteId, String estado) {
+    public DetallePago(int detallePagoId, Integer nroTarjetaCheque, Integer montoCredito, Integer pendienteAAplicar, String nombrePago, Integer montoAbonado, Integer nroNotaCredito, Integer facturaPendienteId) {
        this.detallePagoId = detallePagoId;
        this.nroTarjetaCheque = nroTarjetaCheque;
        this.montoCredito = montoCredito;
@@ -35,7 +34,6 @@ public class DetallePago  implements java.io.Serializable {
        this.montoAbonado = montoAbonado;
        this.nroNotaCredito = nroNotaCredito;
        this.facturaPendienteId = facturaPendienteId;
-       this.estado = estado;
     }
    
     public int getDetallePagoId() {
@@ -93,13 +91,6 @@ public class DetallePago  implements java.io.Serializable {
     
     public void setFacturaPendienteId(Integer facturaPendienteId) {
         this.facturaPendienteId = facturaPendienteId;
-    }
-    public String getEstado() {
-        return this.estado;
-    }
-    
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
 

@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -31,6 +31,7 @@ public class Compra  implements java.io.Serializable {
      private Integer iva5;
      private Date vencimiento;
      private Integer saldo;
+     private String timbrado;
 
     public Compra() {
     }
@@ -46,7 +47,7 @@ public class Compra  implements java.io.Serializable {
         this.esFactura = esFactura;
         this.proveedorId = proveedorId;
     }
-    public Compra(int compraId, int nroFactura, Date fecha, Integer proyectoId, int precioTotal, int cantidadTotal, Integer descuento, Integer iva, String pagoContado, String estado, Integer factReferenciada, String esFactura, int proveedorId, String codDeposito, Date fechaRecepcion, Integer pagoEn, String nroPrefijo, Integer iva10, Integer iva5, Date vencimiento, Integer saldo) {
+    public Compra(int compraId, int nroFactura, Date fecha, Integer proyectoId, int precioTotal, int cantidadTotal, Integer descuento, Integer iva, String pagoContado, String estado, Integer factReferenciada, String esFactura, int proveedorId, String codDeposito, Date fechaRecepcion, Integer pagoEn, String nroPrefijo, Integer iva10, Integer iva5, Date vencimiento, Integer saldo, String timbrado) {
        this.compraId = compraId;
        this.nroFactura = nroFactura;
        this.fecha = fecha;
@@ -68,6 +69,7 @@ public class Compra  implements java.io.Serializable {
        this.iva5 = iva5;
        this.vencimiento = vencimiento;
        this.saldo = saldo;
+       this.timbrado = timbrado;
     }
    
     public int getCompraId() {
@@ -217,9 +219,17 @@ public class Compra  implements java.io.Serializable {
     public void setSaldo(Integer saldo) {
         this.saldo = saldo;
     }
-
-
-
+    public String getTimbrado() {
+        return this.timbrado;
+    }
+    
+    public void setTimbrado(String timbrado) {
+        this.timbrado = timbrado;
+    }
+    @Override
+    public String toString() {
+        return this.nroPrefijo+" "+this.nroFactura;
+    }
 
 }
 

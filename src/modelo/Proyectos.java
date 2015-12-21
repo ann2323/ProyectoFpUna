@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -116,6 +116,7 @@ public class Proyectos  implements java.io.Serializable {
     public String toString() {
         return this.codigo;
     }
+
 
 }
 

@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -18,6 +18,7 @@ public class Componentes  implements java.io.Serializable {
      private Integer precio;
      private Integer costo;
      private Integer tipoIva;
+     private Integer servicio;
 
     public Componentes() {
     }
@@ -27,7 +28,7 @@ public class Componentes  implements java.io.Serializable {
         this.codigoInterno = codigoInterno;
         this.codigo = codigo;
     }
-    public Componentes(int codigoInterno, String descripcion, String codigo, Integer estado, Integer idProveedor, Integer unidad, Integer precio, Integer costo, Integer tipoIva) {
+    public Componentes(int codigoInterno, String descripcion, String codigo, Integer estado, Integer idProveedor, Integer unidad, Integer precio, Integer costo, Integer tipoIva, Integer servicio) {
        this.codigoInterno = codigoInterno;
        this.descripcion = descripcion;
        this.codigo = codigo;
@@ -37,6 +38,7 @@ public class Componentes  implements java.io.Serializable {
        this.precio = precio;
        this.costo = costo;
        this.tipoIva = tipoIva;
+       this.servicio = servicio;
     }
    
     public int getCodigoInterno() {
@@ -101,6 +103,13 @@ public class Componentes  implements java.io.Serializable {
     
     public void setTipoIva(Integer tipoIva) {
         this.tipoIva = tipoIva;
+    }
+    public Integer getServicio() {
+        return this.servicio;
+    }
+    
+    public void setServicio(Integer servicio) {
+        this.servicio = servicio;
     }
 
 

@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -17,6 +17,7 @@ public class CabeceraRecibo  implements java.io.Serializable {
      private Integer totalAPagar;
      private Integer proveedorId;
      private Integer facturaNro;
+     private String fechaAnulacion;
 
     public CabeceraRecibo() {
     }
@@ -25,7 +26,7 @@ public class CabeceraRecibo  implements java.io.Serializable {
     public CabeceraRecibo(int reciboId) {
         this.reciboId = reciboId;
     }
-    public CabeceraRecibo(int reciboId, Integer clienteId, Date fecha, Integer nroRecibo, Integer totalAPagar, Integer proveedorId, Integer facturaNro) {
+    public CabeceraRecibo(int reciboId, Integer clienteId, Date fecha, Integer nroRecibo, Integer totalAPagar, Integer proveedorId, Integer facturaNro, String fechaAnulacion) {
        this.reciboId = reciboId;
        this.clienteId = clienteId;
        this.fecha = fecha;
@@ -33,6 +34,7 @@ public class CabeceraRecibo  implements java.io.Serializable {
        this.totalAPagar = totalAPagar;
        this.proveedorId = proveedorId;
        this.facturaNro = facturaNro;
+       this.fechaAnulacion = fechaAnulacion;
     }
    
     public int getReciboId() {
@@ -83,6 +85,13 @@ public class CabeceraRecibo  implements java.io.Serializable {
     
     public void setFacturaNro(Integer facturaNro) {
         this.facturaNro = facturaNro;
+    }
+    public String getFechaAnulacion() {
+        return this.fechaAnulacion;
+    }
+    
+    public void setFechaAnulacion(String fechaAnulacion) {
+        this.fechaAnulacion = fechaAnulacion;
     }
 
 

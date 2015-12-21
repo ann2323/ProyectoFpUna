@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 21, 2015 6:00:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.Compra" table="compra" schema="public">
         <id name="compraId" type="int">
@@ -11,8 +11,8 @@
         <property name="nroFactura" type="int">
             <column name="nro_factura" not-null="true" />
         </property>
-        <property name="fecha" type="timestamp">
-            <column name="fecha" length="29" not-null="true" />
+        <property name="fecha" type="date">
+            <column name="fecha" length="13" not-null="true" />
         </property>
         <property name="proyectoId" type="java.lang.Integer">
             <column name="proyecto_id" />
@@ -56,7 +56,7 @@
             <column name="pago_en" />
         </property>
         <property name="nroPrefijo" type="string">
-            <column name="nro_prefijo" length="3" />
+            <column name="nro_prefijo" />
         </property>
         <property name="iva10" type="java.lang.Integer">
             <column name="iva10" />
@@ -69,6 +69,9 @@
         </property>
         <property name="saldo" type="java.lang.Integer">
             <column name="saldo" />
+        </property>
+        <property name="timbrado" type="string">
+            <column name="timbrado" />
         </property>
     </class>
 </hibernate-mapping>

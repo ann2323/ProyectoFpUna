@@ -1,5 +1,5 @@
 package modelo;
-// Generated Dec 8, 2015 5:15:36 PM by Hibernate Tools 3.6.0
+// Generated Dec 21, 2015 6:00:36 PM by Hibernate Tools 3.6.0
 
 
 
@@ -18,7 +18,6 @@ public class Proveedor  implements java.io.Serializable {
      private String dv;
      private String estado;
      private String ci;
-     private Integer saldo;
 
     public Proveedor() {
     }
@@ -27,7 +26,7 @@ public class Proveedor  implements java.io.Serializable {
     public Proveedor(int proveedorId) {
         this.proveedorId = proveedorId;
     }
-    public Proveedor(int proveedorId, String nombre, String apellido, String direccion, String telefono, String codProveedor, String dv, String estado, String ci, Integer saldo) {
+    public Proveedor(int proveedorId, String nombre, String apellido, String direccion, String telefono, String codProveedor, String dv, String estado, String ci) {
        this.proveedorId = proveedorId;
        this.nombre = nombre;
        this.apellido = apellido;
@@ -37,7 +36,6 @@ public class Proveedor  implements java.io.Serializable {
        this.dv = dv;
        this.estado = estado;
        this.ci = ci;
-       this.saldo = saldo;
     }
    
     public int getProveedorId() {
@@ -102,13 +100,6 @@ public class Proveedor  implements java.io.Serializable {
     
     public void setCi(String ci) {
         this.ci = ci;
-    }
-    public Integer getSaldo() {
-        return this.saldo;
-    }
-    
-    public void setSaldo(Integer saldo) {
-        this.saldo = saldo;
     }
 
 

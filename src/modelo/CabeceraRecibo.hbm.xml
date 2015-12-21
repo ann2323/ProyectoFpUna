@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 21, 2015 6:00:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.CabeceraRecibo" table="cabecera_recibo" schema="public">
         <id name="reciboId" type="int">
@@ -11,8 +11,8 @@
         <property name="clienteId" type="java.lang.Integer">
             <column name="cliente_id" />
         </property>
-        <property name="fecha" type="timestamp">
-            <column name="fecha" length="35" />
+        <property name="fecha" type="date">
+            <column name="fecha" length="13" />
         </property>
         <property name="nroRecibo" type="java.lang.Integer">
             <column name="nro_recibo" />
@@ -25,6 +25,9 @@
         </property>
         <property name="facturaNro" type="java.lang.Integer">
             <column name="factura_nro" />
+        </property>
+        <property name="fechaAnulacion" type="string">
+            <column name="fecha_anulacion" />
         </property>
     </class>
 </hibernate-mapping>

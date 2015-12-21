@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Dec 8, 2015 5:15:37 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated Dec 21, 2015 6:00:37 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="modelo.PrefijoFactura" table="prefijo_factura" schema="public">
         <id name="idprefijo" type="int">
@@ -19,6 +19,9 @@
         </property>
         <property name="tipoDocumento" type="string">
             <column name="tipo_documento" length="1" />
+        </property>
+        <property name="timbrado" type="string">
+            <column name="timbrado" />
         </property>
     </class>
 </hibernate-mapping>
