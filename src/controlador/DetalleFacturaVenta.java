@@ -87,7 +87,7 @@ public class DetalleFacturaVenta {
 
     public ResultSet getDetalle(int idventa) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unitario as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", coalesce(sub_total, 0) as \"Subtotal\" from detalle_venta where venta_id='"+idventa+"'";
+        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unitario as \"Precio unitario\", cantidad as \"Cantidad\", exentas \"Exentas\", sub_total \"Subtotal\" from detalle_venta where venta_id='"+idventa+"'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -99,7 +99,7 @@ public class DetalleFacturaVenta {
      
    public ResultSet getDetalleFactura(int idventa) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unitario as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", coalesce(sub_total, 0) as \"Subtotal\" from detalle_venta where venta_id='"+idventa+"' and nota_credito is null";
+        String query = "SELECT codigo as \"Codigo\" ,descripcion  \"Descripcion\" , precio_unitario as \"Precio unitario\", cantidad as \"Cantidad\", exentas as \"Exentas\", sub_total as \"Subtotal\" from detalle_venta where venta_id='"+idventa+"' and nota_credito is null";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {
@@ -118,7 +118,7 @@ public class DetalleFacturaVenta {
                    +" nota_credito = 'S' where venta_id = '" +idVenta+ "' and codigo = '" +cmp+ "'").executeUpdate();
             baseDatos.beginTransaction().commit();
         } catch(HibernateException e){
-            throw new Exception("Error al modificar factura: \n" + e.getMessage());
+            throw new Exception("Error al modificar proveedor: \n" + e.getMessage());
         }
     }
   
