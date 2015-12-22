@@ -103,6 +103,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
     PrefijoFactura prefijo = new PrefijoFactura();
     private boolean esPrimero = true;
     Formatter formato = new Formatter();
+    DecimalFormat formateadorSus = new DecimalFormat("###,###.##");
     
      boolean imprime = false;
      int contadorLote = 0, montoCuota = 0;
@@ -1236,19 +1237,26 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
-            nuevo();
-        } catch (Exception ex) {
-            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        getDepositosVector();
-        getComponentes();
-        txtPrefijoVenta.setEditable(false);
-        //txtFacturaVenta.setEditable(false);
-        comboCuota.setEnabled(false);
-        
-       try {
-            txtPrefijoVenta.setText(prefijoControlador.prefijoFactura());
-            } catch (Exception ex) {
+            if (prefijoControlador.prefijoFactura().isEmpty()||prefijoControlador.prefijoFactura()==null){
+                 showMessageDialog(this, "Debe dar de alta un numero de prefijo para continuar", "Atención", JOptionPane.WARNING_MESSAGE);
+            }else{
+                try {
+                    nuevo();
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                getDepositosVector();
+                getComponentes();
+                txtPrefijoVenta.setEditable(false);
+                //txtFacturaVenta.setEditable(false);
+                comboCuota.setEnabled(false);
+                
+                try {
+                    txtPrefijoVenta.setText(prefijoControlador.prefijoFactura());
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }} catch (Exception ex) {
             Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -2032,38 +2040,6 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
             
             txtFechaVenta.setText(modeloNroFactura.getValueAt(k2, 3).toString());
             comboPago.setSelectedItem(modeloNroFactura.getValueAt(k2, 4).toString());
-            String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
-            txtCantidadTotal.setText(cantidad);
-            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", ""));
-            String totalFormat=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", "")));
-            txtTotal.setText(totalFormat);
-            txtDescuento.setText(modeloNroFactura.getValueAt(k2, 8).toString());
-            int total = 0;
-            total = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString());
-            int descuento = 0;
-            descuento= Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString());
-            int subtotal = 0;
-            subtotal = total - descuento;
-            //seteo el subTotal para que acumule en la búsqueda
-            subTotal = subtotal;
-            String subTotalFormat=forma.format(subtotal);
-            txtSubTotal.setText(String.valueOf(subTotalFormat));
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()) == 0){
-                txtIva10.setText("");
-                iva10 = 0.0;
-            }else{
-                String iva10Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()));
-                txtIva10.setText(iva10Format);
-                iva10 = Integer.parseInt(txtIva10.getText().trim().replace(".",""));
-            }
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString())== 0){
-                txtIva5.setText("");
-                iva5 = 0.0;
-            }else{
-                String iva5Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()));
-                txtIva5.setText(iva5Format);
-                iva5 = Integer.parseInt(txtIva5.getText().trim().replace(".",""));
-            }    
            
             cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString()));
             datosActualesDetalleFactura();
@@ -2086,7 +2062,72 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
             tbDetalleVenta.setValueAt(subTotalFormat, i, 5);
             i++;
            }
+           DetalleFacturaSuspension();
      }
+    
+      public void DetalleFacturaSuspension(){ //calcula los datos traidos luego de una suspension
+       int j=0;
+       while (!"".equals(tbDetalleVenta.getValueAt(j, 0).toString())){
+        txtDescuento.setText("0");
+        formateadorSus = new DecimalFormat();
+        
+        Integer precio=0;
+        String codigo = tbDetalleVenta.getValueAt(j,0).toString();
+
+            
+        precio = Integer.parseInt(tbDetalleVenta.getValueAt(j, 2).toString().replace(".", "").trim());
+        
+        Integer Cantidad=0;
+        
+        Cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(j, 3).toString().replace(".","").trim());
+        formateadorSus = new DecimalFormat("###,###.##");
+        String cantidadDet=formateadorSus.format(Cantidad);
+        tbDetalleVenta.setValueAt((cantidadDet), j, 3); 
+        int total=(precio*Cantidad);
+        String totalFormat=(formateadorSus.format(total));
+                          
+         cantProducto=cantProducto+Cantidad;
+         formateadorSus = new DecimalFormat("###,###.##");
+         String cantidad=formateadorSus.format(cantProducto);
+         txtCantidadTotal.setText(cantidad);      
+         if(cmpCont.getTipoIva(codigo)==0){
+             formateadorSus = new DecimalFormat("###,###.##");
+             tbDetalleVenta.setValueAt((totalFormat), j, 5);      
+
+             subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim());      
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
+             iva10=iva10+h;
+             String ivaFormat=formateadorSus.format(Math.round(iva10));
+             txtIva10.setText(ivaFormat);
+             
+         }else if (cmpCont.getTipoIva(codigo)==1){
+             formateadorSus = new DecimalFormat("###,###.##");
+             tbDetalleVenta.setValueAt((totalFormat), j, 5);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim());
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())/1.05; 
+             iva5=iva5+h;
+             String ivaFormat=formateadorSus.format(Math.round(iva5));
+             txtIva5.setText(ivaFormat);
+         }else{
+             formateador = new DecimalFormat("###,###.##");
+             tbDetalleVenta.setValueAt((totalFormat), j, 4);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 4).toString().replace(".", "").trim());
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             
+            } 
+         
+         j++;
+     }
+   }
+    
 
     private void cargarDetalleFactura(int idventa) {
         tbDetalleVenta.removeAll();
