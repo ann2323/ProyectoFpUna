@@ -91,6 +91,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
      String estado="";
      int k, k2, borrado2=0;
      DecimalFormat formateador = new DecimalFormat("###,###.##");
+     DecimalFormat formateadorSus = new DecimalFormat("###,###.##");
      
     StockControlador stockCont = new StockControlador();
     DepositoControlador depBD = new DepositoControlador();
@@ -625,47 +626,7 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             
             txtFechaCompra.setText(modeloNroFactura.getValueAt(k2, 3).toString());
             txtFechaRecepcion.setText(modeloNroFactura.getValueAt(k2, 13).toString());
-            JCpago.setSelectedItem(modeloNroFactura.getValueAt(k2, 4).toString());
-            forma = new DecimalFormat("###,###.##");
-            String cantidad=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", "")));
-            txtCantidadTotal.setText(cantidad);
-            cantProducto = Integer.parseInt(modeloNroFactura.getValueAt(k2, 6).toString().trim().replace(".", ""));
-            String totalFormat=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString().trim().replace(".", "")));
-            txtTotal.setText(totalFormat);
-            txtDescuento.setText(modeloNroFactura.getValueAt(k2, 8).toString());
-            int total = 0;
-            total = Integer.parseInt(modeloNroFactura.getValueAt(k2, 7).toString());
-            int descuento = 0;
-            descuento= Integer.parseInt(modeloNroFactura.getValueAt(k2, 8).toString());
-            int subtotal = 0;
-            subtotal = total - descuento;
-            //seteo el subTotal para que acumule en la búsqueda
-            subTotal = subtotal;
-            forma = new DecimalFormat("###,###.##");
-            String subTotalFormat=forma.format(subtotal);
-            txtSubTotal.setText(String.valueOf(subTotalFormat));
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()) == 0){
-                txtIva10.setText("");
-                iva10 = 0.0;
-            }else{
-                iva10=0.0;
-                forma = new DecimalFormat("###,###.##");
-                String iva10Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 10).toString()));
-                txtIva10.setText(iva10Format);
-                iva10 = Integer.parseInt(txtIva10.getText().trim().replace(".",""));
-            }
-            if(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString())== 0){
-                iva5=0.0;
-                txtIva5.setText("");
-                iva5 = 0.0;
-            }else{
-                iva5=0.0;
-                forma = new DecimalFormat("###,###.##");
-                String iva5Format=forma.format(Integer.parseInt(modeloNroFactura.getValueAt(k2, 11).toString()));
-                txtIva5.setText(iva5Format);
-                iva5 = Integer.parseInt(txtIva5.getText().trim().replace(".", ""));
-            }    
-           
+            JCpago.setSelectedItem(modeloNroFactura.getValueAt(k2, 4).toString());           
             cargarDetalleFactura(Integer.parseInt(modeloNroFactura.getValueAt(k2, 9).toString())); 
             datosActualesDetalleFactura();
             
@@ -692,7 +653,71 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
             tbDetalleCompra.setValueAt(subTotalFormat, i, 5);
             i++;
            }
+           DetalleFacturaSuspension();
      }
+      
+       public void DetalleFacturaSuspension(){ //calcula los datos traidos luego de una suspension
+       int j=0;
+       while (!"".equals(tbDetalleCompra.getValueAt(j, 0).toString())){
+        txtDescuento.setText("0");
+        formateadorSus = new DecimalFormat();
+        
+        Integer precio=0;
+        String codigo = tbDetalleCompra.getValueAt(j,0).toString();
+
+            
+        precio = Integer.parseInt(tbDetalleCompra.getValueAt(j, 2).toString().replace(".", "").trim());
+        
+        Integer Cantidad=0;
+        
+        Cantidad = Integer.parseInt(tbDetalleCompra.getValueAt(j, 3).toString().replace(".","").trim());
+        formateadorSus = new DecimalFormat("###,###.##");
+        String cantidadDet=formateadorSus.format(Cantidad);
+        tbDetalleCompra.setValueAt((cantidadDet), j, 3); 
+        int total=(precio*Cantidad);
+        String totalFormat=(formateadorSus.format(total));
+                          
+         cantProducto=cantProducto+Cantidad;
+         formateadorSus = new DecimalFormat("###,###.##");
+         String cantidad=formateadorSus.format(cantProducto);
+         txtCantidadTotal.setText(cantidad);      
+         if(componentesControl.getTipoIva(codigo)==0){
+             formateadorSus = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 5);      
+
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());      
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
+             iva10=iva10+h;
+             String ivaFormat=formateadorSus.format(Math.round(iva10));
+             txtIva10.setText(ivaFormat);
+             
+         }else if (componentesControl.getTipoIva(codigo)==1){
+             formateadorSus = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 5);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim());
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             double h = Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleCompra.getValueAt(j, 5).toString().replace(".", "").trim())/1.05; 
+             iva5=iva5+h;
+             String ivaFormat=formateadorSus.format(Math.round(iva5));
+             txtIva5.setText(ivaFormat);
+         }else{
+             formateador = new DecimalFormat("###,###.##");
+             tbDetalleCompra.setValueAt((totalFormat), j, 4);      
+             subTotal=subTotal+ Integer.parseInt(tbDetalleCompra.getValueAt(j, 4).toString().replace(".", "").trim());
+             String subTotalFormat=formateadorSus.format(subTotal);
+             txtSubTotal.setText(subTotalFormat);
+             txtTotal.setText(txtSubTotal.getText().trim());
+             
+            } 
+         
+         j++;
+     }
+   }
         
        private void cargarDetalleFactura(int idCompra) {
         tbDetalleCompra.removeAll();
@@ -1041,6 +1066,9 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
         txtFacturaCompra.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFacturaCompraKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFacturaCompraKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtFacturaCompraKeyTyped(evt);
@@ -1772,6 +1800,10 @@ public class FacturaCompraForm extends javax.swing.JInternalFrame {
              evt.consume();  
         }
     }//GEN-LAST:event_txtTimbradoKeyTyped
+
+    private void txtFacturaCompraKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFacturaCompraKeyReleased
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
