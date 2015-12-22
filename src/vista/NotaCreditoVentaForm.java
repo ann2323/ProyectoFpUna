@@ -66,6 +66,7 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
     }
     
     java.util.Formatter formato = new java.util.Formatter();
+    DecimalFormat formateadorSus = new DecimalFormat("###,###.##");
     
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     DefaultTableModel modeloComponentes = new DefaultTableModel();
@@ -726,11 +727,11 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
            detalleFacturaSuspension();
      }
         
-        public void detalleFacturaSuspension(){ //calcula los datos traidos luego de una suspension
+      public void detalleFacturaSuspension(){ //calcula los datos traidos luego de una suspension
        int j=0;
        while (!"".equals(tbDetalleVenta.getValueAt(j, 0).toString())){
         txtDescuento.setText("0");
-        formateador = new DecimalFormat();
+        formateadorSus = new DecimalFormat();
         
         Integer precio;
         String codigo = tbDetalleVenta.getValueAt(j,0).toString();
@@ -741,45 +742,45 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
         Integer Cantidad;
         
         Cantidad = Integer.parseInt(tbDetalleVenta.getValueAt(j, 3).toString().trim().replace(".",""));
-        formateador = new DecimalFormat("###,###.##");
-        String cantidadDet=formateador.format(Cantidad);
+        formateadorSus = new DecimalFormat("###,###.##");
+        String cantidadDet=formateadorSus.format(Cantidad);
         tbDetalleVenta.setValueAt((cantidadDet), j, 3); 
         int total=(precio*Cantidad);
-        String totalFormat=(formateador.format(total));
+        String totalFormat=(formateadorSus.format(total));
                           
          cantProducto=cantProducto+Cantidad;
-         formateador = new DecimalFormat("###,###.##");
-         String cantidad=formateador.format(cantProducto);
+         formateadorSus = new DecimalFormat("###,###.##");
+         String cantidad=formateadorSus.format(cantProducto);
          txtCantidadTotal.setText(cantidad);      
          if(componentesControl.getTipoIva(codigo)==0){
-             formateador = new DecimalFormat("###,###.##");
+             formateadorSus = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), j, 5);      
 
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim());      
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText());
              double h = Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())/1.1; 
              iva10=iva10+h;
-             String ivaFormat=formateador.format(Math.round(iva10));
+             String ivaFormat=formateadorSus.format(Math.round(iva10));
              txtIva10.setText(ivaFormat);
              
          }else if (componentesControl.getTipoIva(codigo)==1){
-             formateador = new DecimalFormat("###,###.##");
+             formateadorSus = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), j, 5);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              double h = Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())-   Integer.parseInt(tbDetalleVenta.getValueAt(j, 5).toString().replace(".", "").trim())/1.05; 
              iva5=iva5+h;
-             String ivaFormat=formateador.format(Math.round(iva5));
+             String ivaFormat=formateadorSus.format(Math.round(iva5));
              txtIva5.setText(ivaFormat);
          }else{
-             formateador = new DecimalFormat("###,###.##");
+             formateadorSus = new DecimalFormat("###,###.##");
              tbDetalleVenta.setValueAt((totalFormat), j, 4);      
              subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(j, 4).toString().replace(".", "").trim());
-             String subTotalFormat=formateador.format(subTotal);
+             String subTotalFormat=formateadorSus.format(subTotal);
              txtSubTotal.setText(subTotalFormat);
              txtTotal.setText(txtSubTotal.getText().trim());
              
