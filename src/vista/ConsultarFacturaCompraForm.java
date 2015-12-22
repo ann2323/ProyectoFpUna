@@ -26,17 +26,19 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
     /**
      * Creates new form ConsultarFacturaVentaForm
      */
-    public ConsultarFacturaCompraForm() {
-        initComponents();
-        getProveedores();
-    }
-
      DecimalFormat forma = new DecimalFormat("###,###.##");
     int codigoProv = 0;
     DefaultComboBoxModel modelCombo = new DefaultComboBoxModel();
     ProveedorControlador provControlador = new ProveedorControlador();
     FacturaCabeceraCompraControlador facturaControlador = new FacturaCabeceraCompraControlador();
     DefaultTableModel modeloTablaFactura = new DefaultTableModel();
+    
+    public ConsultarFacturaCompraForm() {
+        initComponents();
+        getProveedores();
+
+    }
+
     
     
      private void getProveedores() {
@@ -60,8 +62,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
      private void getFactura(int codigoProv) {
         try {
 
-            tbFact.setModel(modeloTablaFactura);
-
+           
             modeloTablaFactura.setRowCount(0);
             modeloTablaFactura.setColumnCount(0);
 
@@ -82,7 +83,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
                     }
                     modeloTablaFactura.addRow(fila);
                 }
-
+                tbFact.setModel(modeloTablaFactura);
                 
             } catch (Exception ex) {
                 showMessageDialog(null, ex, "Error", ERROR_MESSAGE);
@@ -173,7 +174,11 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         jLabel2.setText("Proveedor");
 
         comboProveedor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        comboProveedor.setSelectedIndex(-1);
+        comboProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                comboProveedorMouseClicked(evt);
+            }
+        });
         comboProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboProveedorActionPerformed(evt);
@@ -276,8 +281,8 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -291,7 +296,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -299,7 +304,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboProveedorActionPerformed
-         try {
+        try {
             codigoProv = 0;
             codigoProv = provControlador.getCodigo((String) comboProveedor.getSelectedItem());
             getFactura(codigoProv);
@@ -314,9 +319,15 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         tbFact.removeAll();
         getProveedores();
-
         comboProveedor.setSelectedIndex(-1);
+        modeloTablaFactura.setRowCount(0);
+        tbFact.setModel(modeloTablaFactura);
+        
     }//GEN-LAST:event_formInternalFrameOpened
+
+    private void comboProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboProveedorMouseClicked
+        
+    }//GEN-LAST:event_comboProveedorMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
