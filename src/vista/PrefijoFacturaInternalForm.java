@@ -334,8 +334,8 @@ public class PrefijoFacturaInternalForm extends javax.swing.JInternalFrame {
                 return;
             }
             
-            if (txtPrefijo.getText().trim().length() < 3) {
-                showMessageDialog(this, "El prefijo debe tener tres dígitos ", "Atención", JOptionPane.WARNING_MESSAGE);
+            if (txtPrefijo.getText().trim().length() < 7) {
+                showMessageDialog(this, "El prefijo debe tener siete dígitos ", "Atención", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
