@@ -1809,16 +1809,25 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
      try {
-         nuevo();
+         if (prefijoControlador.prefijoFactura().isEmpty()||prefijoControlador.prefijoFactura()==null){
+             showMessageDialog(this, "Debe dar de alta un numero de prefijo para continuar", "Atención", JOptionPane.WARNING_MESSAGE);
+         }else{
+             
+             try {
+                 nuevo();
+             } catch (Exception ex) {
+                 Logger.getLogger(NotaCreditoVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             txtPrefijo.setEditable(false);
+             try {
+                 txtPrefijo.setText(prefijoControlador.prefijoNotaCredito());
+             } catch (Exception ex) {
+                 Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }
      } catch (Exception ex) {
          Logger.getLogger(NotaCreditoVentaForm.class.getName()).log(Level.SEVERE, null, ex);
      }
-       txtPrefijo.setEditable(false);
-        try {
-            txtPrefijo.setText(prefijoControlador.prefijoNotaCredito());
-            } catch (Exception ex) {
-            Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
        
     }//GEN-LAST:event_formInternalFrameOpened
 

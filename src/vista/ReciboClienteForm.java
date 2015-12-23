@@ -266,6 +266,8 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
             return;
         }else{ 
             if(showConfirmDialog (null, "Está seguro de guardar el recibo?", "Confirmar", YES_NO_OPTION) == YES_OPTION){
+            nroRecibo = Integer.parseInt(txtNroRecibo.getText().replace(".", "").trim());
+            pagado = Integer.parseInt(txtpagado.getText().replace(".", "").trim());
             reciboModelo.setNroRecibo(Integer.parseInt(txtNroRecibo.getText()));
             reciboModelo.setFacturaNro(Integer.parseInt(txtFactura.getText().replace(".","").trim()));
             SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
@@ -837,7 +839,8 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tbVistaFacturasPendientesFocusLost
 
     private void bImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bImprimirActionPerformed
-        if(showConfirmDialog (null, "Está seguro de generar el recibo?", "Confirmar", YES_NO_OPTION) == YES_OPTION){  
+        if(showConfirmDialog (null, "Está seguro de generar el recibo?", "Confirmar", YES_NO_OPTION) == YES_OPTION){ 
+            
         try {
             if (txtpagado.getText().equals("")){
               showMessageDialog(null, "Debe realizar el detalle de pago para generar el recibo", "Atención", INFORMATION_MESSAGE);
@@ -874,7 +877,7 @@ public class ReciboClienteForm extends javax.swing.JInternalFrame {
     
              plazo=""; nroRecFormat="";	 
              pagado=0;
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/recibo.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/recibo.jasper", parametro, coneccionSQL());
   		//JasperReport report = JasperCompileManager.compileReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/facturaVenta.jrxml");	
             //JasperPrint print = JasperFillManager.fillReport(report,parametro,coneccionSQL());
                 

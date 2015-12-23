@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
      */
     public MovimientoCompraForm() {
         initComponents();
+     
         
     }
      private Connection coneccionSQL()
@@ -67,7 +69,7 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         txtFechaHasta = new datechooser.beans.DateChooserCombo();
-        txtFechaDesde1 = new datechooser.beans.DateChooserCombo();
+        txtFechaDesde = new datechooser.beans.DateChooserCombo();
 
         setClosable(true);
         setIconifiable(true);
@@ -170,7 +172,7 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
     txtFechaHasta.setFormat(2);
     txtFechaHasta.setLocale(new java.util.Locale("es", "BO", ""));
 
-    txtFechaDesde1.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
+    txtFechaDesde.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
         new datechooser.view.appearance.ViewAppearance("custom",
             new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 16),
                 new java.awt.Color(0, 0, 0),
@@ -211,8 +213,8 @@ public class MovimientoCompraForm extends javax.swing.JInternalFrame {
             (datechooser.view.BackRenderer)null,
             false,
             true)));
-txtFechaDesde1.setNothingAllowed(false);
-txtFechaDesde1.setLocale(new java.util.Locale("es", "BO", ""));
+txtFechaDesde.setNothingAllowed(false);
+txtFechaDesde.setLocale(new java.util.Locale("es", "BO", ""));
 
 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 jPanel1.setLayout(jPanel1Layout);
@@ -232,7 +234,7 @@ jPanel1Layout.setHorizontalGroup(
                 .addComponent(bGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(130, 130, 130)
-                .addComponent(txtFechaDesde1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -256,7 +258,7 @@ jPanel1Layout.setHorizontalGroup(
                     .addComponent(bGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(20, 20, 20)
-                    .addComponent(txtFechaDesde1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
     );
 
@@ -273,15 +275,15 @@ jPanel1Layout.setHorizontalGroup(
              try {	
                 		                       		                      		             
              Map parametro = new HashMap (); 
-             SimpleDateFormat formato1 = new SimpleDateFormat("dd-MM-yyyy");
+             SimpleDateFormat formato1 = new SimpleDateFormat("d-M-y",Locale.getDefault() );
              Date date1 = formato1.parse(txtFechaHasta.getText()); 
-             SimpleDateFormat formato2 = new SimpleDateFormat("dd-MM-yyyy");
+             SimpleDateFormat formato2 = new SimpleDateFormat("d-M-y", Locale.getDefault());
              Date date2 = formato2.parse(txtFechaHasta.getText());             
            		             
              parametro.put("fechaDesde", date1);		          
              parametro.put("fechaHasta", date2);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/detalleCompra.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/detalleCompra.jasper", parametro, coneccionSQL());
 
              JasperViewer.viewReport(print, false);
   		  
@@ -305,7 +307,7 @@ jPanel1Layout.setHorizontalGroup(
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private datechooser.beans.DateChooserCombo txtFechaDesde1;
+    private datechooser.beans.DateChooserCombo txtFechaDesde;
     private datechooser.beans.DateChooserCombo txtFechaHasta;
     // End of variables declaration//GEN-END:variables
 

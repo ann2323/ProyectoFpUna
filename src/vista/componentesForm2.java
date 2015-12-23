@@ -12,8 +12,6 @@ import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -88,6 +86,8 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         txtCosto = new javax.swing.JFormattedTextField();
         jLabel10 = new javax.swing.JLabel();
         jComboIva = new javax.swing.JComboBox();
+        jLabel11 = new javax.swing.JLabel();
+        jComboServicio = new javax.swing.JComboBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -98,7 +98,6 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Componentes");
-        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/componente.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -144,11 +143,6 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                 bCancelarMouseClicked(evt);
             }
         });
-        bCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bCancelarActionPerformed(evt);
-            }
-        });
 
         bGuardar.setForeground(new java.awt.Color(0, 51, 102));
         bGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1430629542_save_as-2-32.png"))); // NOI18N
@@ -161,6 +155,11 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         bGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 bGuardarMouseClicked(evt);
+            }
+        });
+        bGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bGuardarActionPerformed(evt);
             }
         });
 
@@ -352,6 +351,10 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
 
         jComboIva.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10%", "5%", "EXENTO" }));
 
+        jLabel11.setText("Servicio");
+
+        jComboServicio.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NO", "SI" }));
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -379,9 +382,9 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                         .addGap(58, 58, 58)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
+                                .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboIva, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -389,7 +392,11 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jComboProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboIva, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -406,7 +413,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -416,6 +423,10 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
                             .addComponent(jComboIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jComboServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -497,7 +508,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jPanel4.getAccessibleContext().setAccessibleName("");
@@ -550,11 +561,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         } else if (bGuardar.isEnabled() == false){
             return;
         } else {
-            try {
-                guardar();
-            } catch (Exception ex) {
-                Logger.getLogger(componentesForm2.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            guardar();
         }
     }//GEN-LAST:event_bGuardarMouseClicked
 
@@ -644,9 +651,9 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_bBuscarMouseClicked
 
-    private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelarActionPerformed
+    private void bGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_bCancelarActionPerformed
+    }//GEN-LAST:event_bGuardarActionPerformed
 
     private void primero(){
         if (modelo.getRowCount() == 0) {
@@ -703,6 +710,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
             txtPrecio.setValue(modelo.getValueAt(k, 4));
             txtCosto.setValue(modelo.getValueAt(k, 7));
             jComboIva.setSelectedIndex((int) modelo.getValueAt(k, 8));
+            jComboServicio.setSelectedIndex((int) modelo.getValueAt(k, 9));
             getStock(txtCodigo.getText());
             try {
                 jComboProveedor.setSelectedItem(prvBD.getDato((Integer)modelo.getValueAt(k, 6)));
@@ -727,6 +735,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         jComboUnidad.setEnabled(false);
         jComboEstado.setEnabled(false);
         jComboIva.setEnabled(false);
+        jComboServicio.setEnabled(false);
         jComboProveedor.setEnabled(false);
         } else {
         txtCodigo.setBackground(Color.white);
@@ -735,13 +744,14 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
         txtPrecio.setEnabled(true);
         jComboUnidad.setEnabled(true);
         jComboIva.setEnabled(true);
+        jComboServicio.setEnabled(true);
         jComboEstado.setEnabled(true);
         jComboProveedor.setEnabled(true);
         }
     }
     
     @SuppressWarnings("UnnecessaryReturnStatement")
-    private void guardar() throws Exception{
+    private void guardar(){
         if ("".equals(txtCodigo.getText())) {
             showMessageDialog(null, "Debe ingresar un código.", "Atención", INFORMATION_MESSAGE);
             txtCodigo.requestFocusInWindow();
@@ -759,8 +769,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
             txtPrecio.requestFocusInWindow();
             return;
         } 
-        else {      
-            cmp.setCodigoInterno(cmpBD.nuevoCodigo());
+        else {
             cmp.setCodigo(txtCodigo.getText());
             cmp.setUnidad(jComboUnidad.getSelectedIndex());
             cmp.setDescripcion(txtDescripcion.getText());     
@@ -768,6 +777,7 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
             cmp.setCosto(Integer.parseInt(txtCosto.getValue().toString())); 
             cmp.setPrecio(Integer.parseInt(txtPrecio.getValue().toString()));
             cmp.setTipoIva(jComboIva.getSelectedIndex());
+            cmp.setServicio(jComboServicio.getSelectedIndex());
             
             try { 
                 cmp.setIdProveedor(prvBD.getCodigo((String) jComboProveedor.getSelectedItem()));
@@ -853,7 +863,8 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
     private void limpiar() {
         txtCodigo.setText("");
         jComboUnidad.setSelectedIndex(0);
-        jComboIva.setSelectedIndex(1);
+        jComboIva.setSelectedIndex(0);
+        jComboServicio.setSelectedIndex(0);
         txtDescripcion.setText("");
         txtPrecio.setText("");
         txtCosto.setText("");
@@ -1002,9 +1013,11 @@ public class componentesForm2 extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox jComboEstado;
     private javax.swing.JComboBox jComboIva;
     private javax.swing.JComboBox jComboProveedor;
+    private javax.swing.JComboBox jComboServicio;
     private javax.swing.JComboBox jComboUnidad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

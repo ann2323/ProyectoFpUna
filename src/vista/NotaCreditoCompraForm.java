@@ -1655,7 +1655,11 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtPrefijoCompraKeyTyped
 
     private void txtFacturaCompraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyTyped
-       char c = evt.getKeyChar();
+      if(txtFacturaReferenciada.getText().trim().equals("")){
+           showMessageDialog(null, "Primero debe ingresar el número de factura", "Atención", INFORMATION_MESSAGE);
+           return;
+       }else{
+        char c = evt.getKeyChar();
          if(Character.isLetter(c))
          {
              getToolkit().beep();
@@ -1664,6 +1668,7 @@ public class NotaCreditoCompraForm extends javax.swing.JInternalFrame {
          if(txtFacturaCompra.getText().length()>6){
              evt.consume();  
          }
+      }
     }//GEN-LAST:event_txtFacturaCompraKeyTyped
 
     private void txtFacturaCompraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaCompraKeyPressed

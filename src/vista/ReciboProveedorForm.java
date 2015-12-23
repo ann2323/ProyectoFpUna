@@ -755,7 +755,11 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tbVistaFacturasPendientesFocusLost
 
     private void txtFacturaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturaKeyPressed
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+      if(txtNroRecibo.getText().equals("")) {
+        showMessageDialog(null, "Debe primero el proveedor", "Atención", INFORMATION_MESSAGE);
+      }else{
+      
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if ("*".equals(txtFactura.getText())) {
                 Integer prov = 0;
                 try {
@@ -799,6 +803,7 @@ public class ReciboProveedorForm extends javax.swing.JInternalFrame {
                     }
                 }
         }
+      }
     }//GEN-LAST:event_txtFacturaKeyPressed
 
     private void btnDetallePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallePagoActionPerformed

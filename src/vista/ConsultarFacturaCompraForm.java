@@ -66,7 +66,7 @@ public class ConsultarFacturaCompraForm extends javax.swing.JInternalFrame {
             modeloTablaFactura.setRowCount(0);
             modeloTablaFactura.setColumnCount(0);
 
-            try (ResultSet rs = facturaControlador.datosTablaBusqueda(codigoProv)) {
+            try (ResultSet rs = facturaControlador.datosTablaBusquedaFactura(codigoProv)) {
                 ResultSetMetaData rsMd = rs.getMetaData();
 
                 int cantidadColumnas = rsMd.getColumnCount();

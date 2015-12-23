@@ -267,7 +267,7 @@ public class AnularPagoProveedorForm extends javax.swing.JInternalFrame {
                         factpendienteModel.setProveedorId(provC.devuelveId(txtProveedor.getText().replace(".", "").trim()));
                         factpendienteModel.setTotal(Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 4).toString()));
                         facturaPendienteControl.insert(factpendienteModel);
-                        facturaPendienteControl.updateEstadoPendiente(Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 0).toString()),Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 1).toString()));                       
+                        facturaPendienteControl.updateEstadoPendiente((tbVistaFacturasPendientes.getValueAt(f, 0).toString()),Integer.parseInt(tbVistaFacturasPendientes.getValueAt(f, 1).toString()));                       
                         
                     }
                     f++;

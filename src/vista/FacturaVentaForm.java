@@ -644,9 +644,9 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
      private Connection coneccionSQL(){
             try{
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/intersat";
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
                      return con;
             }
              catch(Exception e){
@@ -1719,19 +1719,20 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
               Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
           }
           
-          String nroFactura = ""; 
+  
+          String nroFactura= "";
           String prefijo = "";
-         
           String estado = "";
-          String subTotal2 = "";
           int precio2 = 0;
           precio2 = Integer.parseInt(txtTotal.getText().replace(".", ""));
-          
-          nroFactura = txtFacturaVenta.getText().trim().replace(".", "");
-          subTotal2 = txtSubTotal.getText().trim().replace(".", "");
-          prefijo = txtPrefijoVenta.getText();
           SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
           estado = comboPago.getSelectedItem().toString();
+          
+          nroFactura = txtFacturaVenta.getText().replace(".", "").trim();
+          Integer nroFactura2 = Integer.parseInt(txtFacturaVenta.getText().replace(".", "").trim());
+          String prefijo2 = txtPrefijoVenta.getText();
+          Integer subTotal2 = Integer.parseInt(txtSubTotal.getText().replace(".", "").trim());
+          
           
            
           //si no encuentra el nro de factura se guarda. Esto es para evitar que se guarde
@@ -1793,24 +1794,19 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
                       Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
                   } break;
           }
-         
-         ventaC.setPrecioTotal(Integer.parseInt(precioTotal));
-         System.out.println(txtTotal.getText().replace(".", ""));
-         ventaC.setNroFactura(Integer.parseInt(nroFactura)); 
-         ventaC.setNroPrefijo(prefijo);
                         
          try {	
                 		                       
-             String monto = ventaControlador.totalLetras(precio2);		         
-             		             
+             String monto = ventaControlador.totalLetras(precio2);
+                         		             
              Map parametro = new HashMap ();        		               
              		             
-             parametro.put("factura", nroFactura);	
+             parametro.put("factura", nroFactura2);	
              parametro.put("subtotal", subTotal2);
              parametro.put("letras", monto);		          
-             parametro.put("prefijo", prefijo);		  
+             parametro.put("prefijo", prefijo2);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaVenta.jasper", parametro, coneccionSQL());
   		
              //JasperViewer visor = new JasperViewer(print,false) ;
              JasperViewer.viewReport(print, false);
