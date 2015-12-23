@@ -223,7 +223,7 @@ public class FacturaPendienteControlador {
             }
     }
     
-    public void updateEstadoPendiente(int nroPrefijo, int nroFactura) throws Exception {
+    public void updateEstadoPendiente(String nroPrefijo, int nroFactura) throws Exception {
           Session baseDatos = HibernateUtil.getSessionFactory().openSession();
             baseDatos.beginTransaction();
         

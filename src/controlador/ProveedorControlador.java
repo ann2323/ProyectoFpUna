@@ -181,7 +181,7 @@ public class ProveedorControlador {
     
     public Integer getCodigo(String dato) throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-        String cad = "SELECT proveedor_id from Proveedor where nombre||' '||apellido = '" + dato + "'";
+        String cad = "SELECT proveedor_id from Proveedor where cod_proveedor||' - '||nombre = '" + dato + "'";
         PreparedStatement ps = baseDatos.connection().prepareStatement(cad);
         try {
             ResultSet rs = ps.executeQuery();

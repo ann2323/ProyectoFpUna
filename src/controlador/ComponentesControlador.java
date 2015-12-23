@@ -13,7 +13,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
 
-/**pathyyyyyyyyyy!!!! 
+/**
  *
  * @author Grossling
  */
@@ -59,7 +59,7 @@ public class ComponentesControlador {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         
         try {
-            return (Integer) baseDatos.createQuery("select coalesce (max(codigo_interno), 0) + 1 from Componentes").uniqueResult();
+            return (Integer) baseDatos.createQuery("select coalesce (max(codigoInterno), 0) + 1 from Componentes").uniqueResult();
         } catch(HibernateException e){
             throw new Exception("Error al generar nuevo código interno: \n" + e.getMessage());
         }
@@ -80,7 +80,7 @@ public class ComponentesControlador {
     public ResultSet datos() throws Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         String query = "SELECT codigo as \"Código\", unidad as \"Unidad de medida\", descripcion as \"Descripción\", estado as \"Estado\", " +
-                    "precio as \"Precio\", codigo_interno, id_proveedor, costo, tipo_iva from Componentes order by codigo_interno";
+                    "precio as \"Precio\", codigo_interno, id_proveedor, costo, tipo_iva, servicio from Componentes order by codigo_interno";
         PreparedStatement ps = baseDatos.connection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         try {

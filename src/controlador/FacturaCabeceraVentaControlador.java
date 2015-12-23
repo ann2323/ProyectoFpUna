@@ -501,7 +501,7 @@ public class FacturaCabeceraVentaControlador {
      
      public ResultSet datosBusquedaNotaCreditoVenta() throws SQLException, Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
-            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as Fecha, pago_contado as \"Forma de pago\", precio_total as \"Total\", estado as \"Estado\", fact_referenciada as \"Factura Referenciada\", cliente_id from Venta where es_factura = 'N' and (estado != 'ANULADO' and estado != 'BORRADOR')";
+            String query = "SELECT  trim(to_char(cast(nro_factura as integer),'9G999G999')) as \"Nro Factura\",  nro_prefijo as \"Nro Prefijo\", to_char(fecha,'dd/mm/yyyy') as Fecha, pago_contado as \"Forma de pago\", trim(to_char(cast(precio_total as integer),'9G999G999')) as \"Total\", estado as \"Estado\", fact_referenciada as \"Factura Referenciada\", cliente_id from Venta where es_factura = 'N' and (estado != 'ANULADO' and estado != 'BORRADOR')";
             PreparedStatement ps = baseDatos.connection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             try {

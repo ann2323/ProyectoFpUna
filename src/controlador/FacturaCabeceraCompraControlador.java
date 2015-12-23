@@ -262,6 +262,19 @@ public class FacturaCabeceraCompraControlador {
                 throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
             }
         }
+     public ResultSet datosTablaBusquedaFactura(int codigo) throws Exception {
+            Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+            String query = "SELECT nro_prefijo as \"Nro Prefijo\", nro_factura as \"Nro Factura\", to_char(fecha,'dd/mm/yyyy') as \"Fecha\", pago_contado as \"Forma de pago\", cantidad_total as \"Cantidad Total\", precio_total as \"Total\", estado from Compra where proveedor_id = '" + codigo + "' and es_factura='S'";
+            PreparedStatement ps = baseDatos.connection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            try {
+                //System.out.println("CORRECTA BUSQUEDA");
+                return rs;
+            } catch(HibernateException e){
+                throw new Exception("Error al consultar la tabla Compra: \n" + e.getMessage());
+            }
+        }
+     
      
      public ResultSet datosBusquedaNotaCreditoCompra() throws SQLException, Exception {
             Session baseDatos = HibernateUtil.getSessionFactory().openSession();
