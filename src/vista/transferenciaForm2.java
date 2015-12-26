@@ -35,7 +35,6 @@ import modelo.TransferenciaDetalle;
 
 /**
  *
- * @author Grossling
  */
 public class transferenciaForm2 extends javax.swing.JInternalFrame {
 

@@ -43,6 +43,7 @@ public class salidaForm2 extends javax.swing.JInternalFrame {
      */
     public salidaForm2() {
         initComponents();
+        
     }
 
     Salida sal = new Salida();
