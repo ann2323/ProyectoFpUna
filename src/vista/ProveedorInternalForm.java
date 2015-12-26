@@ -10,6 +10,7 @@ import controlador.ProveedorControlador;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.logging.Level;
@@ -34,20 +35,18 @@ import modelo.Proveedor;
 public class ProveedorInternalForm extends javax.swing.JInternalFrame {
     
 
-
+     
      public ProveedorInternalForm(java.awt.Dialog parent, boolean modal) {
         //super(parent, modal);
         initComponents();
         establecerBotones("Nuevo");
         this.moveToFront();
-        this.setSize(900, 600);
         nuevo();
         JRci.setSelected(false);
         labelGuion.setVisible(false);
         txtdv.setVisible(false);
         JRparticular.setSelected(false);
-        	
-        
+             
     }
      
   
@@ -61,8 +60,7 @@ public class ProveedorInternalForm extends javax.swing.JInternalFrame {
         labelGuion.setVisible(false);
         txtdv.setVisible(false);
         JRparticular.setSelected(false);
-        //getProveedores();
-        
+        //getProveedores();	 
         
     }
     
@@ -388,6 +386,7 @@ private void modoBusqueda(boolean v){
         bGuardar = new org.edisoncor.gui.button.ButtonTask();
         bBorrar = new org.edisoncor.gui.button.ButtonTask();
         bBuscar = new org.edisoncor.gui.button.ButtonTask();
+        bAyuda = new org.edisoncor.gui.button.ButtonTask();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
@@ -443,6 +442,11 @@ private void modoBusqueda(boolean v){
         setTitle("Proveedor");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedores.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(1258, 500));
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -528,6 +532,20 @@ private void modoBusqueda(boolean v){
             }
         });
         jPanel1.add(bBuscar);
+
+        bAyuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/acercaDe.png"))); // NOI18N
+        bAyuda.setText("Ayuda");
+        bAyuda.setCategoryFont(new java.awt.Font("Arial Rounded MT Bold", 0, 18)); // NOI18N
+        bAyuda.setCategorySmallFont(new java.awt.Font("Aharoni", 0, 5)); // NOI18N
+        bAyuda.setDescription(" ");
+        bAyuda.setFont(new java.awt.Font("Algerian", 0, 5)); // NOI18N
+        bAyuda.setIconTextGap(2);
+        bAyuda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAyudaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bAyuda);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del Proveedor", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Aharoni", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -751,7 +769,7 @@ private void modoBusqueda(boolean v){
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1517, Short.MAX_VALUE)))
                 .addGap(5, 5, 5))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -1104,6 +1122,19 @@ private void modoBusqueda(boolean v){
         txtDireccion.setText(direccion);
     }//GEN-LAST:event_txtDireccionKeyReleased
 
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+    }//GEN-LAST:event_formKeyPressed
+
+    private void bAyudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAyudaActionPerformed
+        try { 
+            Runtime run = Runtime.getRuntime();
+            String path = new String(" C:\\Users\\Any\\Documents\\NetBeansProjects\\helpIntersat.chm"); 
+            Process pro = run.exec("hh.exe" + path);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bAyudaActionPerformed
+
     private void datosActuales(){
             String ced = modelo.getValueAt(k, 1).toString();
             char dv = ced.charAt(ced.length()-1);
@@ -1154,6 +1185,7 @@ private void modoBusqueda(boolean v){
     private javax.swing.JRadioButton JRempresa;
     private javax.swing.JRadioButton JRparticular;
     private javax.swing.JRadioButton JRruc;
+    private org.edisoncor.gui.button.ButtonTask bAyuda;
     private org.edisoncor.gui.button.ButtonTask bBorrar;
     private org.edisoncor.gui.button.ButtonTask bBuscar;
     private org.edisoncor.gui.button.ButtonTask bCancelar;

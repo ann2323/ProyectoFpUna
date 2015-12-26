@@ -7,6 +7,8 @@
 package vista;
 
 import controlador.permisos;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +24,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     String nombreUsuario;
     int codRol;
     String rolUsuario;
+    private Dimension dim;
     
 
     /**
@@ -31,6 +34,8 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         initComponents();
         jDesktopPane1.setBorder(new Escritorio());
         this.setExtendedState(MAXIMIZED_BOTH);
+
+       
     }
     permisos p = new permisos();
     /**
@@ -42,6 +47,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDesktopPane2 = new javax.swing.JDesktopPane();
         jDesktopPane1 = new javax.swing.JDesktopPane();
         clockFace1 = new org.edisoncor.gui.varios.ClockFace();
         jXMonthView1 = new org.jdesktop.swingx.JXMonthView();
@@ -82,6 +88,10 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         consultarMovimientoCompra = new javax.swing.JMenuItem();
         HechaukaCompra = new javax.swing.JMenuItem();
         HechaukaVenta = new javax.swing.JMenuItem();
+        ExtractoCliente = new javax.swing.JMenuItem();
+        ExtractoProveedor = new javax.swing.JMenuItem();
+        LibroCompras = new javax.swing.JMenuItem();
+        LibroCompras1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         mAnularFacturaVenta = new javax.swing.JMenuItem();
         mAnularFacturaCompra = new javax.swing.JMenuItem();
@@ -102,38 +112,109 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
                 formWindowOpened(evt);
             }
         });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jDesktopPane2.setBackground(new java.awt.Color(255, 255, 255));
+        jDesktopPane2.setForeground(new java.awt.Color(255, 255, 255));
 
         jDesktopPane1.setBackground(new java.awt.Color(255, 255, 255));
         jDesktopPane1.setAutoscrolls(true);
-        jDesktopPane1.setPreferredSize(new java.awt.Dimension(1260, 680));
 
         clockFace1.setBackground(new java.awt.Color(0, 255, 204));
         clockFace1.setRomano(false);
-        jDesktopPane1.add(clockFace1);
-        clockFace1.setBounds(1010, 270, 150, 150);
 
         jXMonthView1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jXMonthView1.setFlaggedDayForeground(new java.awt.Color(0, 204, 204));
-        jDesktopPane1.add(jXMonthView1);
-        jXMonthView1.setBounds(985, 460, 220, 170);
+        jXMonthView1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jXMonthView1ActionPerformed(evt);
+            }
+        });
 
         lbUsuario.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lbUsuario.setForeground(new java.awt.Color(0, 102, 153));
         lbUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jDesktopPane1.add(lbUsuario);
-        lbUsuario.setBounds(980, 60, 230, 20);
 
         lbRol.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lbRol.setForeground(new java.awt.Color(0, 153, 204));
         lbRol.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jDesktopPane1.add(lbRol);
-        lbRol.setBounds(980, 100, 230, 20);
 
         jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(255, 255, 255));
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204), 2));
-        jDesktopPane1.add(jTextField1);
-        jTextField1.setBounds(940, 20, 290, 640);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
+        jDesktopPane1.setLayout(jDesktopPane1Layout);
+        jDesktopPane1Layout.setHorizontalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(1650, 1650, 1650)
+                        .addComponent(jXMonthView1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(1650, 1650, 1650)
+                        .addComponent(lbUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(1680, 1680, 1680)
+                        .addComponent(clockFace1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(1650, 1650, 1650)
+                        .addComponent(lbRol, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(1610, 1610, 1610)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jDesktopPane1Layout.setVerticalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(680, 680, 680)
+                        .addComponent(jXMonthView1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(lbUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(490, 490, 490)
+                        .addComponent(clockFace1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addComponent(lbRol, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 902, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(49, Short.MAX_VALUE))
+        );
+        jDesktopPane1.setLayer(clockFace1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jXMonthView1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lbUsuario, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lbRol, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jTextField1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jDesktopPane2Layout = new javax.swing.GroupLayout(jDesktopPane2);
+        jDesktopPane2.setLayout(jDesktopPane2Layout);
+        jDesktopPane2Layout.setHorizontalGroup(
+            jDesktopPane2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDesktopPane2Layout.createSequentialGroup()
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jDesktopPane2Layout.setVerticalGroup(
+            jDesktopPane2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDesktopPane2Layout.createSequentialGroup()
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jDesktopPane2.setLayer(jDesktopPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        getContentPane().add(jDesktopPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         mProyecto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/project.png"))); // NOI18N
         mProyecto.setText("Proyecto");
@@ -398,7 +479,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(consultarMovimientoCompra);
 
-        HechaukaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        HechaukaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/hechauka.png"))); // NOI18N
         HechaukaCompra.setText("Hechauka Compra");
         HechaukaCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -407,7 +488,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         });
         mConsultar.add(HechaukaCompra);
 
-        HechaukaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/consultarCuentaProveedor.png"))); // NOI18N
+        HechaukaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/hechauka2.png"))); // NOI18N
         HechaukaVenta.setText("Hechauka Venta");
         HechaukaVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -415,6 +496,42 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
             }
         });
         mConsultar.add(HechaukaVenta);
+
+        ExtractoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentaCliente.png"))); // NOI18N
+        ExtractoCliente.setText("Extracto Cliente");
+        ExtractoCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExtractoClienteActionPerformed(evt);
+            }
+        });
+        mConsultar.add(ExtractoCliente);
+
+        ExtractoProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cuentasProveedores.png"))); // NOI18N
+        ExtractoProveedor.setText("Extracto Proveedor");
+        ExtractoProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExtractoProveedorActionPerformed(evt);
+            }
+        });
+        mConsultar.add(ExtractoProveedor);
+
+        LibroCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/libroCompra.png"))); // NOI18N
+        LibroCompras.setText("Libro Compras");
+        LibroCompras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LibroComprasActionPerformed(evt);
+            }
+        });
+        mConsultar.add(LibroCompras);
+
+        LibroCompras1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/libroVenta.png"))); // NOI18N
+        LibroCompras1.setText("Libro Ventas");
+        LibroCompras1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LibroCompras1ActionPerformed(evt);
+            }
+        });
+        mConsultar.add(LibroCompras1);
 
         jMenuBar1.add(mConsultar);
 
@@ -505,17 +622,6 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         jMenuBar1.add(mSalir);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -626,6 +732,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
        this.jDesktopPane1.add(tf2);
        tf2.show();
+       tf2.setSize(1500, 600);
     }//GEN-LAST:event_mProveedorActionPerformed
 
     private void mFacturaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mFacturaCompraActionPerformed
@@ -1100,7 +1207,7 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     private void mAcercaDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mAcercaDeMouseClicked
          try { 
             Runtime run = Runtime.getRuntime();
-            String path = new String(" C:\\Users\\Pathy\\Desktop\\help.chm"); 
+            String path = new String(" C:\\Users\\Any\\Documents\\NetBeansProjects\\helpIntersat.chm"); 
             Process pro = run.exec("hh.exe" + path);
         } catch (IOException ex) {
             Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1165,6 +1272,90 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_HechaukaVentaActionPerformed
 
+    private void ExtractoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExtractoClienteActionPerformed
+        try {
+            ExtractoCuentaClienteForm tf4 = new ExtractoCuentaClienteForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ExtractoClienteActionPerformed
+
+    private void ExtractoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExtractoProveedorActionPerformed
+       try {
+            ExtractoCuentaProveedorForm tf4 = new ExtractoCuentaProveedorForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ExtractoProveedorActionPerformed
+
+    private void LibroComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LibroComprasActionPerformed
+        try {
+            LibroCompraForm tf4 = new LibroCompraForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_LibroComprasActionPerformed
+
+    private void LibroCompras1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LibroCompras1ActionPerformed
+          try {
+            LibroVentaForm tf4 = new LibroVentaForm();
+            tf4.setSize(600, 300);
+            try {
+                if (p.tiene(tf4.getTitle(),this.codRol) == 0){
+                    showMessageDialog(this, "Sin permiso", "Atención", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.jDesktopPane1.add(tf4);
+            tf4.show();
+        } catch (Exception ex) {
+            Logger.getLogger(MenuPrincipalForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_LibroCompras1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jXMonthView1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jXMonthView1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jXMonthView1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1201,13 +1392,18 @@ public class MenuPrincipalForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem ExtractoCliente;
+    private javax.swing.JMenuItem ExtractoProveedor;
     private javax.swing.JMenuItem HechaukaCompra;
     private javax.swing.JMenuItem HechaukaVenta;
+    private javax.swing.JMenuItem LibroCompras;
+    private javax.swing.JMenuItem LibroCompras1;
     private javax.swing.JMenuItem ReciboPagoProv;
     private org.edisoncor.gui.varios.ClockFace clockFace1;
     private javax.swing.JMenuItem consultarMovimientoCompra;
     private javax.swing.JMenuItem consultarMovimientoVenta;
     public static javax.swing.JDesktopPane jDesktopPane1;
+    private javax.swing.JDesktopPane jDesktopPane2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;

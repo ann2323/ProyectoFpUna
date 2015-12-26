@@ -48,7 +48,7 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
      */
     
     int k, k3;
-    Integer total=0; String estado="";
+    Integer total=0, nroFactura=0; String estado="";
     DecimalFormat formateador = new DecimalFormat("###,###.##");
     DefaultTableModel modeloBusqueda = new DefaultTableModel();
     DefaultTableModel modeloBusquedaFacturas = new DefaultTableModel();
@@ -236,7 +236,7 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
         }else{ 
              if(showConfirmDialog (null, "Está seguro de anular el pago?", "Confirmar", YES_NO_OPTION) == YES_OPTION){    
              int f=0, idRecibo=0;  
-             Integer nroFactura = reciboControlador.getNroFactura(Integer.parseInt(txtNroRecib.getText().replace(".", "").trim()));
+             nroFactura = reciboControlador.getNroFactura(Integer.parseInt(txtNroRecib.getText().replace(".", "").trim()));
              String esContado = ventaC.esContado(nroFactura);
              idRecibo = reciboControlador.devuelveId(Integer.parseInt(txtNroRecib.getText().replace(".", "").trim()));  
              String date =  (txtFecha.getText());                 
@@ -274,7 +274,24 @@ public class AnularPagoClienteForm extends javax.swing.JInternalFrame {
                         }else{
                             ventaC.updateEstadoPendiente(nroFactura);
                  }
+                 int idCliente = 0;
+                 idCliente = cliC.devuelveId(txtCliente.getText().replace(".",""));
+                 int pagado = facturaPendienteControl.getPagado(nroFactura);
+                int saldoFactura = 0;
+                try {
+                    saldoFactura = ventaC.getTotalSaldoFactura(nroFactura) + pagado;
+                    ventaC.updateSaldoFactura(nroFactura, saldoFactura); //Saldo de la factura
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
+                try {
+                    int saldoCliente = 0;
+                    saldoCliente = cliC.getTotalSaldo(idCliente) + pagado;
+                    cliC.updateSaldo(saldoCliente, idCliente);
+                } catch (Exception ex) {
+                    Logger.getLogger(FacturaVentaForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
                nuevo();
                 
         } 

@@ -268,7 +268,7 @@ layout.setHorizontalGroup(
              parametro.put("fechaini", date1);		          
              parametro.put("fechafin", date2);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/src/reportes/hechaukacompras.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/hechaukacompras.jasper", parametro, coneccionSQL());
 
              JasperViewer.viewReport(print, false);
   		  

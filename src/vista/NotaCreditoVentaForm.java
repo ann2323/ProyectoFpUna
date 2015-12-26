@@ -836,9 +836,9 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
             try
              {
                     String cadena;
-                    cadena="jdbc:postgresql://localhost:5432/intersat";
+                    cadena="jdbc:postgresql://localhost:5432/proyecto";
                     Class.forName("org.postgresql.Driver");
-                    Connection con = DriverManager.getConnection(cadena, "postgres","admin");
+                    Connection con = DriverManager.getConnection(cadena, "postgres","1234");
                      return con;
             }
              catch(Exception e)
@@ -1687,6 +1687,9 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
          prefijo = txtPrefijo.getText().trim().replace(".", "");
          String subTotal2 = "";
          subTotal2 = txtSubTotal.getText().trim().replace(".", "");
+         Integer nroFactura2 = Integer.parseInt(txtNroNotaCredito.getText().replace(".", "").trim());
+         String prefijo2 = txtPrefijo.getText();
+         Integer subTotal3 = Integer.parseInt(txtSubTotal.getText().replace(".", "").trim());
          
          //para que no guarde dos veces
           try { 
@@ -1752,12 +1755,12 @@ public class NotaCreditoVentaForm extends javax.swing.JInternalFrame {
              		             
              Map parametro = new HashMap ();        		               
              		             
-             parametro.put("factura", nroFactura);	
-             parametro.put("subtotal", subTotal2);
+             parametro.put("factura", nroFactura2);	
+             parametro.put("subtotal", subTotal3);
              parametro.put("letras", monto);		          
-             parametro.put("prefijo", prefijo);		  
+             parametro.put("prefijo", prefijo2);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Pathy/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaCredito.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/facturaCredito.jasper", parametro, coneccionSQL());
   		
              //JasperViewer visor = new JasperViewer(print,false) ;
              JasperViewer.viewReport(print, false);

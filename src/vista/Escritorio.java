@@ -26,9 +26,8 @@ public class Escritorio implements Border{
     
     public Escritorio(){
         try{
-            URL imagePath = new URL(getClass().getResource("../imagenes/intersat4.png").toString());
+            URL imagePath = new URL(getClass().getResource("../imagenes/inter.jpg").toString());
             back = ImageIO.read(imagePath);
-  
         }catch(Exception ex){
             
         }

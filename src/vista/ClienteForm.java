@@ -1172,7 +1172,7 @@ public class ClienteForm extends javax.swing.JInternalFrame {
     private void txtLimiteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtLimiteFocusLost
          //limite de credito con puntos decimales
         if(!txtLimite.getText().trim().equals("")){
-           int limite = Integer.parseInt(txtLimite.getText());
+           int limite = Integer.parseInt(txtLimite.getText().replace(".", "").trim());
            String formatoLimite = formateador.format(limite);
            txtLimite.setText(formatoLimite);
         }

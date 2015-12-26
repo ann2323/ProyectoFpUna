@@ -389,11 +389,12 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
             ventaC.setVentaId(id);
             ventaC.setNroPrefijo(txtPrefijoVenta.getText());
             if(!txtIva10.getText().equals("")){
-                ventaC.setIva10(Integer.parseInt(txtIva10.getText().trim().replace(".", "")));
+   
+                ventaC.setIva10(Integer.parseInt(txtIva10.getText().replace(".", "").trim()));
             }
             
             if(!txtIva5.getText().equals("")){
-                ventaC.setIva5(Integer.parseInt(txtIva5.getText().trim().replace(".", "")));
+                ventaC.setIva5(Integer.parseInt(txtIva5.getText().replace(".", "").trim()));
             }
             
             
@@ -403,7 +404,7 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
             Date date = formateador.parse(txtFechaVenta.getText());
             ventaC.setFecha(date);
             ventaC.setEsFactura("S");
-            //ventaC.setProyectoId(setearProyecto());
+            ventaC.setProyectoId(setearProyecto());
             ventaC.setEstado("BORRADOR");
             /*int idSaldo = saldoV.nuevoCodigo();
             saldoModel.setSaldo(idSaldo);
@@ -2217,7 +2218,12 @@ public class FacturaVentaForm extends javax.swing.JInternalFrame {
                 subTotal=subTotal+ Integer.parseInt(tbDetalleVenta.getValueAt(0, 5).toString().trim());
                 txtSubTotal.setValue(subTotal);
                 txtTotal.setValue(subTotal);
-                txtIva10.setValue(subTotal * 0.1);
+                double iva10p;
+                iva10p=subTotal-subTotal/1.1;
+                 Long l = Math.round(iva10p);
+                iva10p=Integer.valueOf(l.intValue());
+                txtIva10.setValue(iva10p);
+                //txtIva10.setValue(subTotal * 0.1);
                 tbDetalleVenta.setModel(modeloD);
             } catch (Exception ex) {
                 showMessageDialog(null, ex, "Error", ERROR_MESSAGE);

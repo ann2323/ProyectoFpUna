@@ -21,12 +21,12 @@ import net.sf.jasperreports.view.JasperViewer;
 
 
 
-public class HechaukaVentaForm extends javax.swing.JInternalFrame {
+public class LibroVentaForm extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form AnularInternalFrame
      */
-    public HechaukaVentaForm() {
+    public LibroVentaForm() {
         initComponents();
     }
      private Connection coneccionSQL()
@@ -70,16 +70,10 @@ public class HechaukaVentaForm extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Hechauka Venta");
+        setTitle("Libro Venta");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/anularFacturaCompra.png"))); // NOI18N
         setPreferredSize(new java.awt.Dimension(520, 400));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-            }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
@@ -88,6 +82,12 @@ public class HechaukaVentaForm extends javax.swing.JInternalFrame {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameOpened(evt);
+            }
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
             }
         });
 
@@ -114,27 +114,27 @@ public class HechaukaVentaForm extends javax.swing.JInternalFrame {
                 bGenerarActionPerformed(evt);
             }
         });
-        jPanel1.add(bGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 80, 160, 60));
+        jPanel1.add(bGenerar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 80, 200, 80));
 
         jLabel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Movimiento por Fecha", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Rounded MT Bold", 0, 10), new java.awt.Color(0, 0, 0))); // NOI18N
         jLabel2.setEnabled(false);
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 560, 140));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 560, 130));
 
         jPanel2.setBackground(new java.awt.Color(51, 94, 137));
 
         jLabel5.setFont(new java.awt.Font("Aharoni", 1, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("HECHAUKA VENTA");
+        jLabel5.setText("LIBRO VENTA");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(162, 162, 162)
+                .addGap(196, 196, 196)
                 .addComponent(jLabel5)
-                .addContainerGap(235, Short.MAX_VALUE))
+                .addContainerGap(262, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,7 +187,6 @@ public class HechaukaVentaForm extends javax.swing.JInternalFrame {
                 false,
                 true)));
     txtFechaHasta.setNothingAllowed(false);
-    txtFechaHasta.setFormat(2);
     txtFechaHasta.setLocale(new java.util.Locale("es", "BO", ""));
     jPanel1.add(txtFechaHasta, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, 140, -1));
 
@@ -245,8 +244,8 @@ layout.setHorizontalGroup(
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+            .addContainerGap())
     );
 
     pack();
@@ -260,15 +259,15 @@ layout.setHorizontalGroup(
              try {	
                 		                       		                      		             
              Map parametro = new HashMap (); 
-             SimpleDateFormat formato3 = new SimpleDateFormat("d-M-y");
-             Date date3 = formato3.parse(txtFechaHasta.getText()); 
-             SimpleDateFormat formato4 = new SimpleDateFormat("d-M-y");
-             Date date4 = (formato4.parse(txtFechaHasta.getText()));             
+             SimpleDateFormat formato1 = new SimpleDateFormat("d-M-y");
+             Date date1 = formato1.parse(txtFechaHasta.getText()); 
+             SimpleDateFormat formato2 = new SimpleDateFormat("d-M-y");
+             Date date2 = (formato2.parse(txtFechaHasta.getText()));             
            		             
-             parametro.put("fechaini", date3);		          
-             parametro.put("fechafin", date4);		  
+             parametro.put("fechaini", date1);		          
+             parametro.put("fechafin", date2);		  
             		            	  
-             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/hechaukaventas.jasper", parametro, coneccionSQL());
+             JasperPrint print = JasperFillManager.fillReport("C:/Users/Any/Documents/NetBeansProjects/ProyectoFpUna/ProyectoFpUna/src/reportes/libro ventas.jasper", parametro, coneccionSQL());
 
              JasperViewer.viewReport(print, false);
   		  
