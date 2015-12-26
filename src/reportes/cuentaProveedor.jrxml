@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaVenta" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="640695ee-d00c-4256-91a7-c45ad7c4642e">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechaActual" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date("1800/01/01")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pro_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct pro.nombre, pro.ci, '' as nro_pref, rec.nro_recibo as doc_nro, to_char(rec.fecha,'dd/mm/yyyy') as fecha_rec, '' as pago_cont, pend.pagado as total_rec,0 as total_fact, 'Recibo Nro.' as cuenta, 1 as tipo,
+'' as tipo_fact, rec.factura_nro as orden
+from compra com
+join proveedor pro on (com.proveedor_id=pro.proveedor_id and com.es_factura='S')
+join cabecera_recibo rec on ((com.nro_factura=rec.factura_nro))
+join factura_pendiente pend on (pend.recibo_id=rec.recibo_id)
+join detalle_pago det on(pend.factura_pendiente_id=det.factura_pendiente_id)
+where (com.estado!='ANULADO' or com.estado !='BORRADOR' )
+and pro.proveedor_id=$P{pro_id}
+UNION
+select distinct pro.nombre, pro.ci, com.nro_prefijo as nro_pref, com.nro_factura as doc_nro, to_char(com.fecha,'dd/mm/yyyy') as fecha_rec, com.pago_contado as pago_cont,  0 as total_rec, com.precio_total as total_fact,
+case com.es_factura when 'S' then 'Factura Nro.' when 'N'  then 'Nota de Credito Nro.' end as cuenta, 0 as tipo, com.es_factura as tipo_fact, com.nro_factura as orden
+from compra com
+join proveedor pro on (com.proveedor_id=pro.proveedor_id and com.es_factura='S')
+left join cabecera_recibo rec on ((com.nro_factura=rec.factura_nro))
+left join factura_pendiente pend on (pend.recibo_id=rec.recibo_id)
+left join detalle_pago det on(pend.factura_pendiente_id=det.factura_pendiente_id)
+where (com.estado!='ANULADO' or com.estado !='BORRADOR' )
+and pro.proveedor_id=$P{pro_id}
+order by orden, tipo]]>
+	</queryString>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="ci" class="java.lang.String"/>
+	<field name="nro_pref" class="java.lang.String"/>
+	<field name="doc_nro" class="java.lang.Integer"/>
+	<field name="fecha_rec" class="java.lang.String"/>
+	<field name="pago_cont" class="java.lang.String"/>
+	<field name="total_rec" class="java.lang.Integer"/>
+	<field name="total_fact" class="java.lang.Integer"/>
+	<field name="cuenta" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.Integer"/>
+	<field name="tipo_fact" class="java.lang.String"/>
+	<field name="orden" class="java.lang.Integer"/>
+	<variable name="debe" class="java.lang.Integer" resetType="None">
+		<variableExpression><![CDATA[$F{pago_cont}.equals("CONTADO") ?
+$F{total_fact} : new Integer(0)]]></variableExpression>
+	</variable>
+	<variable name="credito" class="java.lang.Integer" resetType="None">
+		<variableExpression><![CDATA[$F{pago_cont}.equals("CREDITO") || $F{tipo_fact}.equals("N") ? $F{total_fact}
+: $F{total_rec}]]></variableExpression>
+	</variable>
+	<variable name="saldo" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{credito}-$V{debe}]]></variableExpression>
+	</variable>
+	<variable name="debe_1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$V{debe}]]></variableExpression>
+	</variable>
+	<variable name="credito_1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$V{credito}]]></variableExpression>
+	</variable>
+	<variable name="saldo_1" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{credito_1}-$V{debe_1}]]></variableExpression>
+	</variable>
+	<group name="porNombre">
+		<groupExpression><![CDATA[$F{nombre}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<rectangle>
+					<reportElement x="2" y="0" width="800" height="25" forecolor="#E2E2E2" backcolor="#E2E2E2" uuid="83019866-9629-484d-bd03-891e93c79368"/>
+					<graphicElement>
+						<pen lineWidth="1.0"/>
+					</graphicElement>
+				</rectangle>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="2" y="9" width="68" height="15" printWhenGroupChanges="porNombre" forecolor="#003366" uuid="23ab58c9-0512-47cb-a716-bfb6db905e16"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Proveedor:"]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="70" y="9" width="402" height="15" forecolor="#003366" uuid="b313a18b-b41a-46ff-9887-2002c0a8395b"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ci}+" "+$F{nombre}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="2" y="25" width="84" height="15" forecolor="#000000" uuid="9b7e4237-2eb6-4d0d-9836-c2d03bfec1bc"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Fecha"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="513" y="25" width="53" height="15" forecolor="#000000" uuid="be052cf1-ff81-4291-b25a-fe6db56d782a"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["DEBITO"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="566" y="25" width="53" height="15" forecolor="#000000" uuid="d67c3ddc-b33f-434a-9f87-a9af740d2dca"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["CREDITO"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="619" y="25" width="53" height="15" forecolor="#000000" uuid="986ecfb4-f5bc-4448-a34b-313bd869d02d"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SALDO"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="86" y="25" width="248" height="15" forecolor="#000000" uuid="e22047ef-fcde-4b42-b836-2b415261a7f8"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Cuenta"]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="334" y="25" width="123" height="15" forecolor="#000000" uuid="e09d02f4-a173-4fd0-b1c0-b92659ba9624"/>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="0.75"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="9" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Tipo Factura"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="94" splitType="Stretch">
+			<image>
+				<reportElement x="2" y="3" width="84" height="89" backcolor="#CCCCFF" uuid="7ea987eb-ada6-4c97-bd67-230116edeede"/>
+				<imageExpression><![CDATA["C:\\Users\\Any\\Documents\\logo.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="86" y="3" width="535" height="41" forecolor="#003366" backcolor="#E2E2E2" uuid="f0d8b63b-9180-483d-9f95-2c07cbea278f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="15" isBold="true" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[EXTRACTO DE CUENTA PROVEEDOR]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="86" y="77" width="78" height="15" uuid="6e2e76ac-0c97-42f5-a851-6c4ddffb2132"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Fecha:"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="92" width="802" height="1" uuid="ca2e8886-b378-4f41-a132-167d3ca9cc2e"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="164" y="78" width="100" height="14" uuid="8272b51a-0aa8-4987-bfe0-48d1e21edb37"/>
+				<textFieldExpression><![CDATA[$P{fechaActual}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="2" y="1" width="84" height="15" forecolor="#000000" uuid="fdd03bc7-78ec-4025-a034-bdfba0d0f745"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_rec}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="513" y="3" width="53" height="15" forecolor="#000000" uuid="4b75ea21-6a4e-4098-894c-50ff84e778a3"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{credito}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="619" y="2" width="53" height="15" forecolor="#000000" uuid="4dcda97a-79f2-4561-ba4c-7e1062160b8c"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{saldo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="566" y="2" width="53" height="15" forecolor="#000000" uuid="f839d146-41a7-4ff8-8cca-c87dc54d95a4"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement x="86" y="2" width="248" height="15" forecolor="#000000" uuid="6d2577ef-66a1-45cf-b954-35135f4308c9"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta}.equals("Recibo Nro.") ?
+$F{cuenta} +"  "+$F{doc_nro}+" Pago de la factura Nro: "+
+$F{orden}:
+$F{cuenta} +"  "+$F{nro_pref}+" "+$F{doc_nro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="334" y="2" width="179" height="15" forecolor="#000000" uuid="7ffb679e-44d5-4b8a-b6c0-13727fd0ebae"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pago_cont}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band height="22" splitType="Stretch">
+			<textField evaluationTime="Group" evaluationGroup="porNombre" pattern="" isBlankWhenNull="true">
+				<reportElement isPrintRepeatedValues="false" x="235" y="4" width="136" height="15" forecolor="#000000" uuid="b9278c7d-859c-4d1a-be7c-2827d0c02368"/>
+				<box leftPadding="3" rightPadding="3">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total General:"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="513" y="3" width="53" height="15" uuid="30cd6d23-3c6b-4128-9ff7-519209305ac7"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{credito_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="619" y="3" width="53" height="15" uuid="6e2015a9-3511-4b0e-9fa1-2071ff2f4be0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{saldo_1}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="513" y="1" width="159" height="1" uuid="a654232d-a155-42b7-8b33-f3c58a80108c"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="566" y="3" width="53" height="15" uuid="f8761c5c-7b96-4c8a-8bec-567f3b032906"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debe_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

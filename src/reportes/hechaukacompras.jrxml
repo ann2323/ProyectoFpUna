@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="componentes" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f150c3a-c909-4457-8d96-535d3b6e1b13">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechaini" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date("1800/01/01")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechafin" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date ("2200/01/01")]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+
+1 tipoRegistro,
+to_char(cast($P{fechafin} as date),'YYYYMM') periodo,
+1 tipoReporte,
+911 codigoObligacion,
+211 codigoFormulario,
+cast('80028038' as text) ruc_agente,
+5 dv_agente,
+cast('Intersat S.A.' as text) nombre_agente,
+cast('4738698' as text) ruc_repre,
+3 as dv_repre,
+cast('Victor Grossling' as text) nombre_repre,
+--cant_reg
+--monto_total
+cast('NO' as text) exportador,
+2 versions,
+
+
+2 tipoRegistrodet,
+t1.ci ruc_pro,
+cast(t1.dv as int) dv_pro,
+t1.nombre || ' ' || t1.apellido nombre_pro,
+87654321 timbrado,
+1 tipoDoc,
+t0.nro_prefijo || '-' || t0.nro_factura nro_factura,
+to_char(t0.fecha,'DD/MM/YYYY') fecha_doc,
+cast(case when t3.tipo_iva = 0 then t2.sub_total else 0 end as int) monto_con_10,
+cast(case when t3.tipo_iva = 1 then t2.sub_total else 0 end as int) monto_con_5,
+cast(case when t3.tipo_iva = 0 then t2.sub_total else 0 end as int)
++ cast(case when t3.tipo_iva = 1 then t2.sub_total else 0 end as int)
++ cast(case when t3.tipo_iva = 2 then t2.sub_total else 0 end as int) montoAsumar,
+cast(case when t3.tipo_iva = 0 then t2.sub_total *0.1 else 0 end as int) iva10,
+cast(case when t3.tipo_iva = 1 then t2.sub_total *0.05 else 0 end as int) iva5,
+cast(case when t3.tipo_iva = 2 then t2.sub_total else 0 end as int) exento,
+0 tipoOperacion,
+case when t0.pago_contado = 'CONTADO' then 1 else 2 end condicion,
+case when t0.pago_contado = 'CONTADO' then 0 else t0.pago_en end cuotas
+
+from compra t0
+inner join detalle_compra t2 on t2.compra_id = t0.compra_id
+inner join proveedor t1 on t1.proveedor_id = t0.proveedor_id
+inner join componentes t3 on t3.codigo = t2.codigo
+where es_factura = 'S' and t0.fecha >= $P{fechaini} and t0.fecha <= $P{fechafin}
+
+union all
+
+select
+
+1 tipoRegistro,
+to_char(cast($P{fechafin} as date),'YYYYMM') periodo,
+1 tipoReporte,
+911 codigoObligacion,
+211 codigoFormulario,
+cast('80028038' as text) ruc_agente,
+5 dv_agente,
+cast('Intersat S.A.' as text) nombre_agente,
+cast('4738698' as text) ruc_repre,
+3 as dv_repre,
+cast('Victor Grossling' as text) nombre_repre,
+--cant_reg
+--monto_total
+cast('NO' as text) exportador,
+2 versions,
+
+
+2 tipoRegistrodet,
+t1.ci ruc_pro,
+cast(t1.dv as int) dv_pro,
+t1.nombre || ' ' || t1.apellido nombre_pro,
+87654321 timbrado,
+3 tipoDoc,
+t0.nro_prefijo || '-' || t0.nro_factura nro_factura,
+to_char(t0.fecha,'DD/MM/YYYY') fecha_doc,
+cast(case when t3.tipo_iva = 0 then t2.sub_total else 0 end as int) monto_con_10,
+cast(case when t3.tipo_iva = 1 then t2.sub_total else 0 end as int) monto_con_5,
+cast(case when t3.tipo_iva = 0 then t2.sub_total else 0 end as int)
++ cast(case when t3.tipo_iva = 1 then t2.sub_total else 0 end as int)
++ cast(case when t3.tipo_iva = 2 then t2.sub_total else 0 end as int) montoAsumar,
+cast(case when t3.tipo_iva = 0 then t2.sub_total *0.1 else 0 end as int) iva10,
+cast(case when t3.tipo_iva = 1 then t2.sub_total *0.05 else 0 end as int) iva5,
+cast(case when t3.tipo_iva = 2 then t2.sub_total else 0 end as int) exento,
+0 tipoOperacion,
+case when t0.pago_contado = 'CONTADO' then 1 else 2 end condicion,
+case when t0.pago_contado = 'CONTADO' then 0 else t0.pago_en end cuotas
+
+from compra t0
+inner join detalle_compra t2 on t2.compra_id = t0.compra_id
+inner join proveedor t1 on t1.proveedor_id = t0.proveedor_id
+inner join componentes t3 on t3.codigo = t2.codigo
+where es_factura = 'N' and t0.fecha >= $P{fechaini} and t0.fecha <= $P{fechafin}]]>
+	</queryString>
+	<field name="tiporegistro" class="java.lang.Integer"/>
+	<field name="periodo" class="java.lang.String"/>
+	<field name="tiporeporte" class="java.lang.Integer"/>
+	<field name="codigoobligacion" class="java.lang.Integer"/>
+	<field name="codigoformulario" class="java.lang.Integer"/>
+	<field name="ruc_agente" class="java.lang.String"/>
+	<field name="dv_agente" class="java.lang.Integer"/>
+	<field name="nombre_agente" class="java.lang.String"/>
+	<field name="ruc_repre" class="java.lang.String"/>
+	<field name="dv_repre" class="java.lang.Integer"/>
+	<field name="nombre_repre" class="java.lang.String"/>
+	<field name="exportador" class="java.lang.String"/>
+	<field name="versions" class="java.lang.Integer"/>
+	<field name="tiporegistrodet" class="java.lang.Integer"/>
+	<field name="ruc_pro" class="java.lang.String"/>
+	<field name="dv_pro" class="java.lang.Integer"/>
+	<field name="nombre_pro" class="java.lang.String"/>
+	<field name="timbrado" class="java.lang.Integer"/>
+	<field name="tipodoc" class="java.lang.Integer"/>
+	<field name="nro_factura" class="java.lang.String"/>
+	<field name="fecha_doc" class="java.lang.String"/>
+	<field name="monto_con_10" class="java.lang.Integer"/>
+	<field name="monto_con_5" class="java.lang.Integer"/>
+	<field name="montoasumar" class="java.lang.Integer"/>
+	<field name="iva10" class="java.lang.Integer"/>
+	<field name="iva5" class="java.lang.Integer"/>
+	<field name="exento" class="java.lang.Integer"/>
+	<field name="tipooperacion" class="java.lang.Integer"/>
+	<field name="condicion" class="java.lang.Integer"/>
+	<field name="cuotas" class="java.lang.Integer"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<variable name="tiporegistro_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{tiporegistro}]]></variableExpression>
+	</variable>
+	<variable name="tiporegistro_2" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{tiporegistro}]]></variableExpression>
+	</variable>
+	<variable name="montoasumar_1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{montoasumar}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="19">
+			<textField pattern="###0">
+				<reportElement x="2" y="8" width="14" height="11" uuid="ee55a6fe-8cbb-4217-aaab-98b23d8e6dfc"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tiporegistro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="22" y="8" width="29" height="11" uuid="26eec02e-40d6-4a59-aada-ba069239c68c"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{periodo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="55" y="8" width="13" height="11" uuid="48c560f9-d4fa-49e1-ad79-dc4831e34666"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tiporeporte}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="71" y="8" width="46" height="11" uuid="a4c27a95-ea3e-4d36-bbc2-9e50f767a81f"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigoobligacion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="119" y="8" width="29" height="11" uuid="6478f362-b90d-4ff2-91a9-1123681f6fc8"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigoformulario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="214" y="8" width="45" height="11" uuid="d7e12740-aa05-4f0d-b5b5-ce898f942ca8"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_agente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="266" y="8" width="33" height="11" uuid="e06e254f-2c04-4c66-a0ce-78c50dfa45c7"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_repre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="303" y="8" width="19" height="11" uuid="d971bd4e-f53b-427d-8360-22868a5d3d10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dv_repre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="326" y="8" width="54" height="11" uuid="b8de866b-2484-4be0-9684-7476e6809e5d"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_repre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="457" y="8" width="29" height="11" uuid="b9f60ca4-4597-4d3c-b49b-cd9439fb51c9"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{exportador}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="489" y="8" width="29" height="11" uuid="3c163f32-92e5-42fe-9db4-8b475d7a9cb3"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{versions}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="###0">
+				<reportElement x="389" y="8" width="29" height="11" uuid="bbd83477-fce1-4009-a39e-d573e41e9673"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tiporegistro_2}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="###0">
+				<reportElement x="423" y="8" width="29" height="11" uuid="3ee9a96d-a54d-4e5f-b7c4-4fc3b1507494"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{montoasumar_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="151" y="8" width="29" height="11" uuid="1d5ef45c-d721-4336-beec-25fe15a58ab0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_agente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="8" width="29" height="11" uuid="2192b6c0-89c1-4be9-8450-71f48e281819"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dv_agente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement x="22" y="5" width="29" height="11" uuid="0cddeaba-32b9-4cea-9b88-7c7a0028cc77"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_pro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="5" width="14" height="11" uuid="afc5dea2-3f45-4bc9-9fd4-1460740037ec"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tiporegistrodet}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="5" width="13" height="11" uuid="45f98214-cfd8-4ca8-ac7f-245e167f33c0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dv_pro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="5" width="46" height="11" uuid="2c5ff2bf-7bdd-4590-b974-2625d34c0e7b"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_pro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="151" y="5" width="29" height="11" uuid="095c8325-9b7d-443f-9ef7-0baf55d1274f"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="5" width="29" height="11" uuid="f2df2ba0-a499-4125-a425-240102cc853e"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_factura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="214" y="5" width="45" height="11" uuid="b935801a-4fd0-4270-8081-6836ed6e1032"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_doc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="266" y="5" width="33" height="11" uuid="d82125c7-3dea-4b59-ad66-4802704b7177"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_con_10}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="326" y="5" width="54" height="11" uuid="ca859407-343e-4c7d-9fbd-48cfe94c863d"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_con_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="389" y="5" width="29" height="11" uuid="24ee93d9-3c0f-41fa-8729-e680bf8051ce"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{iva5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="423" y="5" width="29" height="11" uuid="7ec432db-485c-455d-8b76-b4c23cc77a0e"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{exento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="457" y="5" width="29" height="11" uuid="88fa33f0-c2b9-4f67-aa9e-fa109d474d94"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipooperacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="489" y="5" width="29" height="11" uuid="16e64111-6b63-47e6-a38a-b418e7f77a25"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{condicion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="524" y="5" width="29" height="11" uuid="b55ca09c-5739-49b0-8a7a-af91cd667972"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuotas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="119" y="5" width="29" height="11" uuid="aaef986e-8cc5-41f0-b740-d1db0f2a8389"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{timbrado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="303" y="5" width="19" height="11" uuid="55c58d6d-6ab1-4bb3-b35b-3ab73ea69189"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{iva10}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="22" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="27" splitType="Stretch"/>
+	</summary>
+</jasperReport>

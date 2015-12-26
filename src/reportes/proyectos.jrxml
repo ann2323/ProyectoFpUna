@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="componentes" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f150c3a-c909-4457-8d96-535d3b6e1b13">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="223"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Grossling\\Documents\\NetBeansProjects\\intersatManagmentTool v0\\src\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="proyecto" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+a.id,
+a.codigo,
+b.nombre || ' ' || b.apellido jefe,
+to_char(a.fecha_ini,'dd/MM/yyyy') fechaIni,
+to_char(a.fecha_fin,'dd/MM/yyyy') fechaFin,
+a.descripcion,
+case a.estado
+when 0 then 'Abierto'
+when 1 then 'En ejecucion'
+when 2 then 'Finalizado'
+when 3 then 'Cancelado'
+end estado,
+a.utilidad,
+a.presupuesto
+from proyectos a
+inner join usuario b on b.idusuario = a.jefe
+where a.codigo = $P{proyecto}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="jefe" class="java.lang.String"/>
+	<field name="fechaini" class="java.lang.String"/>
+	<field name="fechafin" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="utilidad" class="java.lang.Integer"/>
+	<field name="presupuesto" class="java.lang.Integer"/>
+	<variable name="totalG" class="java.lang.Integer"/>
+	<variable name="totalA" class="java.lang.Integer"/>
+	<variable name="totalF" class="java.lang.Integer"/>
+	<variable name="totalproyecto" class="java.lang.Integer" resetType="None">
+		<variableExpression><![CDATA[$V{totalF}+$V{totalA}+$V{totalG}]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{totalF}+$V{totalA}+$V{totalG}]]></initialValueExpression>
+	</variable>
+	<variable name="resultado" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{presupuesto} - $V{totalproyecto}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="455" y="0" width="100" height="20" uuid="62658aa5-ccdb-48b5-aeef-b75846b19757"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="20" y="1" width="66" height="73" uuid="cd7d43b1-1adb-4a4e-98e0-e2b9fbf7251e"/>
+				<imageExpression><![CDATA["C:\\Users\\Any\\Documents\\logo.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Transparent" x="179" y="31" width="221" height="20" backcolor="#FFFFFF" uuid="1caeed0f-d471-4a86-ac78-c3cb8d5647d0"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE PROYECTO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="1" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<rectangle>
+				<reportElement x="68" y="2" width="487" height="23" uuid="6cf7059f-48a2-439f-ad68-d09c56cd9946"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="5" y="2" width="63" height="23" uuid="c1b735bc-66d8-4b0e-aff0-65a5b53d3dbc"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="5" y="3" width="63" height="22" backcolor="#CCCCCC" uuid="f381ce7b-ecd2-4d7e-af6b-27f7f69170db"/>
+				<textElement>
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="73" y="7" width="63" height="18" uuid="bd796c91-3edc-487c-b2ea-2e2f049fd0d4"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Jefe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="141" y="7" width="63" height="18" uuid="3baf683a-5aff-49f8-a3ac-271659a7f298"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Fecha inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="209" y="7" width="63" height="18" uuid="13c4daad-4ad0-4d1d-b5e4-e341c786dd6c"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Fecha fin]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="278" y="7" width="54" height="18" uuid="f53b1d31-2f51-4860-89fe-e23ae5516aa6"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Utilidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="7" width="139" height="18" uuid="785fbfc1-027d-44f3-b608-95b5a0b82b14"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="492" y="7" width="61" height="18" uuid="9dfd104b-0d46-4f87-bd7c-78fba70614ca"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="94" splitType="Stretch">
+			<rectangle>
+				<reportElement x="68" y="3" width="487" height="23" uuid="f0576ebf-5f6d-4490-b946-da65283b1f13"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="5" y="3" width="63" height="23" uuid="b938fe91-859f-44a0-8f2c-b1eaf4400d90"/>
+			</rectangle>
+			<textField>
+				<reportElement mode="Opaque" x="5" y="3" width="63" height="23" backcolor="#CCCCCC" uuid="d2abafb1-d6d0-4cc4-b114-70c4299e299a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="73" y="6" width="63" height="21" uuid="058663c9-69de-4005-a293-b3075c56f3a1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jefe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="141" y="6" width="63" height="21" uuid="f6db5298-ef4c-4f9d-8612-fd7edfca45e0"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaini}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="209" y="6" width="63" height="21" uuid="442acc98-4778-4eb2-9b6c-6f6cf6cb8d09"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechafin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="6" width="54" height="21" uuid="6b55641f-8f48-4195-921f-5963d810473c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{utilidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="344" y="6" width="139" height="21" uuid="cc46a824-8a5c-4da1-bfad-caee7de2d803"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="492" y="6" width="61" height="21" uuid="159e3943-234d-4ac3-9c79-05f8565cb6ef"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="5" y="39" width="550" height="39" uuid="5711d275-47f1-47a1-98d3-ded7ea6e1475"/>
+				<subreportParameter name="proyecto">
+					<subreportParameterExpression><![CDATA[$F{codigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="totalAdjudicado" toVariable="totalA" calculation="Sum"/>
+				<returnValue subreportVariable="totalAdjudicado" toVariable="totalproyecto" calculation="Sum"/>
+				<subreportExpression><![CDATA["C:\\Users\\Any\\Documents\\NetBeansProjects\\ProyectoFpUna\\ProyectoFpUna\\src\\reportes\\proyectos_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="60">
+			<subreport>
+				<reportElement x="5" y="11" width="550" height="39" uuid="7652581e-0573-4c6f-b5e8-1fd7811338b1"/>
+				<subreportParameter name="proyecto">
+					<subreportParameterExpression><![CDATA[$F{codigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="totalGasto" toVariable="totalG" calculation="Sum"/>
+				<returnValue subreportVariable="totalGasto" toVariable="totalproyecto" calculation="Sum"/>
+				<subreportExpression><![CDATA["C:\\Users\\Any\\Documents\\NetBeansProjects\\ProyectoFpUna\\ProyectoFpUna\\src\\reportes\\proyectos_subreport3.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="63">
+			<subreport>
+				<reportElement x="5" y="11" width="550" height="40" uuid="498c7fc6-a404-4836-9b32-cb7deccf94be"/>
+				<subreportParameter name="proyecto">
+					<subreportParameterExpression><![CDATA[$F{codigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="totalFacturado" toVariable="totalF" calculation="Sum"/>
+				<returnValue subreportVariable="totalFacturado" toVariable="totalproyecto" calculation="Sum"/>
+				<subreportExpression><![CDATA["C:\\Users\\Any\\Documents\\NetBeansProjects\\ProyectoFpUna\\ProyectoFpUna\\src\\reportes\\proyectos_subreport4.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20" uuid="c9214f17-d01c-4260-9f0f-4bcb845d73f0"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20" uuid="33a69134-356c-4930-a747-9e501b5e15ae"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="74" splitType="Stretch">
+			<rectangle>
+				<reportElement x="5" y="4" width="550" height="67" uuid="680b14e7-bd2f-47f7-bf60-4f514c0d40fd"/>
+			</rectangle>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="180" y="7" width="100" height="20" backcolor="#CCCCCC" uuid="1529d5f9-ff62-4932-8d1b-4c8308745279"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalG}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="49" y="7" width="117" height="20" backcolor="#CCCCCC" uuid="1684c450-4a50-4d90-bd64-7f5a3c50ba43"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Total Gastos varios:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="49" y="27" width="117" height="20" backcolor="#CCCCCC" uuid="8ad99629-679a-41e0-91f9-5d6c056d8582"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Total Adjudicado:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="180" y="27" width="100" height="20" backcolor="#CCCCCC" uuid="8e1e7d43-e017-48cc-b883-7c88a904c7fc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="49" y="47" width="117" height="20" backcolor="#CCCCCC" uuid="87d637f6-84f4-4eb3-9050-3e020d18dcab"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Total Facturado:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="180" y="47" width="100" height="20" backcolor="#CCCCCC" uuid="96d7ce4f-e298-4afa-b260-28062c1023dd"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalF}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="292" y="7" width="102" height="20" backcolor="#CCCCCC" uuid="5eaf7dac-3562-4739-967a-2134fd45da59"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[PRESUPUESTO:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="404" y="7" width="111" height="20" forecolor="#000000" backcolor="#CCCCCC" uuid="3af32156-bfaf-46b8-b90e-921cd11e64f3"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{presupuesto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="292" y="27" width="102" height="20" backcolor="#CCCCCC" uuid="4fb69fa5-a123-49af-9f6e-4bbba3219965"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL PROYECTO:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="404" y="27" width="111" height="20" forecolor="#000000" backcolor="#CCCCCC" uuid="aff2c61c-d1c6-4a43-b407-4350566f2674"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalproyecto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="292" y="47" width="102" height="20" backcolor="#CCCCCC" uuid="e854a894-5e31-4ca4-8b4c-f5c8dc43eb20"/>
+				<textElement>
+					<font size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO:]]></text>
+			</staticText>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="404" y="47" width="111" height="20" forecolor="#000000" backcolor="#CCCCCC" uuid="3ee29b2a-4f63-4b23-8e32-e586dde77c16"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{resultado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
