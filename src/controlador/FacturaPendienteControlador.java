@@ -57,6 +57,17 @@ public class FacturaPendienteControlador {
         }
     }
     
+    public Integer getPagado(Integer nro_factura) throws Exception {
+        Session baseDatos = HibernateUtil.getSessionFactory().openSession();
+        baseDatos.beginTransaction();
+        
+        try {
+           return (Integer) baseDatos.createQuery("select pagado from FacturaPendiente where nro_factura = '" + nro_factura + "'").uniqueResult();
+        } catch(HibernateException e){
+            throw new Exception("Error al traer precio total: \n" + e.getMessage());
+        }
+    }
+    
      public ResultSet getCuotasPagadasCli(int nro_factura) throws SQLException, Exception {
         Session baseDatos = HibernateUtil.getSessionFactory().openSession();
         String query = "SELECT nro_prefijo as \"Nro Prefijo\" , nro_factura  \"Nro Factura\" , fecha_vencimiento as \"Fecha vencimiento\", plazo as \"Plazo\", total \"Total\", monto_pendiente \"Monto Pendiente\", estado \"Estado\" from factura_pendiente where nro_factura='"+nro_factura+"' and estado='PAGADO'";
